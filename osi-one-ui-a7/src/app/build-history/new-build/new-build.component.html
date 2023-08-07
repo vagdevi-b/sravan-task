@@ -1,0 +1,140 @@
+<div>
+  <div class="sub-header bb-color">
+    <h1>{{ pageHeading }}</h1>
+  </div>
+  <div class="container-fluid build-form-container">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <form
+            name="createBuildHistoryForm"
+            role="form"
+            (ngSubmit)="saveBuildHistory()"
+            #createBuildHistoryForm="ngForm"
+            novalidate>
+          <div class="row">
+            <div class="col-12">
+              <!--Build Date-->
+              <div class="form-group">
+                <label for="buildDate">Build Date</label>
+                <div class="input-group">
+                  <input
+                      id="buildDate"
+                      name="buildDate"
+                      class="form-control form-control-sm form-field-border"
+                      placeholder="yyyy-mm-dd"
+                      [(ngModel)]="buildHistory.buildDate"
+                      #buildDate="ngModel"
+                      ngbDatepicker
+                      #buildDatePicker="ngbDatepicker"
+                      (click)='buildDatePicker.toggle()'
+                      required>
+
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary date-pick" (click)='buildDatePicker.toggle()' type="button">
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0;">
+                          <i class="fa fa-lg fa-calendar"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!--Build Type-->
+              <div class="form-group">
+                <label for="buildType">Build Type</label>
+                <select
+                    class="form-control build-type"
+                    name="buildType"
+                    id="buildType"
+                    [(ngModel)]="buildHistory.buildType"
+                    required>
+                  <option value="MAJOR" selected="selected">MAJOR</option>
+                  <option value="MINOR">MINOR</option>
+                </select>
+              </div>
+              <!--Is Deployed-->
+              <div class="form-group is-deployed">
+                <input
+                    type="checkbox"
+                    class="form-control"
+                    name="isDeployed"
+                    id="isDeployed"
+                    [(ngModel)]="buildHistory.isDeployed">
+                <label for="isDeployed">Is Deployed</label>
+              </div>
+              <div class="row">
+<div class="col-md-12 d-flex align-items-center justify-content-between">
+<div class="text-left">
+                <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="onBack()"
+            >Back</button>
+              </div>
+
+              <div class="text-right">
+                <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="showBuildMessageModal()"
+                >Add/Edit Build Message</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >Save</button>
+              </div>
+</div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade build-message-modal" id="buildMessage" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Build Message</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <angular-editor [(ngModel)]="buildHistory.buildMessage" [config]="config"></angular-editor>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="pull-right">
+          <button class="btn btn-secondary" data-dismiss="modal">
+            Ok
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade unsavedChangesModal" id="unsavedChangesModal" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <form class="form-horizontal">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <h5 class="modal-title">There are unsaved changes.<br>Are you sure?</h5>
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal" (click)="goBack()">Yes</button>
+          <button type="button" class="btn btn-outline-secondary btn-cancel no-button" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Modal for showing "Loading..." -->
+<div id="loadingModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

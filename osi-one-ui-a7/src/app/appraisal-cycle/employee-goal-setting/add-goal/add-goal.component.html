@@ -1,0 +1,72 @@
+
+<!-- ADD GOAL MODAL START -->
+<div class="team-goal-settings-section team-goal-section">
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="addGoalModalLabel">Add Goal</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onClickIcon()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="fg" class="spaced">
+      <div class="form-row mb-2" formArrayName="goals" *ngFor="let goal of fg.get('goals')['controls']; let i = index;"
+        >
+        <ng-container [formGroupName]="i">
+          <div class="col-7" formGroupName="osiEpmsKra">
+            <select class="form-control border" formControlName="kraId" (change)="setKpaName($event,i)">
+              <option value="">Select</option>
+              <option *ngFor="let goal of kpisList" [ngValue]="goal?.kraId"
+              [attr.disabled]="disableKpi(goal?.kraId) ? '' : null"
+              >{{goal?.name}}</option>
+            </select>
+            <div class="error text-danger" *ngIf="getkraId(i)?.touched || getkraId(i)?.dirty">
+              <div class="error text-danger" *ngIf="getkraId(i)?.errors?.required">
+                Required Field
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <input formControlName="weightage" 
+            placeholder="Percentage"
+            suffix="%" mask="000" class="form-control" >
+            <div class="error text-danger" *ngIf="(getweightage(i)?.touched || getweightage(i)?.touched)">
+              <span class="error text-danger" *ngIf="getweightage(i)?.errors?.required">
+                Required Field
+              </span>
+            </div>
+          </div>
+          <div class="col-2">
+              <button class="btn btn-primary btn-block btn-close" type="button" (click)="deleteGoal(i)">X</button>
+          </div>
+        </ng-container>
+
+      </div>
+    </form>
+    <div class="form-row mt-2">
+        <div class="col-3">
+            <button
+                *ngIf="!isReadOnly"
+                class="btn btn-outline-primary" type="button" (click)="addGoal()">
+              Add More
+            </button>
+        </div>
+        <div class="col-9">
+        </div>
+      </div>
+    <div class="form-row mt-4">
+      <div class="col-9" [ngClass]="{'text-danger':showErrorMsg}">Total percentage should be 100%</div>
+      <div class="col-3">
+        <button type="button" 
+        class="btn btn-primary float-right" (click)="close()"
+        [attr.disabled]="fg?.invalid ? '' : null" 
+        >Save</button>
+      </div>
+    </div>
+  </div>
+  <!-- {{fg?.value | json }} -->
+</div>
+</div>
+<!-- ADD GOAL MODAL END -->
+
+<!-- [attr.disabled]="fg?.invalid ? '' : null" -->

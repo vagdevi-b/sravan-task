@@ -1,0 +1,63 @@
+<!-- Sidebar Navigation Menus-->
+<div class="sidebar">
+    <div class="sidebar-scroll">
+        <nav>
+            <ul>
+                <li>
+                    <a (click)="routeTo('/dashboard')" routerLinkActive="active">
+                        <span class="icon"><img class="icon-white" src="assets/icons/my-home.png" alt="">
+                        </span>
+                        <span class="nav-text">My Home</span>
+                    </a>
+                </li>
+                <li *ngFor="let fav of favItems;">
+                    <a (click)="routeTo(fav.itemFunctionURI)" routerLinkActive="active">
+                        <span class="icon"><img class="icon-white" [src]="fav.icon" alt=""> </span>
+                        <span class="nav-text">{{fav.itemTitle}}</span>
+                    </a>
+                </li>
+                <li class="settings">
+                    <a (click)="openModal()">
+                        <span class="icon">
+                            <img class="icon-white" src="assets/icons/timesheets.png" alt="">
+                        </span>
+                        <span class="nav-text">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <a href="javascript:void(0)" class="btn-aside-option" *ngIf="favItems?.length > 3" id="btn-aside-option"
+            (click)="showInfo=!showInfo">
+            <img src="assets/images/icon-more-light.svg" alt="">
+        </a>
+        <div class="aside-mobile-section" [ngClass]="{'show':showInfo}" id="aside-mobile-section">
+            <nav>
+                <ul>
+                    <li>
+                        <a routerLink="routeTo('/dashboard')" routerLinkActive="active">
+                            <span class="icon"><img class="icon-white" src="assets/icons/my-home.png" alt="">
+                            </span>
+                            <span class="nav-text">Home</span>
+                        </a>
+                    </li>
+                    <ng-container *ngFor="let fav of favItems; let idx=index">
+                        <li *ngIf="idx > 2">
+                            <a (click)="routeTo(fav.itemFunctionURI);showInfo=!showInfo" routerLinkActive="active">
+                                <span class="icon"><img class="icon-white" [src]="fav?.icon" alt=""> </span>
+                                <span class="nav-text">{{fav?.itemTitle}}</span>
+                            </a>
+                        </li>
+                        <li class="m-settings">
+                            <a (click)="openModal();">
+                                <span class="icon">
+                                    <img class="icon-white" src="assets/icons/timesheets.png" alt="">
+                                </span>
+                                <span class="nav-text">Settings</span>
+                            </a>
+                        </li>
+                    </ng-container>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

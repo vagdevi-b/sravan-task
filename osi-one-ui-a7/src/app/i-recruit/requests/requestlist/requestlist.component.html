@@ -1,0 +1,90 @@
+<!-- <div class="container">
+    <nav style="background-color:skyblue;">
+    <span style="color:cadetblue">iRecruiter ></span>
+      <button
+      style="color:cadetblue;
+      background-color: white;
+      border: white;"
+       (click)="onRequsionClick()" >
+       Requision
+      </button>
+    </nav>
+  </div>
+   -->
+
+<body>
+
+    <div class="c_breadcrumb c_breadcrumb__container container-fluid">
+        <nav>
+            <ol class="c_breadcrumb__list">
+                <li class="c_breadcrumb__item__title"><span>iRecruiter</span></li>
+                <!-- <li class="c_breadcrumb__item pl-0"><a href="#irecruit/dashboard"><span>Dashboard</span></a></li> -->
+                <li routerLinkActive="active" class="c_breadcrumb__item active"><a>Requests</a></li>
+                <li class="c_breadcrumb__item"><a href="#irecruit/candidates">Candidates</a></li>
+            </ol>
+        </nav>
+    </div>
+
+    <main id="dashboardItems" class="p-3">
+        <div class="card p-0">
+            <h5 class="card-title h3 p-3 mb-0">{{Requests}}</h5>
+            <hr class="m-0">
+            <div class="card-body p-3">
+                <div class="container-fluid">
+                    <div class="row align-items-center mb-3">
+                        <div class="col flex-grow-1">
+                            <button (click)='getAll();' [ngClass]="allButtonClass">All</button> &nbsp;&nbsp;
+                            <button (click)='getUnAssigned();' [ngClass]="unAssignedButtonClass">Unassigned</button> &nbsp;&nbsp;
+                            <button (click)='getLoggedInUserReq();' [ngClass]="myButtonClass">My Requistions</button>
+                        </div>
+                        <div class="col">
+                            <div class="container-fluid">
+                                <div class="row align-items-center justify-content-sm-center justify-content-lg-end">
+                                    <select (change)="getSearchType($event);" class="form-control ml-1 mr-1 w-25"
+                                    [(ngModel)]="selectedType">
+                                        <option value="">Select</option>
+                                        <option value="Request No">Request No</option>
+                                        <option value="Assigned To">Assigned To</option>
+                                        <option value="Priority">Priority</option>
+                                        <!-- <option value="CreatedBy">CreatedBy</option> -->
+                                        <!-- <option>Requesition Created Date range</option> -->
+                                    </select>
+                                    <input  placeholder="Search here" type="text"
+                                        [(ngModel)]="searchItem" class="form-control ml-1 mr-1 ng-pristine ng-valid ng-touched w-25">&nbsp;
+                                    <button (click)='getRequistionsBySearch();' class="btn btn-primary">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <table style="margin-left: 50px;">
+                    <thead style="background-color:steelblue;">
+                        <th>Request ID</th>
+                        <th>Job Title</th>
+                        <th>No.of Positions</th>
+                        <th>Job Details</th>
+                        <th>Submitted On</th>
+                        <th>Status</th>
+                        <th>action</th>
+                    </thead>
+                    <tbody style="margin-top: 10px;">
+                        <tr >
+                            <td>1</td>
+                            <td>Developer</td>
+                            <td>36</td>
+                            <td>angular,react</td>
+                            <td>26/09/2021</td>
+                            <td>shortlisted</td>
+                            <td>
+                                <button>Edit</button>&nbsp;
+                                <button>Delete</button>&nbsp;
+                                <button>View More</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> -->
+                <app-requesttable></app-requesttable>
+            </div>
+        </div>
+    </main>
+</body>

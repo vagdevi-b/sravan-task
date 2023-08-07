@@ -1,0 +1,39 @@
+table {
+    width: 100%;
+}
+table thead tr th:last-child, table tbody tr td:last-child {
+    text-align: center;
+}
+table tbody tr td:first-child, table thead tr th:first-child{
+    padding-left: 20px;
+}
+
+table thead tr th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+table tbody tr {
+    cursor: pointer;
+}
+
+table tbody tr td {
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+button.timeSheetsBtn{
+    font-weight: bold;
+    padding: 5px 17px;
+    border-radius: 20px;
+}
+
+.load_no_data_context{
+    text-align: center;
+    margin-top: 35%;
+    color: #575961;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: bold;
+}

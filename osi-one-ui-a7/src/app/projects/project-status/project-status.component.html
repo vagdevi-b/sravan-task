@@ -1,0 +1,171 @@
+<div class="mainpanel">
+  <h3 style="padding: 27px 0px 0px 12px;">Project Status:</h3>
+  <div class="tabcontent">
+    <div class="card">
+      <div class="table-responsive">
+        <fieldset [disabled]="isDisableProjActi">
+        <table class="table table-hover table-bordered">
+          <thead class="thead_bg text-center">
+            <tr>
+              <th width="15%">Milestone</th>
+              <th width="20%">Description</th>
+              <th width="11%">Planned Start Date</th>
+              <th width="11%">Planned End Date</th>
+              <th width="11%">Actual Start Date</th>
+              <th width="11%">Actual End Date</th>
+              <th width="5%">%Completed</th>
+              <th width="4%">Is Internal</th>
+
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-template ngFor let-projectStatus
+              [ngForOf]="projectStatusArray | paginate: { id: 'listing_pagination1',itemsPerPage: 5,currentPage: statusPage,totalItems: totalStatus }"
+              let-i="index">
+              <tr (dblclick)="onRowSelected(projectStatus)" [class.active]='projectStatus == isSelectedRow'
+                [hidden]="projectStatus.isDeleted" >
+                <!-- *ngFor='let projectStatus of projectStatusArray | paginate: { itemsPerPage:noOfItemsPerPage, currentPage:crntpage,totalItems: total }; let i = index ' [hidden]="projectStatus.isDeleted" -->
+
+                <td > <select name="milestone" class="form-control"
+                    [(ngModel)]="projectStatus.milestonename" (blur)="addedAccomplishedActivities()">
+                    <option disabled hidden [ngValue]="selectUndefinedOptionValue">Select Milestone</option>
+                    <option *ngFor="let milestone of milestones" [value]="milestone.name">
+                      {{milestone.name}}
+                    </option>
+                  </select> </td>
+                <!-- <td (click)="isRowClicked(projectStatus,i)">
+              <input type="text" class="form-control" name="milestonename{{i}}"  [(ngModel)]="projectStatus.milestonename" placeholder="Milestone/Activity name">
+            </td> -->
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <textarea name="Description" (blur)="addedAccomplishedActivities()" class="form-control" [(ngModel)]="projectStatus.description"
+                    rows="3"></textarea>
+                  <!--<input type="text" class="form-control" name="reason" [(ngModel)]="projectStatus.reason" placeholder="Description">-->
+                </td>
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <input type="text" (blur)="addedAccomplishedActivities()" class="form-control" bsDatepicker id="startDate" name="plannedStartDate"
+                    [(ngModel)]="projectStatus.startDate" [(bsValue)]="projectStatus.startDate"
+                    value="{{ projectStatus.startDate  | date:'yyyy-MM-dd'}}" placeholder="Planned Start Date"
+                    [bsConfig]="datePickerConfig">
+                </td>
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <input type="text" (blur)="addedAccomplishedActivities()" class="form-control" bsDatepicker id="endDate" name="plannedEndDate"
+                    [(ngModel)]="projectStatus.endDate" [(bsValue)]="projectStatus.endDate"
+                    value="{{ projectStatus.endDate  | date:'yyyy-MM-dd'}}" placeholder="Planned End Date"
+                    [bsConfig]="datePickerConfig" [minDate]="projectStatus.startDate">
+                </td>
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <input type="text" (blur)="addedAccomplishedActivities()" class="form-control" bsDatepicker id="actualSatrtDate" name="actualSatrtDate"
+                    [(ngModel)]="projectStatus.actualStartDate" [(bsValue)]="projectStatus.actualStartDate"
+                    value="{{ projectStatus.actualStartDate  | date:'yyyy-MM-dd'}}" placeholder="Actual Start Date"
+                    [bsConfig]="datePickerConfig">
+                </td>
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <input type="text" (blur)="addedAccomplishedActivities()" class="form-control" bsDatepicker id="actualEndDate" name="actualEndDate"
+                    [(ngModel)]="projectStatus.actualEndDate" placeholder="Actual End Date"
+                    [(bsValue)]="projectStatus.actualEndDate"
+                    value="{{ projectStatus.actualEndDate  | date:'yyyy-MM-dd'}}" [bsConfig]="datePickerConfig"
+                    [minDate]="projectStatus.actualStartDate">
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <input type="number" (blur)="addedAccomplishedActivities()" class="form-control" name="completed" [(ngModel)]="projectStatus.completed"
+                    placeholder="completed">
+                </td>
+                <td (click)="isRowClicked(projectStatus,i)">
+                  <input type="checkbox" name="isInternal" style="margin-top: 10px;margin-left: 15px;"
+                    [(ngModel)]="projectStatus.isInternal" [checked]="projectStatus.isInternal" />
+                </td>
+
+                <td class="tableColumnCenterAlign">
+                  <button [hidden]="i + (statusPage - 1) * noOfItemsPerPage !=projectStatusArray.length - 1" type="button" class="btn-link"
+                    (click)="addAnotherRow()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </td>
+                <td class="tableColumnCenterAlign">
+                  <button id="deleteEntry" *ngIf="isDisableDeleteBtn" type="button" class="btn-link"
+                    (click)="deleteRow(i,projectStatus.id)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+
+                </td>
+              </tr>
+              <tr *ngIf="projectStatus">
+                <td *ngIf="isResonTabDis && i == selectReasonIndex" colspan="5" style="border: none;">
+                  <div class="form-group" style="padding: 8px;">
+                    <label for="exampleInputEmail1">Remarks:<span class="star">*</span></label>
+                    <input type="email" class="form-control" [(ngModel)]="projectStatus.reason" maxlength="200"
+                      placeholder="Reason for deviation">
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+        </fieldset>
+        <div class="col-sm-12 row pb-3">
+          <div class="col-sm-10">
+            <pagination-controls id="listing_pagination1" autoHide="true" maxSize="8" previousLabel="" nextLabel=""
+              (pageChange)="statusPage = $event"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Employee List Modal -->
+<div class="modal fade" id="employeeList" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Employee List</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText"
+              placeholder="Enter Employee Name" maxlength="50" type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;"
+              (click)="filteredEmployeeSearch(searchedText)">Search</button>
+          </div>
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of employeeList ;let i=index"
+            (click)="selectedEmployee(users.fullName,users.employeeId,currentActivityIndex)">
+            <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm model -->
+<div class="modal fade" id="statusDeletemodel" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-outline-primary" (click)="accept('true')">
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

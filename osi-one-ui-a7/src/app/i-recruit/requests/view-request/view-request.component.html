@@ -1,0 +1,412 @@
+<div>
+
+  <body style="overflow-y: auto;">
+    <!-- <div class="c_breadcrumb c_breadcrumb__container container-fluid">
+      <nav>
+        <ol class="c_breadcrumb__list">
+          <li class="c_breadcrumb__item__title"><span>iRecruiter</span></li>
+          <li class="c_breadcrumb__item pl-0"><span>></span></li>
+          <li routerLinkActive="active" class="c_breadcrumb__item active"><a>Requests</a></li>
+          <li class="c_breadcrumb__item"><a href="#irecruit/candidates">Candidates</a></li>
+        </ol>
+      </nav>
+    </div> -->
+    <div class="p-3 c_master-body">
+      <form class="card p-0" [formGroup]="requistionForm">
+        <div class="modal-header" style="
+        background-color: #2B3A4E;
+        color: white;
+    ">
+        <h5 class="card-title h3 p-3 mb-0" style="color:white;font-size: x-large;">Requisition Form for {{reqData['Request Number']}}</h5>
+        <button type="button" (click)="closePopup();" class="close" data-dismiss="modal" aria-label="Close" style="color: white; font-size: 32px;">
+          ×
+        </button>
+      </div>
+        <div class="card-body">
+          <div class="container-fluid">
+            <div class="c_form-container">
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">BU / Functional</label>
+                    <select class="form-control" formControlName="bu">
+                      <option value="select">Select</option>
+                      <option [value]="bu">{{bu}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Billability<span>*</span></label>
+                    <div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="billability" value="Billable">
+                        <label class="form-check-label" for="inlineRadio1">Billable</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" formControlName="billability" value="Practice">
+                        <label class="form-check-label" for="inlineRadio2">Practice</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Priority</label>
+                    <input type="text" class="form-control" placeholder="Enter" formControlName="priority">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Client Name</label>
+                    <input type="text" class="form-control" placeholder="Enter" formControlName="clientName">
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Requistion Type</label>
+                    <select class="form-control" formControlName="requisitionType">
+                      <option value="select">Select Technology</option>
+                      <option [value]="requisitionType">{{requisitionType}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">No.of Positions</label>
+                    <input type="text" class="form-control w-75" placeholder="Enter" formControlName="noOfPos">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Job Title</label>
+                    <select class="form-control" formControlName="jobTitle">
+                      <option value="select">Select</option>
+                      <option [value]="jobTitle">{{jobTitle}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Position</label>
+                    <input type="text" class="form-control w-75" placeholder="Enter" formControlName="position">
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Job Location</label>
+                    <select class="form-control" formControlName="location">
+                      <option value="select">Select</option>
+                      <option [value]="location">{{location}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-12">
+                  <div class="c_form-inline">
+                    <label class="col-form-label align-self-start">Job Description</label>
+                    <!-- <textarea id="jobDet" class="form-control w-100" rows="3"></textarea> -->
+                    <div class="col-form-label align-self-start">
+                      <span *ngIf="!readMore" [innerHTML]="getJobbDesc()"></span>
+                      <span *ngIf="readMore" [innerHTML]="jobDesc"></span>
+                      <button *ngIf="!readMore" (click)='readMore = true' class="btn btn-light" id="myBtn">Read
+                        more</button>
+                      <button *ngIf="readMore" (click)='readMore = false' class="btn btn-light" id="myBtn">Read
+                        Less</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Job Type</label>
+                    <div>
+                      <input type="text" class="form-control" formControlName="jobType">
+                      <!-- <select class="form-control ng-untouched ng-pristine ng-valid" formControlName="jobType">
+                      <option value="select">Select</option>
+                      <option [value]="FullTime">Full Time</option>
+                      <option value="Contract">Contract</option>
+                      <option value="Associate ">Associate Trainees</option>
+                      <option value="Internship">Internship</option>
+                    </select> -->
+                      <!-- <button class="btn c_as-check">Full Time</button>
+                    <button class="btn c_as-check">Contact</button>
+                    <button class="btn c_as-check">Associate Trainees</button>
+                    <button class="btn c_as-check">Intership</button> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-8">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Exp Required</label>
+                    <div>
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col d-flex align-items-center">
+                            <span class="mr-2">Min</span>
+                            <input type="text" class="form-control" formControlName="minExp">
+                          </div>
+                          <div class="col d-flex align-items-center">
+                            <span class="mr-2">Max</span>
+                            <input type="text" class="form-control" formControlName="maxExp">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-3 pb-3">
+                <h5 class="mb-3">Mandatory Skills</h5>
+                <div class="c_badges c_badges-row">
+                  <div *ngFor="let skill of skillsarray">
+                    <div class="c_badge c_badge-outline">
+                      {{skill}}
+                    </div>
+                  </div>
+                </div>
+                <div class="row pb-3" *ngIf="isAdditionalSkills">
+                  <h5 class="mb-3">Additional Skills</h5>
+                  <div class="c_badges c_badges-row">
+                    <div *ngFor="let skill of additionalSkills">
+                      <div class="c_badge c_badge-outline">
+                        {{skill}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <!-- <div class="row pb-3">
+                <div class="col-sm-12 col-md-8">
+                  <div class="row">
+                    <div class="col-6">
+                      <select class="form-control">
+                        <option value="select">Select</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+              </div>
+              <!-- <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="c_form-inline">
+                  <label class="col-form-label">Salary Range</label>
+                  <div>
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col d-flex align-items-center">
+                          <span class="mr-2">Min</span>
+                          <input type="text" class="form-control">
+                        </div>
+                        <div class="col d-flex align-items-center">
+                          <span class="mr-2">Max</span>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <div class="c_form-inline">
+                  <label class="col-form-label">Currency</label>
+                  <div>
+                    <select class="form-control">
+                      <option value="select">Select</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">On-Boarding Date</label>
+                    <div>
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col d-flex align-items-center">
+                            <input type="date" class="form-control" formConrolName="startDate" [value]="startDate">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-3">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Target Date</label>
+                    <div>
+                      <input type="date" class="form-control" formConrolName="targetDate" [value]="targetDate">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Shift Timings</label>
+                    <div>
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col p-0">
+                            <select class="form-control" formControlName="shiftTimmings">
+                              <option value="select">Select</option>
+                              <option [value]="shiftTimmings">{{shiftTimmings}}</option>
+                            </select>
+                          </div>
+                          <!-- <div class="col">
+                          <input type="date" class="form-control">
+                        </div>
+                        <div class="text-center align-self-center p-0">
+                          <span>to</span>
+                        </div>
+                        <div class="col">
+                          <input type="date" class="form-control">
+                        </div> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Level &amp; Grade</label>
+                    <select class="form-control" formControlName="level">
+                      <option value="select">Select</option>
+                      <option [value]="level">{{level}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="row">
+              <div class="col-sm-12 col-md-8">
+                <div class="c_form-inline">
+                  <label class="col-form-label align-self-start">Interview Panel</label>
+                  <div>
+                    <div class="container-fluid">
+                      <div class="row align-items-center mb-2">
+                        <div class="col">
+                          <label>1st Level</label>
+                        </div>
+                        <div class="col">
+                          <label>Resource Name</label>
+                        </div>
+                        <div class="col">
+                          <select class="form-control">
+                            <option value="select">Select</option>
+                          </select>
+                        </div>
+                        <div class="col"></div>
+                      </div>
+                      <div class="row align-items-center mb-2">
+                        <div class="col">
+                          <label>2nd Level</label>
+                        </div>
+                        <div class="col">
+                          <label>Resource Name</label>
+                        </div>
+                        <div class="col">
+                          <select class="form-control">
+                            <option value="select">Select</option>
+                          </select>
+                        </div>
+                        <div class="col"></div>
+                      </div>
+                      <div class="row align-items-center mb-2">
+                        <div class="col">
+                          <label>3rd Level</label>
+                        </div>
+                        <div class="col">
+                          <label>Resource Name</label>
+                        </div>
+                        <div class="col">
+                          <select class="form-control">
+                            <option value="select">Select</option>
+                          </select>
+                        </div>
+                        <div class="col">
+                          <button class="btn btn-primary">+ Add More</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+              <div class="row">
+                <div class="col-sm-12 col-md-4">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Additional Rounds</label>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="clientInterviewReq"
+                        formControlName="clientInterviewReq" [value]="clientInterviewReq">
+                      <label class="form-check-label" for="defaultCheck1">
+                        Is Client Interview Required
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-12">
+                  <div class="c_form-inline">
+                    <label class="col-form-label">Approver Hierarchy</label>
+                    <div class="col-sm-12 col-md-4">
+                      <button class="btn border border-secondary">Approver 1 - {{approver1}}<p>On: {{approver1Date | date : 'MM/dd/yyyy' }}
+                        </p></button>
+                      </div>
+                      <div lass="col-sm-12 col-md-4">
+                      <button class="btn border border-secondary">Approver 2 - {{approver2}}<p>On: {{approver1Date | date : 'MM/dd/yyyy' }}</p>
+                      </button>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12 col-md-8">
+                  <br>
+                  <br>
+                  <label class="col-form-label">Any other specific information to note :</label>
+                  <div>
+                    <textarea class="w-100 form-control" rows="3" formControlName="additionalComments"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="row justify-content-center">
+                <!-- <a class="btn">Clone</a>
+              <button class="btn btn-light ml-2 mr-1">Reset</button>
+              <button class="btn btn-light ml-1 mr-2">Save</button>
+              <button class="btn btn-primary">Submit</button> -->
+                <!-- <a class="btn btn-light" href="#irecruit/requests">Back</a> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+      <div class="modal-dialog"  style="top: 40%; width: 15%;">
+        <!-- Modal content-->
+        <div class="modal-content bg-dark text-light">
+          <div class="modal-body">
+            <h3 style="color: white;">Loading ...</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</div>

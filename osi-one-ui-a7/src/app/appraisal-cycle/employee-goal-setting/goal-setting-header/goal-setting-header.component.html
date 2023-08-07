@@ -1,0 +1,86 @@
+<div class="team-goal-top-section pb-0 pt-2">
+  <div class="container-fluid">
+    <!-- Row Start -->
+    <div class="row">
+      <div class="col-12 col-md-3">
+        <div class="form-group">
+          <label for="empName">Name</label>
+          <span>{{employeeDetails?.employeeName}}</span> 
+        </div>
+      </div>
+      <div class="col-12 col-md-3">
+        <div class="form-group">
+          <label for="designation">Designation</label>
+          <span>{{employeeDetails?.designation }}</span>
+        </div>
+      </div>
+      <div class="col-12 col-md-3">
+        <div class="form-group">
+          <label for="reportingManager">Reporting Manager</label>
+          <span>{{employeeDetails?.supervisorName}}</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3 float-right rating-buttons" *ngIf="!isProjectResource">
+        <div class="row">
+          <div class="col-6 col-md-6  form-group mb-0">
+            <label for="overallRating">Overall Rating</label>
+          </div>
+          <div class="col-6 col-md-6 form-group mb-0">
+            <label for="overallRating">Self Rating</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 col-md-6 form-group">
+            <input type="button" (click)="onClickOverallRating()" class="btn btn-primary" id="overallRating" value="{{apprisalService?.empOverallRating ? (apprisalService.empOverallRating | number : '.0-2') : 0 }}">
+          </div>
+          <div class="col-6 col-md-6 form-group">
+            <input type="button" (click)="onClickSelfRating()" class="btn btn-primary" id="empSelfRating" value="{{apprisalService?.empSelfRating ? (apprisalService?.empSelfRating | number : '.0-2') : 0 }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-3">	
+          <div class="form-group">	
+            <label for="experience">Experience</label>	
+            <span>{{employeeDetails?.totalExp | number : '1.1-1'}} years</span>
+          </div>	
+        </div>
+
+      <div class="col-12 col-md-3">
+        <div class="form-group">
+          <label for="status">Status</label>
+          <span> {{apprisalService?.epmsStatus}}</span>
+        </div>
+      </div>
+     <!-- <div class="col-12 col-md-3">
+          <div class="form-group"
+          *ngIf="apprisalService?.epmsStatus==='EMP INITIATED' || apprisalService?.epmsStatus==='EMP ACCEPTED'"
+          >
+          
+            <label for="reportingManager">Pending</label>
+            <p>Accepted {{ apprisalService?.acceptedCount }} of {{ apprisalService?.totalCount }} </p>
+          </div>
+          <div class="form-group"
+          *ngIf="apprisalService?.epmsStatus==='EMP REVIEWED' || apprisalService?.epmsStatus==='RATING INITIATED'" 
+          >
+            <label for="reportingManager">Pending</label>
+            <p>Self ratings filled {{ apprisalService?.acceptedCount }} of {{ apprisalService?.totalCount }} </p>
+          </div>
+        </div> -->
+      <div class="col-12 col-md-9">
+      <!-- <div class="col-auto">
+          <input type="button" class="btn btn-primary float-right" value="Back" (click)="navigatepreviouspage()" />
+        </div> -->
+        <!-- <div class="col-auto">
+            <input type="button" class="btn btn-primary float-right" value="Weightage" (click)="changeWeightage()" />
+          </div> -->
+      </div>
+    </div>
+    <!-- Row End  -->
+  </div>
+</div>
+
+
+
+  

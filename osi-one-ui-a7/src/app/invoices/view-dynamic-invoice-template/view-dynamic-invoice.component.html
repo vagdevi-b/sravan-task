@@ -1,0 +1,697 @@
+<div class="v-height row-offcanvas row-offcanvas-left">
+  <div class="inner-wrapper">
+    <div class="sub-header border-bottom">
+      <div><h1>View Invoice Layout</h1></div>
+
+      <div (scroll)="scrollMe($event)"></div>
+    </div>
+
+    <div class="card-group">
+      <div class="card mb-3">
+        <div class="card-body ">
+          <div class="row">
+            <!-- Sidebar Body -->
+            <div class="col-md-2 section-nav ">
+              <div class="sticky-top">
+                <ul class="w3-ul text-right text-dark font-weight-bold ">
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('General')"
+                    >
+                      General
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('Invoice Columns')"
+                    >
+                      Invoice Columns
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('Invoice Groupings')"
+                    >
+                      Invoice Groupings
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('Combine Charges')"
+                    >
+                      Combine Charges
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('Others')"
+                    >
+                      Others
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('Logo Settings')"
+                    >
+                      Logo Settings
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('Footer Settings')"
+                    >
+                      Footer Settings
+                    </p>
+                  </ol>
+                  <ol>
+                    <p
+                      class="w3-bar-item w3-button sidebar"
+                      (click)="scrolling('PDF')"
+                    >
+                      Adobe Acrobat PDF Settings
+                    </p>
+                  </ol>
+                </ul>
+              </div>
+
+              <!-- End of sidebar actions -->
+            </div>
+
+            <!-- Content Body -->
+            <div class="col-md-9">
+              <form name="form" #f="ngForm" novalidate>
+                <div class="row">
+                  <div class="col-md-6 pt-3">
+                    <label class="heading" for="invoiceLayoutName" #general>
+                      <strong>Invoice Layout*</strong>
+                    </label>
+                    <input
+                      [disabled]="!isEditableField"
+                      type="text"
+                      id="invoiceLayoutName"
+                      [(ngModel)]="invoiceDetail.invoiceLayoutName"
+                      name="invoiceLayoutName"
+                      class="form-control select-v4 form-control-sm form-field-border"
+                      (focusout)="checkLayoutAvailablity()"
+                    />
+                    <div *ngIf="isLayoutNameExist">
+                      <label class="alert alert-danger"
+                        ><strong>Name already exists.</strong> Try with
+                        different name
+                      </label>
+                    </div>
+                    <div *ngIf="isLayoutNameEmpty">
+                      <label class="alert alert-danger"
+                        ><strong
+                          >Invoice Layout Name is mandatory.</strong
+                        ></label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-2 pt-3">
+                  <div class="col-sm-6">
+                    <input
+                     [disabled]="!isEditableField"
+                      type="checkbox"
+                      id="activeLayout"
+                      name="isActive"
+                      [(ngModel)]="invoiceDetail.isActive"
+                      checked
+                    />
+                    <label>
+                      <strong class="text-left" for="activeLayout">
+                        Active Invoice Layout</strong
+                      >
+                    </label>
+                  </div>
+<!-- 
+                  <div class="col-sm-6">
+                    <input
+                      [disabled]="!isEditableField"
+                      type="checkbox"
+                      name="isDefault"
+                      [(ngModel)]="invoiceDetail.isDefault"
+                      id="defalultLayout"
+                      checked
+                    />
+                    <label>
+                      <strong class="text-left" for="defalultLayout">
+                        Default Invoice Layout</strong
+                      >
+                    </label>
+                  </div> -->
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-md-12 pt-3 ">
+                    <label class="heading" #invoicColumns>
+                      <strong class="text-left">Invoice Columns</strong>
+                    </label>
+
+                    <div class="row grideClass">
+                      <div class="col-md-5">
+                        <div name="columnList">
+                          <span class="ColumnTemplatecss">Available </span>
+                          <select
+                            [ngModelOptions]="{ standalone: true }"
+                            id="multiselect"
+                            class="form-control ColumnFieldHeight"
+                            multiple
+                            [(ngModel)]="optedInAvailableInvoiceCols"
+                          >
+                            <option
+                              *ngFor="let column of availableInvoiceColumn"
+                              [value]="column"
+                              >{{ column.columnName }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-1 pt-5">
+                        <div class="operationButton pt-3">
+                          <br />
+                          <button
+                            type="button"
+                            id="js_right_Selected_1"
+                            (click)="
+                              addToExcludedRepeat(
+                                availableInvoiceColumn,
+                                optedInAvailableInvoiceCols,
+                                invoiceDetail.selectedInvoiceColumns,
+                                'cols'
+                              )
+                            "
+                            [disabled]="!isEditableField"
+                            class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-right"
+                            data-toggle="tooltip"
+                            title="Import Selected Column"
+                          ></button>
+                          <br />
+                          <button
+                            type="button"
+                            id="js_left_Selected_1"
+                            (click)="
+                              removeFromExcludedRepeat(
+                                availableInvoiceColumn,
+                                optedInSelectedInvoiceCols,
+                                invoiceDetail.selectedInvoiceColumns
+                              )
+                            "
+                            [disabled]="!isEditableField"
+                            class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-left"
+                            data-toggle="tooltip"
+                            title="Export Selected Column"
+                          ></button>
+                          <br />
+                        </div>
+                      </div>
+
+                      <div class="col-md-5">
+                        <div name="columnList">
+                          <span class="ColumnTemplatecss col-md-5 "
+                            >Selected Fields</span
+                          >
+                          <select
+                            [ngModelOptions]="{ standalone: true }"
+                            id="multiselect2"
+                            [(ngModel)]="optedInSelectedInvoiceCols"
+                            class="form-control ColumnFieldHeight"
+                            multiple
+                          >
+                            <option
+                              *ngFor="
+                                let column of invoiceDetail.selectedInvoiceColumns
+                              "
+                              [value]="column"
+                              title="{{ column.columnName }}"
+                              [ngClass]="{ selected: column.selectedOption }"
+                              >{{ column.columnName }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-1 pt-5">
+                        <div class="moveButtons pt-5">
+                          <div>
+                            <button
+                              type="button"
+                              class="btn btn-default btn-lg columnMovingButton btn-move-up"
+                              (click)="moveUp(optedInSelectedInvoiceCols,
+                                  invoiceDetail.selectedInvoiceColumns)"
+                                  [disabled]="!isEditableField"
+                              title="Move Up Column"
+                            ></button>
+                          </div>
+                          <br />
+                          <div>
+                            <button
+                              type="button"
+                              class="btn btn-default btn-lg columnMovingButton btn-move-down"
+                              (click)="moveDown(
+                                  optedInSelectedInvoiceCols,
+                                  invoiceDetail.selectedInvoiceColumns)"
+                                  [disabled]="!isEditableField"
+                              title="Move Down Column"
+                            ></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div (scroll)="scrollMe($event)">
+                  <div class="row">
+                    <div class="col-md-11"></div>
+                    <div class="col-md-1">
+                      <div
+                        class="moveToTop close"
+                        *ngIf="scrlToTop"
+                        style="position:fixed"
+                        data-toggle="tooltip"
+                        title="scroll to top"
+                      >
+                        <button
+                        
+                          class="btn btn-light  ml-5"
+                          (click)="scrollToTop()"
+                        >
+                          <i class="fa fa-arrow-up"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-md-12 pt-3 ">
+                    <label class="heading" #invoiceGrp>
+                      <strong class="text-left">Invoice Groupings</strong>
+                    </label>
+
+                    <div class="row grideClass">
+                      <div class="col-md-5 ">
+                        <div name="columnList">
+                          <span class="ColumnTemplatecss">Available</span>
+                          <select
+                            [ngModelOptions]="{ standalone: true }"
+                            id="multiselect"
+                            class="form-control ColumnFieldHeight"
+                            multiple
+                            [(ngModel)]="optedInAvailableInvoiceGrps"
+                          >
+                            <option
+                              *ngFor="let column of availableInvoiceGrpings"
+                              [value]="column"
+                              >{{ column.columnName }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-1 pt-5">
+                        <div class="operationButton pt-3">
+                          <br />
+                          <button
+                            type="button"
+                            [disabled]="!isEditableField"
+                            id="js_right_Selected_1"
+                            (click)="
+                              addToExcludedRepeat(
+                                availableInvoiceGrpings,
+                                optedInAvailableInvoiceGrps,
+                                invoiceDetail.selectedGroupingColumns,
+                                'grp'
+                              )
+                            "
+                            class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-right"
+                            data-toggle="tooltip"
+                            title="Import Selected Column"
+                          ></button>
+                          <br />
+                          <button
+                            type="button"
+                            id="js_left_Selected_1"
+                            [disabled]="!isEditableField"
+                            (click)="
+                              removeFromExcludedRepeat(
+                                availableInvoiceGrpings,
+                                optedInSelectedInvoiceGrps,
+                                invoiceDetail.selectedGroupingColumns
+                              )
+                            "
+                            class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-left"
+                            data-toggle="tooltip"
+                            title="Export Selected Column"
+                          ></button>
+                          <br />
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <div name="columnList">
+                          <span class="ColumnTemplatecss col-md-5"
+                            >Selected Fields</span
+                          >
+                          <select
+                            [ngModelOptions]="{ standalone: true }"
+                            id="multiselect2"
+                            [(ngModel)]="optedInSelectedInvoiceGrps"
+                            class="form-control ColumnFieldHeight"
+                            multiple
+                          >
+                            <option value="" disabled selected
+                              >Selected Fields</option
+                            >
+                            <option
+                              *ngFor="
+                                let column of invoiceDetail.selectedGroupingColumns
+                              "
+                              [value]="column"
+                              title="{{ column.columnName }}"
+                              [ngClass]="{ selected: column.selectedOption }"
+                              >{{ column.columnName }}</option
+                            >
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-1 pt-5">
+                        <div class="moveButtons pt-5 ">
+                          <div>
+                            <button
+                              type="button"
+                              [disabled]="!isEditableField"
+                              class="btn btn-default btn-lg columnMovingButton btn-move-up"
+                              (click)="
+                                moveUp(
+                                  optedInSelectedInvoiceGrps,
+                                  invoiceDetail.selectedGroupingColumns
+                                )
+                              "
+                              title="Move Up Column"
+                            ></button>
+                          </div>
+                          <br />
+                          <div>
+                            <button
+                              type="button"
+                              [disabled]="!isEditableField"
+                              class="btn btn-default btn-lg columnMovingButton btn-move-down"
+                              (click)="
+                                moveDown(
+                                  optedInSelectedInvoiceGrps,
+                                  invoiceDetail.selectedGroupingColumns
+                                )
+                              "
+                              title="Move Down Column"
+                            ></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div id="combineChrge" class="col-md-12 pt-3">
+                    <label for="" class="heading" #combineChrges>
+                      <strong>Combine Charges</strong>
+                    </label>
+                    <p class="font-italic font-weight-bold">
+                      This feature let you combine multiple charges of same
+                      service or expence item into a single line item.
+                    </p>
+                  </div>
+                  <div class="col-md-6">
+                    <p class="font-weight-normal">
+                      Which type of charged should be combined.
+                    </p>
+                    <div>
+                      <input
+                      [disabled]="!isEditableField"
+                        type="checkbox"
+                        name="isCombineExpenses"
+                        [(ngModel)]="invoiceDetail.isCombineExpenses"
+                        checked
+                      />
+                      <label class="text-left">
+                        Combine expence item charges
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                      [disabled]="!isEditableField"
+                        type="checkbox"
+                        name="isCombineServices"
+                        [(ngModel)]="invoiceDetail.isCombineServices"
+                        checked
+                      />
+                      <label class="text-left"> Combine service charges </label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="font-weight-normal">
+                      Create a new combined charge for each.
+                    </label>
+                    <div>
+                      <input
+                      [disabled]="!isEditableField"
+                        type="checkbox"
+                        [ngModelOptions]="{ standalone: true }"
+                        name="NewCombinedCharge"
+                        [(ngModel)]="isNewCombinedCharge"
+                      />
+                      <label>
+                        <select
+                          name="combineChargeBy"
+                          [disabled]="!isEditableField"
+                          style="width: 300%;"
+                          [(ngModel)]="invoiceDetail.combineChargeBy"
+                          class="form-control"
+                          selected
+                        >
+                          
+                          <option
+                            [value]="item"
+                            *ngFor="let item of combinedChargesForEach"
+                            >{{ item }}</option
+                          >
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-md-12 pt-3">
+                    <label class="heading" for="other" #others>
+                      <strong id="other">Others</strong>
+                    </label>
+                  </div>
+                  <div class="col-md-6">
+                    <div>
+                      <label class="text-left">
+                        <p>Layout of "TO" address</p>
+                      </label>
+                    </div>
+                    <div>
+                      <select
+                      [disabled]="!isEditableField"
+                        class="form-control"
+                        name="toAdressLayout"
+                        [(ngModel)]="invoiceDetail.toAdressLayout"
+                      >
+                        <option
+                          [value]="item"
+                          *ngFor="let item of toAdressLayout"
+                        >
+                          {{ item }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mt-2">
+                      <p>"From" mailing address for invoices</p>
+
+                      <div>
+                      
+                        <input  
+                        [disabled]="!isEditableField"
+                        class="form-control"
+                        name="frmAdrsList"
+                        [(ngModel)]="orgName"
+                        [ngModelOptions]="{ standalone: true }"/>
+                      </div>
+
+                      <textarea
+                      [disabled]="!isEditableField"
+                        name="fromAddress"
+                        [(ngModel)]="invoiceDetail.fromAddress"
+                        class="form-control"
+                      >
+                      </textarea>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div>
+                      <label class="text-left">
+                        <p>"From" email address for invoices</p>
+                        <p></p>
+                      </label>
+                    </div>
+                    <div>
+                      <input
+                      [disabled]="!isEditableField"
+                        class="form-control"
+                        name="fromEmail"
+                        [(ngModel)]="invoiceDetail.fromEmail"
+                      />
+                    </div>
+                    <div class="mt-2">
+                      <p>Additional text or HTML print on the invoice</p>
+
+                      <textarea
+                        name="additionalText"
+                        [(ngModel)]="invoiceDetail.additionalText"
+                        class="form-control"
+                        [disabled]="!isEditableField"
+                      >
+                      </textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-md-12 pt-3">
+                    <label class="heading" for="logoSetting" #logoSetting>
+                      <strong>Logo Setting</strong>
+                    </label>
+                    <p class="mb-0">Invoice Logo<small> (By default OSI Digital logo is taken.For custom logo, please upload.)</small></p>
+                    <label for="headerLogo" class="custom-file-upload">
+                      <i class="fa fa-cloud-upload"></i> Custom Upload</label
+                    >
+                    <input
+                    [disabled]="!isEditableField"
+                      #headerFile
+                      id="headerLogo"
+                      type="file"
+                      name="headerLogo"
+                      (change)="detectFiles($event, 'header')"
+                    />
+                    <span *ngIf="invoiceDetail.headerLogoFileName != ''">
+                        <label class="font-weight-normal font-italic"
+                          ><strong>{{ invoiceDetail.headerLogoFileName }}</strong>
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                       
+                        <span> <i   class="fa fa-times"></i></span>
+                      </span>
+                    <p class="font-weight-light">
+                      Select browser to choose an image to upload
+                      JPEG,JPG,PNG
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-md-12">
+                    <label class="heading" for="footerSetting" #footerSetting>
+                      <strong>Footer Setting</strong>
+                    </label>
+                    <p class="mb-0">Invoice footer</p>
+                    <label for="footerLogo" class="custom-file-upload">
+                      <i class="fa fa-cloud-upload"></i> Custom Upload</label
+                    >
+                    <input
+                    [disabled]="!isEditableField"
+                      #footerFile
+                      id="footerLogo"
+                      type="file"
+                      name="footerLogo"
+                      (change)="detectFiles($event, 'footer')"
+                    />
+                    <span *ngIf="invoiceDetail.footerLogoFileName != ''">
+                        <label class="font-weight-normal font-italic"
+                          ><strong>{{ invoiceDetail.footerLogoFileName }}</strong>
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span>
+                          <i
+                            class="fa fa-times"
+                          ></i
+                        ></span>
+                      </span>
+                    <p class="font-weight-light">
+                      Select browser to choose an image to upload
+                      JPEG,JPG,PNG
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row mt-2">
+                  <div class="col-md-12">
+                    <label class="heading" for="pdfSetting" #pdfSetting>
+                      <strong>Adobe Acrobat PDF Setting</strong>
+                    </label>
+                    <p class="mb-0">Page Orientation</p>
+
+
+
+                    <div class="form-check pl-0">
+                      <input
+                    [disabled]="!isEditableField"
+                      type="radio"
+                      pageOrientation="pdfLayout"
+                      id="pdfSetting"
+                      class="select-v4 mr-2 form-field-border"
+                      value="P"
+                      name="pageOrientation"
+                      [(ngModel)]="invoiceDetail.pageOrientation"
+                    />
+                      <label class="form-check-label" for="flexRadioDefault1">
+                        Potrait
+                      </label>
+                    </div>
+                    
+                   
+
+                    <div class="form-check pl-0">
+                      <input
+                    [disabled]="!isEditableField"
+                      type="radio"
+                      name="pageOrientation"
+                      id="pdfSetting"
+                      class="select-v4 mr-2 form-field-border"
+                      value="L"
+                      [(ngModel)]="invoiceDetail.pageOrientation"
+                    />
+                      <label class="form-check-label" for="flexRadioDefault1">
+                        Landscape
+                      </label>
+                    </div>
+                    
+                    
+                  </div>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-md-11">
+                   <button class="btn btn-secondary" (click)="onCancel()">Back</button>
+                  </div>
+                  <div class="col-md-1 text-right"></div>
+                </div>
+              </form>
+            </div>
+            <!-- End of content body -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

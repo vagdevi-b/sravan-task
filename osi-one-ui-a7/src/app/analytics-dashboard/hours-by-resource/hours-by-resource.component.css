@@ -1,0 +1,89 @@
+select {
+    width: 100%;
+}
+
+.ag-theme-balham {
+    height: 500px !important;
+    font-size: 10px !important;
+}
+
+label {
+  font-size: 10px;
+}
+
+select.form-control {
+  font-size: 11px;
+}
+
+.lastRefresh {
+  float: right;
+  margin-top: 0.2%;
+}
+
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+   
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .overlay {
+    background: #ffffff;
+    color: #666666;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 5000;
+    top: 0;
+    left: 0;
+    float: left;
+    text-align: center;
+    padding-top: 25%;
+    opacity: .80;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+  }
+  .error-msg{
+    display: inline-block;
+      width: 100%;
+      text-align: center;
+      color: red;
+  }
+  .topspace{
+    margin-top:15px;
+  }
+  
+  
+.btn .btn-default {
+  /* height: 80%; */
+  background-color: #ffffff !important;
+  color: black !important;
+}
+
+.card {
+  font-family: 'Poppins', sans-serif;
+}
+
+.card-header {
+  background: #ffffff !important;
+  font-size: 18pt !important;
+  color: black;
+}

@@ -1,0 +1,106 @@
+<div>
+  <div class="sub-header bb-color">
+    <h1>Talent Management</h1>
+  </div>
+  <div class="container-fluid build-form-container">
+    <div class="row">
+      <div class="col-sm-12 col-md-5">
+        <form
+            role="form"
+            name="goalsStatusUpdateForm"
+            #goalsStatusUpdateForm="ngForm"
+            (ngSubmit)="updateStatus()"
+            novalidate>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label for="employeeSearch">Employee</label>
+                <input type="text"
+                       class="form-control"
+                       id="employeeSearch"
+                       name="employeeSearch"
+                       [(ngModel)]="employeeName"
+                       (change)="resetForm(inputControls.EMPLOYEE)"
+                       employeeSearchInput
+                       (employeeSelected)="employeeSelected($event)"
+                       required>
+              </div>
+              <div class="form-group">
+                <label for="appraisalCycle">Appraisal Year</label>
+                <select name="appraisalCycle"
+                        id="appraisalCycle"
+                        class="form-control"
+                        [(ngModel)]="appraisalCycleId"
+                        (change)="getReviewCycles()"
+                        required>
+                  <option *ngFor="let eachAppraisalCycle of appraisalCycles" [ngValue]="eachAppraisalCycle.epmsHdrId">
+                    {{ eachAppraisalCycle.year }} ({{ eachAppraisalCycle.frequency }})
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reviewCycle">Review Cycle</label>
+                <select name="reviewCycle"
+                        id="reviewCycle"
+                        class="form-control"
+                        [(ngModel)]="reviewCycleId"
+                        (change)="getEmployeeGoalsSummary()"
+                        required>
+                  <option *ngFor="let eachReviewCycle of reviewCycles" [ngValue]="eachReviewCycle.epmsHdrId">
+                    {{ eachReviewCycle.frequency }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reviewProject">Project</label>
+                <select name="reviewProject"
+                        id="reviewProject"
+                        class="form-control"
+                        [(ngModel)]="selectedProjectGoalsSummary"
+                        (change)="projectSelected()"
+                        required>
+                  <option *ngFor="let eachProjectSummary of goalsSummary" [ngValue]="eachProjectSummary">
+                    {{ eachProjectSummary.projectName || eachProjectSummary.cateogryName }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reviewStatus">Status</label>
+                <select name="reviewStatus"
+                        id="reviewStatus"
+                        class="form-control"
+                        [(ngModel)]="selectedProjectStatus"
+                        (change)="projectStatusChanged()"
+                        required>
+                  <option *ngFor="let eachStatus of statusList" [ngValue]="eachStatus">
+                    {{ eachStatus }}
+                  </option>
+                </select>
+              </div>
+              <div class="text-right">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="showHistory()"
+                        [title]="!goalsStatusUpdateForm.valid ? 'Please select a project to view history' : ''"
+                        [disabled]="!goalsStatusUpdateForm.valid">
+                  Show History
+                </button>
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        (click)="resetForm(inputControls.ALL)">
+                  Reset
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="!goalsStatusUpdateForm.valid || !statusUpdated">
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

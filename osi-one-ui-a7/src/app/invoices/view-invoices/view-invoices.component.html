@@ -1,0 +1,173 @@
+<div class="v-height">
+  <div class="view-expense-section">
+
+    <div class="sub-header clearfix">
+      <div class="row">
+        <div class="col-md-8">
+          <h1 class="pull-left">View Invoices</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="expense-date-section">
+      <form [formGroup]="invoicesForm">
+
+        <div class="row">
+          <div class="col-sm-4 col-md-4">
+            <div id="dateselectiondiv" class="form-group">
+              <!-- <label>Select Project</label> -->
+              <select class="form-control" formControlName="project">
+                <option hidden disabled value="">- Select Project -</option>
+                <option *ngFor="let project of projects" value={{project.id}}>
+                  {{project.name}}
+                </option>
+              </select>
+            </div>
+
+          </div>
+          <div class="col-sm-4 col-md-4">
+            <div id="dateselectiondiv" class="form-group">
+              <!-- <label>Select Project</label> -->
+              <select class="form-control" formControlName="catagory">
+                <option hidden disabled value="">- Select -</option>
+                <option value="1">Invoices</option>
+                <option value="2">Documents</option>
+              </select>
+            </div>
+
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-primary" (click)="searchInvoicesList()">Search</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="row">
+      <div class="col-md-12" *ngIf="activeInvoice">
+
+        <ag-grid-angular #agGrid style="width: 100%; height: 340px;" id="myGrid" class="ag-theme-balham"
+          [columnDefs]="columnDefs" [rowData]="rowData" enableColResize enableSorting enableFilter groupHeaders
+          [paginationPageSize]="paginationPageSize" suppressMovableColumns="true" pagination="true"
+          (gridReady)="onGridReady($event)" (cellClicked)='onCellClicked($event)'>
+        </ag-grid-angular>
+
+      </div>
+
+      <div class="col-md-12" *ngIf="activeDocumnets">
+
+        <div class='table-responsive table-shadow border-0 mb-3'>
+          <table class="table table-hover table-bordered">
+            <thead class="thead_bg">
+              <tr style="display:table;width: 100%">
+
+                <th style="width:15%">Document Title</th>
+                <th style="width:15%">Document Name</th>
+
+                <th style="width:10%">Document Type</th>
+                <th style="width:8%">Version</th>
+                <th style="width:9%">Uploaded By</th>
+                <th style="width:9%">Uploaded Date</th>
+                <th style="width:9%">Action</th>
+              </tr>
+            </thead>
+            <tbody style="height: 300px;overflow: auto;display: block;">
+              <tr
+                *ngFor="let attachment of attachmentLists | paginate: { itemsPerPage: cnt, currentPage: page, id:'first' };let i = index"
+                style="display:table;width: 100%">
+                <td style="width:15%">
+                  <!-- <span style="width: 280px;">{{attachment.documentTitle}}</span> -->
+                  <span style="width: 100%;word-break: break-all;"
+                    title="{{attachment.documentTitle}}">{{attachment.documentTitle}}</span>
+                </td>
+                <td style="width:15%">
+                  <!-- <span style="width: 280px;">{{attachment.originalFileName}}</span> -->
+                  <span style="width: 100%;word-break: break-all;"
+                    title="{{attachment.originalFileName}}">{{attachment.originalFileName}}</span>
+                </td>
+                <td style="width:10%">{{attachment.attachmentType}}</td>
+                <td style="width:8%">{{attachment.version}}</td>
+                <td style="width:9%">{{attachment.userName}}</td>
+                <td style="width:9%">{{attachment.creationDate}}</td>
+                <td style="width:9%;padding-left: 15px;">
+                  <a id='resume{{i}}' style="display:none;">></a>
+                  <span class="glyphicon glyphicon-download-alt" role="button" (click)="download(attachment, i)"></span>
+                </td>
+              </tr>
+
+              <!-- <tr *ngIf="attachmentLists.length == 0 ">
+                <td colspan="7" class="border-0 text-center">
+                  <div class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+                    <div class="no-records-found-wrap" >
+                      <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records"
+                          class="icon-27"></figure>
+                      <h5 class="text-center mt-2 m-0">No Records Found</h5>
+                    </div>
+                  </div>
+                </td>
+              </tr> -->
+
+            </tbody>
+          </table>
+
+
+
+          <!--Including the pagination control.-->
+          <div class="text-right">
+            <pagination-controls (pageChange)="page = $event" id='first'></pagination-controls>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" role="dialog" id="previewModal" aria-labelledby="confirmationModal">
+      <div class="modal-dialog" style="max-width: 1000px; margin: 1.75rem auto;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close modelCloseButton" (click)="closePreviewPopup()">&times;</button>
+            <h5 class="modal-title">Preview</h5>
+          </div>
+          <div class="modal-body">
+            <!-- <embed #pdf src="{{invoicePreviewPath}}" type="application/pdf" style="width: 100%; height:500px"> -->
+            <iframe #pdf [src]="newInvoicePreviewPath" type="application/pdf" style="width: 100%; height:500px">
+            </iframe>
+            <div class="pt-2">
+              <button type="button" class="btn btn-outline-secondary pull-left"
+                (click)="closePreviewPopup()">Cancel</button>
+              <!-- <button type="button" class="btn btn-outline-primary pull-right" ng-click="vm.submitInvoice()" data-dismiss="modal">Submit For Approval</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" role="dialog" id="attachmentDeleteConfirmationModal" role="dialog"
+      aria-labelledby="attachmentDeleteConfirmationModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmation</h5>
+            <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                Do you really want to delete the document?
+                <br>
+                <br>
+              </div>
+            </div>
+            <div class="col-lg-6 float-right row">
+              <button type="button" class="btn btn-defaul tsm-default-btn" data-dismiss="modal">No</button>&nbsp;
+              <button type="button" class="btn tsm-primary-btn btn-primary" (click)="confirmedDeleteAttachment();"
+                data-dismiss="modal">Yes</button>
+            </div>
+            <br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

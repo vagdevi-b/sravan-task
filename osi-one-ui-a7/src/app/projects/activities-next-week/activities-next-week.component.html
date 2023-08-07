@@ -1,0 +1,210 @@
+<div class="mainpanel">
+  <h4>{{pageTitle}}</h4>
+  <div class="tabcontent">
+    <div class="card">
+      <div class="table-responsive">
+        <fieldset [disabled]="isDisableProjActi">
+        <table class="table table-hover table-bordered">
+          <thead class="thead_bg text-center">
+            <tr>
+              <th width="30%">Activities</th>
+              <th width="20%">Dependency</th>
+              <th width="20%">AssignedTo</th>
+              <th class="centeralign">Is Internal</th>
+              <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let activity of activities | paginate: { id: 'nextWeek_pagination',itemsPerPage: 5,currentPage: nextWeekPage,totalItems: nextWeekTotal }; let i = index"  (click)="isRowClicked(activity)"
+          [hidden]="activity.isDeleted">
+            <td>
+                <input type="text" class="form-control" maxlength="1000" name="Activity{{i}}" (blur)="addedActivities()" [(ngModel)]="activity.activityName" placeholder="Activity">
+            </td>
+            <td>
+                <input type="text" class="form-control" maxlength="300" name="Dependency{{i}}" (blur)="addedActivities()" [(ngModel)]="activity.activityDependency" placeholder="Dependency">
+            </td>
+            <td class="tableColumnCenterAlign">
+              <div class="userlist">
+                <span *ngFor="let employee of activity.assignedToEmployees;let j=index" title="{{employee.name}}" class="username">
+                  {{ employee.name | slice:0:20 }}{{employee.name.length > 20 ? '...' : ''}}
+                  <span class="glyphicon glyphicon-remove" (click)="removeAddedEmployees(i,j)" style="float: right !important;margin-right: 5px;"></span>                  
+                </span>
+              </div>
+
+              <!--  <tag-input [ngModel]="activity.assignedTo"></tag-input>
+              <input type="text" class="form-control" name="fullName{{i}}" (blur)="getEmployeeList($event)" [(ngModel)]="fullName" placeholder="User Name">-->
+              <button type="button" class="btn-link" (click)="openEmployeeSelection(i)"><span class="glyphicon glyphicon-plus"></span></button>
+            </td>
+            <td class="tableColumnCenterAlign">
+              <input type="checkbox" [(ngModel)]="activity.isInternal" [checked]="activity.isInternal"/>
+            </td>
+            <td class="tableColumnCenterAlign">
+              <button type="button" class="btn-link" [hidden]="(i+((nextWeekPage-1) * noOfItemsPerPage)) != activities.length-1" (click)="addAnotherRow()">
+                <span class="glyphicon glyphicon-plus"></span>
+              </button>
+            </td>
+            <td class="tableColumnCenterAlign">
+              <button id="deleteEntry" *ngIf="isDisableDeleteBtn" type="button" class="btn-link" (click)="deleteRow(i,activity.id)">
+                <span class="glyphicon glyphicon-trash"></span>
+              </button>
+             
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        </fieldset>
+        <div class="col-sm-12 row pb-3">
+          <div class="col-sm-10">
+            <pagination-controls  id="nextWeek_pagination" autoHide="true" maxSize="8" previousLabel="" nextLabel=""  (pageChange)="nextWeekPage = $event"></pagination-controls>
+            <!-- <pagination-controls (pageChange)="crntpage = $event" autoHide="true" maxSize="8" previousLabel="" nextLabel="" (click)="selectedRow()"></pagination-controls> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Employee List Modal -->
+<div class="modal fade" id="nextWeekEmployeeList" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Employee List</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>          
+        </div>
+
+
+        <div class="row" style="margin-left: 17px;margin-top: 10px;">
+          <div class="col-sm-2">
+            <div class="custom-control custom-checkbox mr-sm-2">
+              <input type="checkbox" class="custom-control-input" id="nextWeek"  [(ngModel)]="isChecked">
+              <label class="custom-control-label" for="nextWeek">View All</label>
+            </div>
+          </div>
+         
+          <div *ngIf="isChecked" class="col-sm-3" >Employee Name</div>
+          <div *ngIf="isChecked" class="col-sm-4">
+            <input
+            class="form-control mail"
+            id="Employee Name"
+            [(ngModel)]="searchedText"
+            placeholder="Enter Employee Name"
+            maxlength="50"
+            type="text"
+          />
+          </div>
+          <div *ngIf="isChecked" class="col-sm-2">
+            <div class="col-auto my-1">
+              <button type="submit"  (click)="filteredEmployeeSearch(searchedText)" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+        </div>
+       
+        <div class="container" *ngIf="isChecked && employeeList" [ngClass]="{'enable-scroller' : employeeList.length > 10}">
+          <ul
+            class="list-group"
+            *ngFor="let users of employeeList; let i = index"
+            (click)="
+              selectedEmployee(
+                users.fullName,
+                users.employeeId,
+                currentActivityIndex
+              )
+            "
+          >
+            <li class="list-group-item" [value]="users.fullName" >
+              {{ users.fullName }}
+            </li>
+          </ul>
+        </div>
+  
+  
+        <div class="modal-body" *ngIf="!isChecked && AssignedUsersforproject" [ngClass]="{'enable-scroller' : AssignedUsersforproject.length > 10}">
+          <div class="form-group row">
+            <!-- <div class="col-lg-4 text-align-right">
+              <label for="Employee Name" class="control-label"
+                >Employee Name</label
+              >
+            </div> -->
+          </div>
+          <div  class="container">
+            <ul
+              class="list-group"
+              *ngFor="let users of AssignedUsersforproject; let i = index"
+              (click)="
+                selectedEmployee(
+                  users.employeeName,
+                  users.employeeId,
+                  currentActivityIndex
+                )
+              "
+            >
+              <li
+                class="list-group-item"
+                [value]="users.employeeName"
+                *ngIf="i < 10"
+              >
+                <div class="row">
+                  <div class="col-sm-6 col-md-3">
+                    <span>{{ users.employeeName }}</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        </div>
+        </div>
+</div>
+
+        <div class="modal fade" id="nextWeekDeletemodel" role="dialog">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Confirm</h4>
+                <button
+                  type="button"
+                  class="close"
+                  aria-label="Close"
+                  data-dismiss="modal"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                  NO
+                </button>
+                <button type="button" class="btn btn-outline-primary" (click)="accept('true')">
+                  YES
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- <div class="modal-body">
+          <div class="form-group row">
+            <div class="col-lg-4 text-align-right">
+              <label for="Employee Name" class="control-label">Employee Name</label>
+            </div>
+            <div class="col-lg-5">
+              <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText" placeholder="Enter Employee Name" maxlength="50"
+                type="text">
+            </div>
+            <div class="col-lg-3">
+              <button class="btn btn-outline-secondary" style="float: right;" (click)="filteredEmployeeSearch(searchedText)">Search</button>
+            </div>
+          </div>
+          <div class="container">
+            <ul class="list-group" *ngFor="let users of employeeList ;let i=index" (click)="selectedEmployee(users.fullName,users.employeeId,currentActivityIndex)">
+              <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>     -->

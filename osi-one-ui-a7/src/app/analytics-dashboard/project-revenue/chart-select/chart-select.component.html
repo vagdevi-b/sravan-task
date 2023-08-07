@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="two-selects">
+
+      <div class="select-wrapper">
+        <!--selecting data type-->
+        <!-- <label for="data-type-select">Projects by Revenue&nbsp;</label> -->
+        <select name="data-type" id="data-type-select" class="form-control rounded-0 form-control-sm form-field-border" #dataSelect
+          (change)="onFilterChange()">
+          <!--<option value="">&#45;&#45;Select Type of Data&#45;&#45;</option>-->
+          <option value="top_5">Top 5</option>
+          <option value="top_10">Top 10</option>
+          <option value="bottom_5_valid">Bottom 5 Profitable</option>
+          <option value="bottom_10_valid">Bottom 10 Profitable</option>
+          <option value="bottom_5">Bottom 5</option>
+          <option value="bottom_10">Bottom 10</option>
+          <option value="top_5_valid,bottom_5_valid">Top 5 & Bottom 5 Profitable</option>
+          <option value="top_5,bottom_5">Top 5 & Bottom 5</option>
+
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

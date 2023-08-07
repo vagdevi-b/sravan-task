@@ -1,0 +1,238 @@
+<div class="v-height bg-white">
+  <div class="inner-wrapper">
+    <section class="forms">
+      <div class="row">
+        <div class="col-md-12 text-center" [hidden]='!statusAlert'>
+          <ng-container *ngIf="statusAlert && message==='Balance Adjusted Successfully'; then thenTemplate; else elseTemplate"></ng-container>
+          <ng-template #thenTemplate>
+            <div class="alert alert-success  ">
+              {{message}}
+            </div>
+          </ng-template>
+          <ng-template #elseTemplate>
+            <div class="alert alert-danger  ">
+              {{message}}
+            </div>
+          </ng-template>
+
+        </div>
+      </div>
+
+      <div class="sub-header border-bottom">
+        <h1>Leave Adjustment</h1>
+      </div>
+
+      <div class="container-fluid">
+
+        <form #f='ngForm'>
+          <div class="row pt-2" role="form">
+            <div class="col-lg-3">
+              <input class="form-control " name="employeeNumber" [(ngModel)]="employeeNumber" placeholder="Employee Number" onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'Employee Number'" type="text">
+            </div>
+            <div class="col-lg-3">
+              <input class="form-control " name="firstName" [(ngModel)]="firstName" placeholder="First Name" onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'First Name'" type="text">
+            </div>
+            <div class="col-lg-3">
+              <input class="form-control " name="lastName" [(ngModel)]="lastName" placeholder="Last Name" onfocus="this.placeholder = ''"
+                onblur="this.placeholder = 'Last Name'" type="text">
+            </div>
+            <div class="col-lg-3">
+              <button class="btn btn-primary mr-2" (click)="searchLeaveHistory(f.value)">Search</button>
+              <button class="btn btn-outline-primary" type="button" (click)="clearSearch()">Clear</button>
+            </div>
+
+          </div>
+        </form>
+
+
+      </div>
+    </section>
+    <section class="content">
+      <div class="table-responsive leaveHistory">
+        <table class="table table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>Employee Number</th>
+              <th>Employee Name</th>
+              <th>Leave Balance</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let items of leaveHistory  |paginate: {id:'leaveHistoryPg', itemsPerPage:8, currentPage: crntpage}  ;" (click)="isRowClicked(items)"
+              [class.active]='items == selectedRow'>
+              <td>{{items.employeeNumber}}</td>
+              <td>{{items.employeeName}}</td>
+              <td>{{items.noOfHours}}</td>
+
+            </tr>
+          </tbody>
+
+        </table>
+        <div class="col-sm-12 row pb-2">
+          <div class="col-sm-10">
+            <pagination-controls id="leaveHistoryPg" (pageChange)="crntpage = $event" autoHide="true" maxSize="8" previousLabel="" nextLabel=""
+              (click)="deselectedRow()"></pagination-controls>
+
+          </div>
+
+          <div class="col-sm-2 adjust-crud-op">
+
+            <i style="cursor: pointer;" class="glyphicon glyphicon-pencil" data-toggle="modal" (click)='openEditBalance();form.reset()'></i>&nbsp;&nbsp;
+            <!-- <i style="cursor: pointer;" class="glyphicon glyphicon-plus" data-toggle="modal" (click)='leaveBalanceHistory()'></i> -->
+            <button class="close" (click)="leaveBalanceHistory()">
+              <img style="height: 17px; margin-left: 0px;" src="./assets/images/history.png">
+            </button>
+          </div>
+        </div>
+        <div class="no-records-found-row d-flex align-items-center justify-content-center py-4" *ngIf = "leaveHistory.length <= 0">
+          <div class="no-records-found-wrap">
+            <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records" class="icon-27"></figure>
+          <h5  class="text-center mt-2 m-0">No Records Found</h5>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+
+<!-- modal -->
+
+<div class="modal fade" id="leaveHistory" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Leave Adjustment</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal" (click)="closeModel()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="form">
+          <div class="form-group row">
+            <div class="col-md-5 text-align-right">
+              <label for="Employee_Name" class="control-label">Employee Name:</label>
+            </div>
+            <div class="col-md-7">
+              {{selectedEmployeeName}}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-5 text-align-right">
+              <label for="Running_Balance" class="control-label">Running Balance:</label>
+            </div>
+            <div class="col-md-7">
+              {{selectedNoOfHours}}
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-5 text-align-right">
+              <label for="noOfHours">Balance:
+              </label>
+            </div>
+            <div class="col-md-7">
+              <!-- <input type="number" class="form-control " formControlName="noOfHours" [(ngModel)]='noOfHours' id="noOfHours" required=''
+                placeholder="Update Balance"> -->
+              <input type="number" class="form-control " formControlName="noOfHours" [(ngModel)]='noOfHours' id="noOfHours" required=''
+                max="999" min="0" onKeyDown="if(this.value.length==3 && event.keyCode>47 && event.keyCode < 58)return false;"
+                placeholder="Update Balance" />
+              <div *ngIf="form.controls.noOfHours.touched && !form.controls.noOfHours.valid" class="alert alert-danger">Balance is required
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-md-5 text-align-right">
+              <label for="leaveReason">Reason:
+              </label>
+            </div>
+
+            <div class="col-md-7">
+              <textarea class="form-control " maxlength="250" [(ngModel)]='leaveReason' formControlName="leaveReason" cols="3" placeholder="Reason"
+                required=""></textarea>
+              <span style="color: #aaaaaa;
+                font-size: 81%;">(maximum length is 250 character)</span>
+              <div *ngIf="form.controls.leaveReason.touched && !form.controls.leaveReason.valid" class="alert alert-danger">Reason is required
+              </div>
+            </div>
+
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="ng-scope pull-right">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeModel()">Close</button>
+          <button type="button" (click)="updateBalance(form.value)" class="btn btn-primary" value="submit" [disabled]="form.invalid">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- history modal -->
+
+<div class="modal fade" id="leaveBalanceHistory" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Leave History</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal" (click)="closeModel()">&times;</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th class="data">Transaction Date</th>
+                <th class="data">No. of Hours</th>
+                <th class="data">Description</th>
+                <th class="data">Transaction Type</th>
+                <th class="data">Leave Type</th>
+                <th class="data">Accrual Rule</th>
+                <th class="data">Balance</th>
+                <th class="data">Status</th>
+                <th class="data">User</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let item of leaveBalance  |paginate: {id:'leaveBalancePg', itemsPerPage:8, currentPage:crntBalancepage }  ;">
+                <td>{{item.transactionDate}}</td>
+                <td>{{item.hours}}</td>
+                <td>{{item.notes}}</td>
+                <td>{{item.accural}}</td>
+                <td>{{item.typeDesc}}</td>
+                <td>{{item.ruleName}}</td>
+                <td>{{item.totalHours}}</td>
+                <td>{{item.leaveStatus}}</td>
+                <td>{{item.approverName}}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="pt-2 pb-2">
+            <h6 [hidden]="totalBalance!=0" style="text-align: center; ">No Records Found</h6>
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <pagination-controls id="leaveBalancePg" (pageChange)="crntBalancepage = $event" autoHide="true" maxSize="8" previousLabel=""
+            nextLabel=""></pagination-controls>
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <div class="pull-right">
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" (click)="closeModel()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

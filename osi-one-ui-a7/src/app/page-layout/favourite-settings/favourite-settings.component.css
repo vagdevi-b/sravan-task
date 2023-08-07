@@ -1,0 +1,18 @@
+.fav-header {
+    font-size: 14px;
+    font-weight: 400;
+}
+.modal-footer {
+padding: 5px 30px 30px;
+    margin: 0;
+    border: none;
+}
+ul li {
+    list-style-type: none;
+}
+
+.favitem {
+  font-weight: bold;
+  padding-bottom: 5px;
+  font-size: 16px;
+}

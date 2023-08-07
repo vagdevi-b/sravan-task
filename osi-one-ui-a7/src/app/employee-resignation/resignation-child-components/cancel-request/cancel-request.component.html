@@ -1,0 +1,23 @@
+<div class="modal-content">
+  <!-- Modal Header -->
+  <!-- Modal Body -->
+  <form [formGroup]="cancelDetailForm">
+    <div class="modal-body">
+      <h4>Notes for Cancellation</h4>
+      <div class="body-message-notes">
+        <div id="actions" class="row">
+          <div class="col-lg-12 col-md-12">
+            <textarea id="inputDescription" formControlName="notes" class="form-control" rows="5"
+              placeholder="Add a Comment"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- Modal Footer -->
+  <div class="modal-footer custom-modal-footer">
+    <!-- <button type="button" (click)="save()" class="btn btn-primary btn-style-1"></button> -->
+    <button (click)="cancel()" class="btn btn-outline-primary mr-2 btn-style-1">Cancel</button>
+    <button type="button" class="btn btn-primary btn-style-1" (click)="close()">Submit</button>
+  </div>
+</div>

@@ -1,0 +1,184 @@
+<div class="v-height">
+  <div class="snackbar" #AlertSuccess>{{successMessage}}</div>
+  <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+
+  <div class="new-leave-request">
+    <div class="sub-header bb-color">
+      <h1>Review Cycle</h1>
+    </div>
+    <div class="container-fluid pt-3">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <form [formGroup]="initAppraisalForm">
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Year:</label>
+                  <select name="year" class="form-control  form-field-border" formControlName='year'>
+                    <option selected value=''>-- Select --</option>
+                    <option *ngFor='let year of yearsList' [value]="year">{{year}}</option>
+                  </select>
+                  <div *ngIf="initAppraisalForm?.get('year')?.touched || initAppraisalForm?.get('year')?.dirty">
+                    <p class="text-danger" *ngIf="initAppraisalForm?.get('year')?.errors?.required">
+                      Field required.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Organization:</label>
+                  <select name="organization" class="form-control form-field-border" 
+                  formControlName='orgId'
+                  (change)="onChangeOrg($event)"
+                  >
+                    <option selected value=''>-- Select --</option>
+                    <option *ngFor='let organization of organizationList' [value]="organization.orgId">
+                      {{organization?.orgName}}</option>
+                  </select>
+                  <div *ngIf="initAppraisalForm?.get('orgId')?.touched || initAppraisalForm?.get('orgId')?.dirty">
+                    <p class="text-danger" *ngIf="initAppraisalForm?.get('orgId')?.errors?.required">
+                      Field required.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 col-md-6">
+                <div class="form-group">
+                  <input type="checkbox" class="form-control form-field-border" 
+                  formControlName='allEmp' id= "allEmp" #chkEnable ngModel (change)="selectAllEmployees($event)"> All Employees<br>
+                </div>
+              </div> 
+              <div class="col-sm-6 col-md-6">
+                <div class="form-group">
+                  <input type="checkbox" class="form-control form-field-border" #remainChkEnable ngModel (change) = "remainingEmpCheckBox($event)"
+                  formControlName='remainEmpStatus' id= "remainEmpStatus"> Remaining Employees<br>
+                </div>
+              </div>   
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group" >
+                  <label>Employee:</label>
+                  <ng-multiselect-dropdown 
+                  name="employee"
+                  [placeholder]="'Select'" 
+                  [data]="dropdownList" 
+                  [(ngModel)]="allSelected"
+                  formControlName="empIdList" 
+                  [disabled]="chkEnable.checked" 
+                  [settings]="dropdownSettings" 
+                  (onSelect)="onItemSelect($event)"
+                  (onDeSelectAll)="onItemDeSelect($event)"
+                  (onSelectAll)="onSelectAll($event)">
+                  </ng-multiselect-dropdown>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Start Date:</label>
+                  <div class="input-group" #DatePickContainer2>
+                    <input formControlName='formStartDate' class="form-control form-control-sm form-field-border"
+                      placeholder="yyyy-mm-dd"
+                      #isDatepicker ngModel
+                      readonly
+                      ngbDatepicker #d2="ngbDatepicker" 
+                      placement="bottom" />
+
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary" (click)="d2.toggle();" type="button"
+                        (document:click)="closeFix($event, d2)" [disabled]="remainChkEnable.checked">
+                        <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                          <i class="fa fa-lg fa-calendar"></i>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+              *ngIf="initAppraisalForm?.get('formStartDate')?.touched || initAppraisalForm?.get('formStartDate')?.dirty">
+              <p class="text-danger" *ngIf="initAppraisalForm?.get('formStartDate')?.errors?.required">
+                Field required.
+              </p>
+            </div>
+            </div>
+
+
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Frequency:</label>
+                  <select name="frequency" class="form-control form-field-border" formControlName='frequency'>
+                    <option selected value=''>-- Select --</option>
+                    <option *ngFor='let frequency of frequencyList' [value]="frequency.description">
+                      {{frequency?.description}}
+                    </option>
+                  </select>
+                  <div
+                    *ngIf="initAppraisalForm?.get('frequency')?.touched || initAppraisalForm?.get('frequency')?.dirty">
+                    <p class="text-danger" *ngIf="initAppraisalForm?.get('frequency')?.errors?.required">
+                      Field required.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12 ">
+              <div class="pull-right">
+                <button class="btn btn-outline-primary" (click)="backToList()">Cancel</button>
+                <button class="btn btn-outline-primary" (click)="onInitApprisal()"
+                  [disabled]="initAppraisalForm?.invalid || initAppraisalForm?.value.status==='COMPLETED'">Initiate</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="mailList" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Employee List</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText"
+              placeholder="Enter Employee Name" maxlength="50" type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;"
+              (click)="filteredEmployeeSearch(searchedText)">Search</button>
+          </div>
+        </div>
+        <ul class="list-group" *ngFor="let users of employeeList ;let i=index" (click)="selectedEmployee(users)">
+          <li class="list-group-item " [value]="users.mail" *ngIf="i<10">{{users.fullName}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,179 @@
+<form class="form-inline custom-form-inline align-items-start" [formGroup]="empInfoForm">
+  <div class="col-md-4 px-0 mb-2">
+    <div class="form-group row align-items-start m-0">
+      <label for="inputname" class="col-md-6 col-form-label">Full Name<span class="required">*</span></label>
+      <div class="col-md-6">
+        <!-- <div *ngIf="show === false"> -->
+        <input id="typeahead-template" class="form-control w-100" (change)="getData()" formControlName="empSelected"
+          (selectItem)="itemSelected($event)" placeholder="Enter Employee Name" type="text" class="form-control w-100"
+          [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" />
+        <!-- </div> -->
+        <!-- <div *ngIf="show === true">:{{selectedItems.employeeName}}</div> -->
+        <!-- <span class="text-muted"
+          *ngIf="empInfoForm.get('empSelected').hasError('required') && empInfoForm.get('empSelected').touched">Full
+          Name is required</span> -->
+
+        <div class="fieldError"
+          *ngIf="(empInfoForm.get('empSelected')?.dirty || empInfoForm.get('empSelected')?.touched) && empInfoForm.get('empSelected')?.errors?.required">
+          <small>Full Name is required </small>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <ng-template #rt let-r="result" let-t="term">
+    <ngb-highlight [result]="r.employeeFullName" [term]="t"></ngb-highlight>
+  </ng-template>
+
+
+  <div class="col-md-4 px-0 mb-2">
+    <div class="form-group row align-items-start m-0">
+      <label for="inputname" class="col-md-6 col-form-label">Resignation Type<span class="required">*</span></label>
+      <div class="col-md-6">
+        <select id="resignationType" name="resignationType"
+          class="form-control select-v4 form-control-sm form-field-border w-100" (change)="getData()"
+          formControlName="resignationType" required>
+          <option value=''>Select</option>
+          <option *ngFor="let resignationType of resignationTypes" value={{resignationType.value}}>
+            {{resignationType.name}} </option>
+        </select>
+
+
+        <div class="fieldError"
+          *ngIf="(empInfoForm.get('resignationType')?.dirty || empInfoForm.get('resignationType')?.touched) && empInfoForm.get('resignationType')?.errors?.required">
+          <small>Resignation Type is required </small>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="col-md-4 px-0 mb-2">
+    <div class="form-group row align-items-center m-0">
+      <label for="" class="col-md-6 col-form-label">Replacement Required<span class="required">*</span></label>
+      <div class="form-check pl-2">
+        <input class="form-check-input" type="radio" value="true" (change)="getData()"
+          formControlName="replacementRequired" [checked]='true'>
+        <label class="form-check-label">Yes</label>
+      </div>
+      <div class="form-check pl-3">
+        <input class="form-check-input" type="radio" value="false" (change)="getData()"
+          formControlName="replacementRequired">
+        <label class="form-check-label">No</label>
+      </div>
+
+
+      <div class="fieldError"
+        *ngIf="empInfoForm.get('replacementRequired').hasError('required') && empInfoForm.get('replacementRequired').touched && empInfoForm.get('replacementRequired')?.errors?.required">
+        <small> Replacement
+          Required is required </small>
+      </div>
+
+
+    </div>
+  </div>
+  <div class="col-md-4 px-0 mb-2">
+    <div class="form-group row align-items-start m-0">
+      <label for="inputname" class="col-md-6 col-form-label">Dependency<span class="required">*</span></label>
+      <div class="col-md-6">
+        <select id="dependencyType" name="dependencyType" (change)="getData()" formControlName="dependencyType"
+          class="form-control select-v4 form-control-sm form-field-border w-100" required>
+
+          <option value=''>Select</option>
+          <option *ngFor="let dependencyType of dependencyTypes" value={{dependencyType.value}}>
+            {{dependencyType.name}} </option>
+        </select>
+
+
+        <div class="fieldError"
+          *ngIf="empInfoForm.get('dependencyType').hasError('required') && empInfoForm.get('dependencyType').touched && empInfoForm.get('dependencyType')?.errors?.required">
+          <small>Dependency
+            is required </small>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 px-0 mb-2">
+
+    <div class="form-group row align-items-center m-0">
+
+      <label for="" class="col-md-6 col-form-label">Date of Resignation<span class="required">*</span></label>
+
+      <div class="col-md-6">
+
+        <div class="input-group" #DatePickContainer1>
+
+          <input id="lwdRangeDate" class="form-control form-control-sm form-field-border" [(ngModel)]="resgdate"
+            [maxDate]="resignationDate" formControlName="dateOfResignation" name="resgdate" placeholder="YYYY-MM-DD"
+            (ngModelChange)="getData1($event)" ngbDatepicker #d1="ngbDatepicker"
+            (dateSelect)="validateDate('lwdRangeDate', resgdate);validateNotBeforeToday('exstartdate', expenseStartDateField);"
+            (change)="validateDate('lwdRangeDate', resgdate);validateNotBeforeToday('exstartdate', expenseStartDateField);"
+            (focusout)="validateDate('lwdRangeDate', resgdate);validateNotBeforeToday('exstartdate', expenseStartDateField);"
+            required>
+
+          <div class="input-group-append">
+
+            <button class="btn btn-outline-secondary date-pick" formControlName="dateOfResignation"
+              name="NGB-DATEPICKER" (click)="d1.toggle()" type="button">
+
+              <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                <i class="fa fa-lg fa-calendar date-pick"></i>
+              </span>
+
+            </button>
+
+          </div>
+          <div class="fieldError"
+            *ngIf="empInfoForm.get('dateOfResignation').hasError('required') && empInfoForm.get('dateOfResignation').touched && empInfoForm.get('dateOfResignation')?.errors?.required">
+            <small>Date of Resignation is required </small>
+          </div>
+          <div *ngIf="validationError.lwdRangeDate" class="alert alert-danger validationAlert">Invalid Resignation Date
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <div class="col-md-4 px-0 mb-2">
+    <div class="form-group row align-items-center m-0">
+
+      <label for="" class="col-md-6 col-form-label">Requested Releasing Date</label>
+
+      <div class="col-md-6">
+
+        <div class="input-group" #DatePickContainer2>
+
+          <input id="resignationRangeDate" [placement]="placement" class="form-control form-control-sm form-field-border" [(ngModel)]="reqdate"
+            (ngModelChange)="getData2($event)" formControlName="requestedDateOfReleasing" placeholder="YYYY-MM-DD"
+            ngbDatepicker #d2="ngbDatepicker">
+
+          <div class="input-group-append">
+
+            <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d2.toggle()"
+              type="button" (document:click)="closeFix($event, d2)">
+
+              <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+
+                <i class="fa fa-lg fa-calendar date-pick"></i>
+
+              </span>
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</form>

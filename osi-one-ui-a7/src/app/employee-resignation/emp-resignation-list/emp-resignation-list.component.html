@@ -1,0 +1,158 @@
+<div class="wrapper">
+
+  <div class="content-wrapper">
+    <!-- Main content -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="custom-crumb breadcrumb-item active" aria-current="page">Resignation Management</li>
+      </ol>
+    </nav>
+    <div class="card custom-margin custom-card status-table">
+      <div class="card-header custom-header">
+        Resignation Request
+        <form class="form-inline ml-3 float-right">
+          <div class="input-group input-group-sm search-input">
+            <input class="form-control form-control-navbar" [(ngModel)]="name" name="name" type="text"
+              placeholder="Search" aria-label="Search">
+            <div class="input-group-append btn-search-icon">
+              <button class="btn btn-navbar" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="card-body">
+        <!-- accordion -->
+        <div class="table-wrapper">
+          <div class="">
+            <div class="row mb-2">
+              <div class="col-sm-8">
+                <select class="form-control select-v4 form-control-sm form-field-border" id="dependencyType"
+                  [(ngModel)]="resetSelection" name="dependencyType" (change)="getOpenStatus($event.target.value)"
+                  >
+                  <option *ngFor="let status of Filter" value={{status?.value}}>
+                    {{status?.name}} </option>
+                </select>
+
+              </div>
+              <div class="col-sm-4 d-flex justify-content-end align-items-center">
+                <button type="button" class="btn btn-outline-primary mr-3"
+                  (click)="navigateToInitiate(false)">Initiate</button>
+                <button class="filter-button-no-bg" (click)="openFilter()">
+                  <img src="assets/images/filter-icon.svg"> Filter</button>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive table-shadow border-0 mb-3">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th width="7%">EMP #</th>
+                  <th width="15%">Employee Name</th>
+                  <th align=" center" width="10%">Replacement Required</th>
+                  <th>Resignation Date</th>
+                  <th>Decision Date</th>
+                  <th>Requested LWD</th>
+                  <th>Last Working Date</th>
+                  <th class="hr-status text-center">HR SLA</th>
+                  <th class="pd-status text-center">PD SLA</th>
+                  <th class="text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr *ngFor="let item of rowData | EmployeeNameFilter:name">
+
+                  <td style="color: #4FA9B4; cursor: pointer" (click)="myClick(item)" width="7%">
+                    {{item.employeeNumber}}</td>
+                  <td width="15%">{{item.employeeName}}</td>
+                  <td align=" center" class="text-center" width="10%"><img *ngIf="item.isReplacementRequired === true "
+                      src="assets/images/done.svg" alt="success">
+                    <img *ngIf="item.isReplacementRequired === false || item.isReplacementRequired == null"
+                      src="assets/images/terminated.svg" alt="success">
+                  </td>
+                  <!-- <td align="center" ></td> -->
+
+                  <td>{{item.resignationDate !== null ? item.resignationDate : "--"}}</td>
+                  <td>{{item.decisionDate !== null ? item.decisionDate : "--" }}</td>
+                  <td>{{item.requestedLWD !== null ? item.requestedLWD : "--"}}</td>
+                  <td>{{item.relievingDate !== null ? item.relievingDate : '--'}}</td>
+                  <td class="hr-status">
+                    <div class="r-status close"> <span>{{item.hrSla}}</span> {{item.hrDiscussionStatus === true ?
+                      "Closed" : "Open"}}</div>
+
+                  </td>
+                  <td class="pd-status">
+                    <div class="r-status open"><span>{{item.pdSla}}</span> {{item.pdDiscussionStatus === true ?
+                      "Closed" : "Open"}} </div>
+                  </td>
+                  <td class="text-center">
+                    <span [ngClass]="getClassName(item)"> {{item.status}}</span>
+                  </td>
+                </tr>
+
+              </tbody>
+              <!-- <tfoot>
+                <tr *ngIf="rowData?.length==0">
+                  <td colspan="12" class="border-0">
+                    <div class="text-center">No Records Found</div>
+                  </td>
+                </tr>
+              </tfoot> -->
+            </table>
+            <!-- NO RECORDS FOUND START -->
+            <div *ngIf="rowData?.length==0"
+              class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+              <div class="no-records-found-wrap">
+                <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records"
+                    class="icon-27"></figure>
+                <h5 class="text-center mt-2 m-0">No Records Found!</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav *ngIf="listResponse?.totalElements > pageSize" aria-label="Page navigation ">
+          <ul class="ngx-pagination float-right">
+            <li class="pagination-previous" [ngClass]="{ disabled: pager?.currentPage === 1 }">
+              <a class="" aria-label="Previous"
+                (click)="setPage(pager?.currentPage - 1)">
+                <!-- <span aria-hidden="true"><i class="fa fa-chevron-left"></i></span> -->
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="" *ngFor="let page of pager?.pages; let i = index"
+              [ngClass]="{ active: pager?.currentPage === page }">
+              <a class="" (click)="setPage(page)">{{ page }}</a>
+            </li>
+            <li class=" pagination-next" [ngClass]="{ disabled: pager?.currentPage === pager.totalPages }">
+              <a class="" aria-label="Next" (click)="setPage(pager?.currentPage + 1)">
+                <!-- <span aria-hidden="true"><i class="fa fa-chevron-right"></i></span> -->
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- accordion -->
+      </div>
+    </div>
+    <!-- /.content -->
+  </div>
+
+
+  <div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 15%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3 style="color: white;">Loading ...</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- </body>
+
+</html> -->

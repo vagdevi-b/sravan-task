@@ -1,0 +1,154 @@
+<!-- MY GOAL DEVELOPMENT MODAL START -->
+<div class="team-goal-settings-section team-goal-section">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="addGoalModalLabel">Clone Goals</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row mb-2">
+        <div class="form-group col-md-3">
+          <label class="radio-inline">
+            <input type="radio" name="category" [(ngModel)]="category" value="mygoals" (change)="onChangeCategory()" />
+            My Goals
+          </label>
+        </div>
+        <div class="form-group col-md-3">
+          <label class="radio-inline">
+            <input type="radio" name="category" [(ngModel)]="category" value="teamgoals"
+              (change)="onChangeCategory()" />
+            Team Goals
+          </label>
+        </div>
+      </div>
+      <div class="form-row mb-2" *ngIf="category === 'teamgoals'">
+        <div class="form-group col-md-6">
+          <label for="employee">Select Employee</label>
+          <select class="form-control border" [(ngModel)]="employeeId" (change)="getEmployeeGoals()">
+            <option value="">Select</option>
+            <option *ngFor="let employee of employeesList" [ngValue]="employee?.employeeId">{{ employee?.fullName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="overflow" *ngIf="!hideTeamGolas">
+        <form [formGroup]="myGoalsdevelopment" class="spaced" *ngIf="category">
+          <div class="goalsection"  *ngIf="hideMyGoals">
+            <div>
+              <b>{{ myGoalsdevHeader }}</b>
+            </div>
+          </div>
+          <div class="row mb-2" formArrayName="devEmpKpaDetails"
+            *ngFor="let goal of mydevGoals.controls; let index = index">
+            <ng-container [formGroupName]="index">
+              <div class="col-1 float-right">
+                <input type="checkbox" id="dev-{{ index }}" formControlName="isSelectedForDevelopement"
+                  class="form-control cursor" />
+              </div>
+              <div class="col-6 vertical-middle">
+                <label class="cursor" for="dev-{{ index }}">{{
+                  (mydevGoals?.value)[index].kpa
+                }}</label>
+              </div>
+              <div class="col-5 vertical-middle">
+                <label class="cursor" for="dev-{{ index }}">{{
+                  (mydevGoals?.value)[index].remarks
+                }}</label>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+        <form [formGroup]="myGoalsimprovement">
+          <div class="goalsection"  *ngIf="hideMyGoals">
+            <div>
+              <b>{{ myGoalsimpHeader }}</b>
+            </div>
+          </div>
+          <div class="row mb-2" formArrayName="impEmpKpaDetails"
+            *ngFor="let goal of myimpGoals.controls; let index = index">
+            <ng-container [formGroupName]="index">
+              <div class="col-1 float-right">
+                <input type="checkbox" id="imp-{{ index }}" formControlName="isSelectedForImprovement"
+                  class="form-control cursor" />
+              </div>
+              <div class="col-6 vertical-middle">
+                <label class="cursor" for="imp-{{ index }}">{{
+                  (myimpGoals?.value)[index].kpa
+                }}</label>
+              </div>
+              <div class="col-5 vertical-middle">
+                <label class="cursor" for="dev-{{ index }}">{{
+                  (myimpGoals?.value)[index].remarks
+                }}</label>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+        <form [formGroup]="myGoalsOrg">
+          <div class="goalsection" *ngIf="hideMyGoals">
+            <div>
+              <b>{{ myGoalsOrgHeader }}</b>
+            </div>
+          </div>
+          <div class="row mb-2" formArrayName="orgEmpKpaDetails"
+            *ngFor="let goal of myOrgGoals.controls; let index = index">
+            <ng-container [formGroupName]="index">
+              <div class="col-1 float-right">
+                <input type="checkbox" id="org-{{ index }}" formControlName="isSelectedForOrg"
+                  class="form-control cursor" />
+              </div>
+              <div class="col-6 vertical-middle">
+                <label class="cursor" for="org-{{ index }}">{{
+                  (myOrgGoals?.value)[index].kpa
+                }}</label>
+              </div>
+              <div class="col-5 vertical-middle">
+                <label class="cursor" for="org-{{ index }}">{{
+                  (myOrgGoals?.value)[index].remarks
+                }}</label>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+        <form [formGroup]="myGoalsBU">
+          <div class="goalsection" *ngIf="hideMyGoals">
+            <div>
+              <b>{{ myGoalsBUHeader }}</b>
+            </div>
+          </div>
+          <div class="row mb-2" formArrayName="buEmpKpaDetails"
+            *ngFor="let goal of myBUGoals.controls; let index = index">
+            <ng-container [formGroupName]="index">
+              <div class="col-1 float-right">
+                <input type="checkbox" id="BU-{{ index }}" formControlName="isSelectedForBU"
+                  class="form-control cursor" />
+              </div>
+              <div class="col-6 vertical-middle">
+                <label class="cursor" for="BU-{{ index }}">{{
+                  (myBUGoals?.value)[index].kpa
+                }}</label>
+              </div>
+              <div class="col-5 vertical-middle">
+                <label class="cursor" for="BU-{{ index }}">{{
+                  (myBUGoals?.value)[index].remarks
+                }}</label>
+              </div>
+            </ng-container>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-primary" (click)="close()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-primary" (click)="onClickSaveButton(passedValue)">
+        Clone
+      </button>
+    </div>
+  </div>
+</div>
+<!-- MY GOAL DEVELOPMENT MODAL END -->
+<!-- Modal for showing loading text -->

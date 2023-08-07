@@ -1,0 +1,430 @@
+/* -----------------------------Notification Pop Up CSS ------------------------ */
+
+.notificationRow {
+  margin-bottom: 5px !important;
+  margin-top: 5px !important;
+}
+
+.notificationTextDiv {
+  text-align: center !important;
+}
+
+.notificationText {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  margin-bottom: 0px !important;
+}
+
+/* ----------------------------- Report CSS  ------------------------ */
+
+.cardFrame {
+  padding: 1% !important;
+}
+
+.reportForm {
+  border: 1px solid gray;
+  padding: 1%;
+  padding-bottom: 4%;
+  width: 95%;
+  margin-left: 2%;
+  margin-top: 2%;
+  box-shadow: 1px 1px 1px 1px #aba4a4;
+}
+
+.textStyle {
+  text-align: center !important;
+  font-family: serif !important;
+  font-size: 20px;
+  margin-top: 4px !important;
+}
+
+.hrClass {
+  margin: 0px !important;
+}
+
+.reportRow {
+  margin: 2% 0 !important;
+}
+
+.reportNameDiv {
+  /*margin-left: 1.5% !important;*/
+}
+
+.reportNamecss {
+  margin-bottom: 2px !important;
+  margin-top: 2px !important;
+  font-size: 15px !important;
+}
+
+.errorMsg {
+  font-size: 12px;
+  color: red;
+}
+
+.reportPurposecss {
+  margin-bottom: 2px !important;
+  margin-top: 2px !important;
+  font-size: 15px !important;
+}
+
+.grideClass {
+  /*margin-left: 10%;*/
+  display: grid;
+  /*grid-template-columns: 35% 5% 35% 15%;*/
+  grid-template-columns: 31.5% 5% 35% 15%;
+  grid-column-gap: 50px;
+}
+
+.ColumnTemplatecss {
+  margin-bottom: 6px !important;
+  margin-top: 2px !important;
+  font-size: 15px !important;
+}
+
+.ColumnFieldHeight {
+  height: 250px !important;
+  padding: 15px;
+}
+.ColumnFieldHeight option{
+  margin-bottom: 7px;
+}
+.operationButton {
+  margin-top: 50px !important;
+}
+
+.table td{
+  border-top: 0 solid #dee2e6;
+}
+
+
+.operationBtnGap {
+  margin-bottom: 25px !important;
+}
+.columnMovingButton {
+  width: 32px !important;
+  height: 30px !important;
+  padding-left: 6px;
+  padding-top: 0px;
+}
+
+.moveButtons {
+  margin-left: -15px !important;
+  margin-top: 110px !important;
+}
+
+.deleteCustomColumnButton {
+  /*height: 30px !important;
+  width: 32px !important;
+  padding-left: 6px;
+  padding-top: 0px;*/
+}
+
+/* ----------------------------- Image Radio Button CSS  ------------------------ */
+
+input[type="radio"]:checked + span {
+  font-weight: bold;
+}
+
+.imgIcon {
+  text-align: center;
+  cursor: pointer;
+}
+
+img {
+  height: 50px;
+}
+
+.imgTag {
+  font-size: 14px !important;
+}
+
+.bgClass {
+  border: 2px solid #f3f3f7;
+  box-shadow: 1px 1px 1px 1px gray;
+}
+
+.imgRow {
+  padding-left: 13%;
+  padding-right: 7%;
+  margin-bottom: 2%;
+}
+
+/* ----------------------------- Filter Section CSS  ------------------------ */
+
+.filterTag {
+  text-align: center !important;
+  font-family: serif !important;
+  font-size: 16px;
+}
+
+.filterRow {
+  /*padding-left: 13% !important;
+  width: 90% !important;*/
+  margin-bottom: 2%;
+}
+
+.filterField {
+  /*padding-bottom: 6% !important;*/
+}
+
+.filterSelectBoxes {
+  width: 100% !important;
+}
+
+.filterValueField {
+  padding-top: 5px !important;
+}
+
+/* ----------------------------- Order_by & Group_by Section CSS ------------------------ */
+
+.orderNGroupbyRow {
+  padding-left: 14% !important;
+  width: 93% !important;
+}
+
+.orderGroupTag {
+  font-size: 14px !important;
+  margin-left: -4% !important;
+}
+
+.orderBySelectBox {
+  width: 80% !important;
+  margin-top: 2px !important;
+}
+
+.orderfieldsPadding {
+  margin-top: 2px !important;
+}
+
+.groupByColumnfields {
+  margin-top: 2px !important;
+  width: 50% !important;
+}
+.groupByOprtnField {
+  margin-top: 2px !important;
+  width: 25% !important;
+  margin-left: 5px !important;
+}
+
+.saveButtonRow {
+  float: right !important;
+  margin-right: 10% !important;
+  padding-top: 1% !important;
+}
+.ng-valid[required],
+.ng-valid.required {
+  /* border-left: 2px solid green; */
+}
+
+/* input.ng-invalid {
+  border-left: 1px solid red;
+}
+select.ng-invalid {
+  border-left: 1px solid red;
+}
+.selectLength {
+  border-left: 2px solid green;
+} */
+/* .selectDefault {
+  border-left: 1px solid red;
+} */
+
+/* ----------------------------- Duplicate Column pop up Section CSS ------------------------ */
+
+.modalHeader {
+  padding: 10px !important;
+}
+
+.modaltitle {
+  font-size: 16px !important;
+  padding-left: 16px;
+  padding-top: 5px !important;
+}
+
+.modalContainerFluid {
+  padding: 0 10px !important;
+}
+
+.rowCSS {
+  width: 100% !important;
+  font-size: 14px !important;
+}
+
+.inputFieldCSS {
+  width: 100% !important;
+}
+
+.noRecordsText {
+  padding-top: 10px !important;
+  font-size: 15px !important;
+}
+
+.modalFooter {
+  padding: 6px;
+}
+.selected {
+  background-color: #066ff1e0;
+}
+
+/* .title-text {
+  font: 500 18px/22px "Roboto", sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  color: #393836;
+} */
+.title-text strong {
+  font-weight: 500;
+}
+/* select.form-control {
+  padding: 8px 15px;
+}
+.form-control option {
+  padding: 4px 0;
+  font-size: 14px;
+} */
+
+.btn-import-all {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/double_right_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-export-all {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/double_left_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-import-right {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/right_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-import-left {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/left_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-move-up {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/up_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-move-down {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/down_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-add {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/plus_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-remove {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/minus_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+table td {
+  color: #000;
+  font-size: 14px;
+}
+.btns {
+  min-height: 60px;
+  position: relative;
+}
+.btns span {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.btns .btn {
+  float: left;
+  margin: 0 0 0 8px;
+  border-radius: 3px;
+}
+.btns .btn-cancel {
+  height: 42px;
+  min-width: 110px;
+  text-align: center;
+  padding: 0 15px;
+  line-height: 34px;
+  font-size: 14px;
+  background-color: transparent;
+}
+.btns .btn-cancel:hover {
+  background-color: #fff;
+}
+/* .btns .btn-primary {
+  height: 42px;
+  min-width: 110px;
+  text-align: center;
+  padding: 0 15px;
+  line-height: 34px;
+  font-size: 14px;
+} */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url("icons/drop-down.png") no-repeat right center #fff;
+  font-size: 14px;
+}
+select[multiple="multiple"] {
+  background: #fff;
+}
+/* .row {
+  margin-bottom: 10px;
+} */
+.filters-heading, .filter-input-label {
+  font-size: 14px;
+}
+.date-input {
+  display: flex;
+  align-items: center;
+}

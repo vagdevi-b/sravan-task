@@ -1,0 +1,64 @@
+<div data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+	<div class="wrapper">
+
+		<div class="main pandl-details2">
+			<app-pandl-nav-bar (refreshEmitter)="refresh()"></app-pandl-nav-bar>
+
+			<main class="content content-master">
+				<section class="content-dashboard content--shrinked pl-conntent-dashboard">
+					<div class="container-fluid p-0">
+						<app-summary-quick-board [rawData]="cardsData"></app-summary-quick-board>
+						<div class="card shadow-none">
+
+							<div *ngFor="let card of cardsList" class="row">
+								<ng-container *ngFor="let widget of card.widgets">
+									<div class="col-{{widget.width}} col-md-{{widget.width}} d-flex" fullscreen
+										#fullscreenProj="fullscreen">
+										<div class="card flex-fill w-100 shadow-none pl-conntent-dashboard-inner">
+											<app-grid-widget #gridWidget [widget]="widget"></app-grid-widget>
+										</div>
+									</div>
+								</ng-container>
+							</div>
+							
+							<ng-container *ngIf="cardsData?.length">
+                                <!-- <app-report-employee-table [tableName]="'Month On Month Revenue'" [rawData]="cardsData" ></app-report-employee-table> -->
+								<app-paymentsummary-table [tableName]="'Project Revenue'" [rawData]="cardsData"></app-paymentsummary-table>
+							</ng-container>
+						</div>
+					</div>
+				</section>
+				<app-filters *ngIf="showFilters" (closefilters)="closingFilters($event)"></app-filters>
+			</main>
+			<footer class="footer">
+				<div class="container-fluid">
+					<div class="row text-muted">
+						<div class="col-6 text-left">
+						</div>
+						<div class="col-6 text-right">
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+	<div>
+		<!-- Add / remove [hidden] class vice-versa according inorder to show or hide according to click -->
+		<button [ngClass]="buttonClass" (click)="showfilters()">
+			<span class="btn__content">
+				<i class="fas fa-filter"></i>
+				<span style="font-size: small;"> Filters</span>
+			</span>
+		</button>
+	</div>
+	<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+		<div class="modal-dialog"  style="top: 40%; width: 15%;">
+			<!-- Modal content-->
+			<div class="modal-content bg-dark text-light">
+				<div class="modal-body">
+					<h3 style="color: white;">Loading ...</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

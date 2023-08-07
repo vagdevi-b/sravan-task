@@ -1,0 +1,133 @@
+/* Styles for alert */
+.snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-right: -125px;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 10;
+    right: 11%;
+    top: 10%;
+    font-size: 17px;
+    background-color: #4CAF50;
+  }
+  
+  .snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 2.5s 2s;
+    animation: fadein 0.5s, fadeout 2.5s 2s;
+  }
+  
+  .snackbar.danger{
+    background-color: #d9534f;
+  }
+  
+  @-webkit-keyframes fadein {
+    from {right: 0; opacity: 0;} 
+    to {right: 10%; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {right: 0; opacity: 0;}
+    to {right: 10%; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {right: 10%; opacity: 1;} 
+    to {right: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {right: 10%; opacity: 1;}
+    to {right: 0; opacity: 0;}
+  }
+
+.multiselect-box {
+  height:200px !important;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+/*
+* Styles for project search dropdown -- Start
+*/
+.project-select {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.project-select-content {
+  display: block;
+  position: absolute;
+  background-color: #f9f9f9;
+  width:100%;
+  min-height:20px;
+  max-height:200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.project-select-content ul {
+  padding: 5px !important;
+}
+.project-select-content ul li {
+  color: black;
+  padding: 3px;
+  text-decoration: none;
+  display: block;
+  font-size: 10px;
+}
+
+.project-select-content ul li:hover {background-color: #1d618a; color:#fff}
+
+.project-select-content .active {background-color: #1d618a; color:#fff}
+
+/*
+* Styles for project search dropdown -- End
+*/
+
+/*
+* Styles for loader ring
+*/
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 21px;
+  height: 21px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: 6px;
+  border: 3px solid #263445;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #263445 transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

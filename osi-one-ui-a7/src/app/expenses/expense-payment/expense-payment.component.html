@@ -1,0 +1,240 @@
+<div class="v-height">
+  <div class="inner-wrapper">
+    <div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+    <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+
+    <div class="sub-header border-bottom">
+      
+      <div class="row">
+        <div class="col-md-8">
+          <h1>Expense Payments</h1>
+        </div> 
+        <div class="col-md-3 text-right">
+          <button type="button" class="btn btn-outline-primary pull-right" aria-label="Approve Expenses" (click)="getSelectedReimbursementRows();">
+              Reimburse
+            </button>
+        </div>
+        <div class="col-md-1">
+          <div class="dropdown pull-right">
+            <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+            <div class="dropdown-content">
+              <ul>
+                <li>Items To Search</li>
+                <li [class.active]="currentPageItemCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+                <li [class.active]="currentPageItemCount==0" (click)="chengePageSize(0)">All</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row pt-2">
+        <div class="col-md-2">
+          <div id="dateselectiondiv">
+
+            <select class="form-control" (change)="onSelect($event.target.value)" [(ngModel)]="selectedDates.id">
+              <option *ngFor="let dates of listdates" value={{dates.id}}>
+                {{dates.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <input type="text" class="form-control" name="fullName" (blur)="getEmployeeList($event)" [(ngModel)]="fullName" placeholder="User Name">
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-2">
+              <input type="text" class="form-control" name="searchReportId" (blur)="getExpensesByReportId($event)" [(ngModel)]="searchReportId" placeholder="Report ID">
+            </div>
+            <div class="col-md-8">
+                <span *ngIf="employeeLength">No Match found with the given Employee Name</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+          <div class="form-group">
+            <label for="name">Start Date</label>
+            <div class="input-group" #DatePickContainer1>
+              <input id="startdate" #startDate [maxDate]="endDateSelectedDate" name="startdate" class="form-control form-control-sm form-field-border"
+                placeholder="dd-mon-yyyy" [(ngModel)]="startDateSelectedDate" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="checkStartDate();startDateChangeFormat($event)"
+                (change)="checkStartDate()" (focusout)="checkStartDate()">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button" (document:click)="closeFix1($event, d1)">
+                  <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                    <i class="fa fa-lg fa-calendar"></i>
+                  </span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+          <div class="form-group">
+            <label for="name">End Date</label>
+            <div class="input-group" #DatePickContainer2>
+              <input id="enddate" #endDate [minDate]="endDateMinVal" name="enddate" class="form-control form-control-sm form-field-border"
+                placeholder="dd-mon-yyyy" [(ngModel)]="endDateSelectedDate" ngbDatepicker #d2="ngbDatepicker" (dateSelect)="endDateSelected();endDateChangeFormat($event)"
+                (change)="endDateSelected()" (focusout)="endDateSelected()">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button" (document:click)="closeFix2($event, d2)">
+                  <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                    <i class="fa fa-lg fa-calendar"></i>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <!-- <div class="panel-heading" style="background-color: #f4f7fa;">
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 col-sm-12">
+            <div class="p-2 pt-3">
+              <button (click)="statusBasedExpenses($event,'N')" id="btn-open" [ngClass]="{'active':selectedStatusExpense=='N'}" class="btn btn-outline-primary">Open</button> &nbsp;
+              <button (click)="statusBasedExpenses($event,'S')" id="btn-sub" [ngClass]="{'active':selectedStatusExpense=='S'}" class="btn btn-outline-primary">Submitted</button> &nbsp;
+              <button (click)="statusBasedExpenses($event,'O')" id="btn-apprv" [ngClass]="{'active':selectedStatusExpense=='O'}" class="btn btn-outline-primary">Approved</button> &nbsp;
+              <button (click)="statusBasedExpenses($event,'R')" id="btn-rej" [ngClass]="{'active':selectedStatusExpense=='R'}" class="btn btn-outline-warning">Rejected</button> &nbsp;
+              <button (click)="statusBasedExpenses($event,'P')" id="btn-reimb" [ngClass]="{'active':selectedStatusExpense=='P'}" class="btn btn-outline-primary">Reimbursed</button> &nbsp;
+              <button (click)="statusBasedExpenses($event,'A')" id="btn-all" [ngClass]="{'active':selectedStatusExpense=='A'}" class="btn btn-outline-primary">All</button>
+            </div>
+          </div>
+          <!-- <div class="col-md-2 col-sm-2 text-right">
+          <span>
+            <button class="btn btn-primary" (click)="createExpense()">Create Expense</button>
+          </span>
+        </div> -->
+        </div>
+        <ag-grid-angular #agGrid style="width: 100%; height: 340px;" id="myGrid" class="ag-theme-balham" [columnDefs]="columnDefs"
+          [rowData]="rowData" [rowSelection]="rowSelection" (rowDoubleClicked)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)"
+          enableColResize enableSorting enableFilter groupHeaders [paginationPageSize]="paginationPageSize" suppressMovableColumns="true"
+          pagination="true" (gridReady)="onGridReady($event)"></ag-grid-angular>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Employee List Modal -->
+<div class="modal fade" id="employeeList" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Employee List</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText" placeholder="Enter Employee Name" maxlength="50"
+              type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;" (click)="filteredEmployeeSearch(searchedText)">Search</button>
+          </div>
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of employeeList ;let i=index" (click)="selectedEmployee(users.fullName,users.employeeId)">
+            <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade custom-modal-padding" id="reimburseModal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+  
+      <!-- Modal content-->
+      <div class="modal-content" style="width: 55vw;">
+        <div class="modal-header">
+          <h5 class="modal-title">Payment Status</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <form #paymentForm="ngForm">
+          <div class="modal-body">
+            <div class="row" *ngIf="formError">
+              <div class="col">
+                <div class="alert alert-danger">
+                  <span style="font-size: 16px;">{{alertText}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <table class="table table-hover table-bordered">
+                 <thead>
+                  <tr>
+                    <th>Report ID</th>
+                    <th>Payment Date</th>
+                    <th>Description</th>
+                    <th>Ref. No</th>
+                    <th>Amount</th>
+                  </tr>
+                 </thead>
+                 <tbody>
+                  <tr *ngFor="let payDetail of paymentDetailsFields;let i=index; trackBy: trackByFn">
+                    <td>
+                        <input type="text" [(ngModel)]="payDetail.reportId" name="reportId{{i}}" class="form-control form-control-sm input-sm" disabled>
+                    </td>
+                    <td>
+                      <div class="input-group">
+                        <input id="paymentdate{{i}}" name="startdate{{i}}" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
+                          [(ngModel)]="payDetail.paymentDate" [maxDate] = "minDate" ngbDatepicker #d2="ngbDatepicker" style="border-left: 1px solid #ced4da;">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+                            <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                              <i class="fa fa-lg fa-calendar"></i>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <input type="text" [(ngModel)]="payDetail.description" name="description{{i}}" class="form-control form-control-sm input-sm">
+                    </td>
+                    <td>
+                      <input type="text" [(ngModel)]="payDetail.refNo" name="refNo{{i}}" class="form-control form-control-sm input-sm">
+                    </td>
+                    <td>
+                      <input type="text" appDecimal [(ngModel)]="payDetail.amount" name="amount{{i}}" class="form-control form-control-sm input-sm" disabled>
+                    </td>
+                  </tr>
+                 </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="savePaymentDetails()">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal for showing loading text -->
+<div id="loaderDisplayModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog" style="top: 40%;">
+
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+
+	</div>
+</div>

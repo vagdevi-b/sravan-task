@@ -1,0 +1,6 @@
+.employee-search-table-heading {
+    user-select: none;
+}
+.employee-search-table-row {
+    cursor: pointer;
+}

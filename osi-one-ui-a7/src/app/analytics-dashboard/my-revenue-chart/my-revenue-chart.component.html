@@ -1,0 +1,61 @@
+<div class="v-height">
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <div class="row">
+        <div class="col-md-1">
+          <label>Organization </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empOrg">
+              <option value="*">All</option>
+              <!-- <option *ngFor="let org of empOrgData" value="{{org}}">{{org}}</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <label>Xfer Org </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empXferOrg">
+              <option value="*">All</option>
+              <!-- <option *ngFor="let xferOrg of empXferOrgData" value="{{xferOrg}}">{{xferOrg}}</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <label>Practice </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empPract">
+              <option value="*">All</option>
+              <!-- <option *ngFor="let practice of empPracticeData" value="{{practice}}">{{practice}}</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label>Sub-Practice </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empSubPract">
+              <option value="*">All</option>
+              <!-- <option *ngFor="let subPract of empSubPracticeData" value="{{subPract}}">{{subPract}}</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2" style="float: left;">
+          <label>Year</label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="year"
+            (change)="changeYear()">
+            <option value="2015">2015</option>
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10" style = "height:500px; width : 500px;">
+    <canvas id="barChart"></canvas>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="v-height">
+  <div class="leave-wrapper-section">
+    <div class="leave-status-section">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="pill" href="#salesReport" (click)="onNavClick('salesReport')">Sales Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="pill" href="#agingReport" (click)="onNavClick('agingReport')">Aging Report</a>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="navBar == 'salesReport'">
+      <app-sales-report></app-sales-report>
+    </div>
+    <div *ngIf="navBar == 'agingReport'">
+      <app-aging-report></app-aging-report>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+tbody {
+    /* display:block; */
+    max-height:40vh;
+    overflow-y:auto;
+}
+
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+.table tr.active td {
+    background-color:#90b2d4a2 !important;
+    color: rgb(66, 66, 66);
+}
+
+.table tbody tr:hover td  {
+    background-color: #e0eaf7;
+}

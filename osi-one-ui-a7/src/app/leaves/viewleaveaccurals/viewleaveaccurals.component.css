@@ -1,0 +1,12 @@
+.table tr.active td {
+    background-color:#90b2d4a2 !important;
+    color: rgb(66, 66, 66);
+  }
+
+  .cardBody{
+    padding-bottom: 0;
+    padding-bottom: 0px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+    margin-top: 13px;
+  }

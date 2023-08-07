@@ -1,0 +1,236 @@
+<div class="v-height bg-white">
+  <!-- <div class="breadcrumb-wrapper">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="#/dashboard">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Invoices</li>
+    </ol>
+  </nav>
+</div> -->
+
+  <div class="inner-wrapper">
+    <div class="sub-header border-bottom">
+      <div class="row">
+        <div class="col-md-10">
+          <h1>Invoices - Softex</h1>
+        </div>
+        <!-- <div class="col-md-1">
+        <div file-name="FilterColumns" class="dropdown pull-right mt-1">
+          <span class="glyphicon glyphicon-filter" style="font-size:20px !important;"></span>
+          <div class="dropdown-content" style="background-color: #f9f9f9; overflow-y: scroll; min-width: 170px; right: 0px; text-align: left;
+          padding: 5px; height:300px;">
+            <div ng-repeat="item in invoiceListCheckBoxList">
+              <label for="chkCustomer_{{item.Id}}">
+                <input type="checkbox" id="chkCustomer_{{item.Id}}" [(ngModel)]="item.selected"
+                  ng-change="selectedInvoiceList(item)" ng-value="item.setValue" />{{item.Name}}</label><br />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div title="Export to excel" excel-export export-data="invoiceListData" file-name="InvoiceExcelExport"
+          style="font-size:20px!important"></div>
+        <div class="dropdown pull-right mt-1">
+          <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+          <div class="dropdown-content">
+            <ul>
+              <li>Limit</li>
+              <li [ngClass]="{'active':pageCount==itemCount}" (click)="chengePageSize(itemCount)"
+                ng-repeat="itemCount in itemsPerPageList">{{itemCount}}</li>
+              <li [ngClass]="{'active':pageCount==0}" (click)="chengePageSize(0)">All</li>
+            </ul>
+          </div>
+        </div>
+      </div> -->
+      </div>
+    </div>
+    <div class="right-side" id="rightPnl">
+      <div>
+        <!--Search Panel-->
+        <div class="container-fluid">
+          <div class="row pt-2 pb-3">
+            <div class="col-sm-12 col-md-2">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Invoice Number" name="search Invoice No"
+                  [(ngModel)]="invoiceNumber">
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-2">
+              <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="searchOrgName"
+                (change)="getProjectByOrganization()">
+                <option value="" disabled>Business Organization</option>
+                <option value="">All</option>
+                <option *ngFor="let org of osiOrganizations" value="{{org.orgId}}">{{org.orgName}}</option>
+              </select>
+            </div>
+            <div class="col-sm-12 col-md-2">
+              <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="searchCustomerName"
+                (change)="getProjectByOrganization()">
+                <option value="" disabled>Customer Name</option>
+                <option value="">All</option>
+                <option *ngFor="let customer of osiCustomers" value="{{customer.customerId}}">
+                  {{customer.customerName}}</option>
+              </select>
+            </div>
+            <div class="col-sm-12 col-md-2">
+              <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="searchProjectName">
+                <option value="" disabled>Project Name</option>
+                <option value="">All</option>
+                <option *ngFor="let project of invoiceProjects" value="{{project.projectId}}">
+                  {{project.projectName}}</option>
+              </select>
+            </div>
+            <div class="col-sm-12 col-md-2">
+              <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="status">
+                <option value="" disabled>Status</option>
+                <option value="">All</option>
+                <option *ngFor="let status of invoiceStatusCodeList" value="{{status.statusCode}}">
+                  {{status.statusAlias}}</option>
+              </select>
+            </div>
+            <div class="col-sm-12 col-md-2">
+              <div class="row">
+                <div class="col-sm-12 col-md-3">
+                  <button type="button" id="inv-search-summary" class="btn btn-primary"
+                    (click)="searchInvoicesSummaryList()">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Search Panel END-->
+        <!-- Main content -->
+        <section class="content container-fluid">
+          <!--MAIN BODY START-->
+          <div class="table-responsive table-shadow border-0 mb-3">
+            <table class="table table-hover table-bordered table-sorting">
+              <thead>
+                <tr>
+                  <th (click)="sort('invoiceGeneratedDate')" class="invoiceGeneratedDate">Invoice Date
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('dueDate')" class="dueDate">Due Date
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('customerName')" class="customerName">Customer Name
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('projectName')" class="projectName">Project Name
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('invoiceNumber')" class="invoiceNumber">Invoice Number
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('invoiceTemplateName')" class="invoiceTemplateName">Invoice Template
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('invoiceAmount')" class="invoiceAmount">Invoice Amount
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('taxableInvoiceAmount')" class="taxableInvoiceAmount">Tax Invoice Amount
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('invoiceBalance')" class="invoiceBalance">Paid Amount
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('invoiceBalanceDue')" class="invoiceBalanceDue">Balance Due
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('invoiceStatus')" class="invoiceStatus">Invoice Status
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('externalReferenceId')" class="externalReferenceId">QuickBook Status
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <th (click)="sort('softextNumber')" class="softextNumber">Softex Number
+                    <span class="glyphicon sort-icon" 
+                      [ngClass]="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                  </th>
+                  <!-- <th class="EDIT">Action
+                  </th> -->
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invoice of invoiceList">
+                  <td class="invoiceGeneratedDate">{{invoice.invoiceGeneratedDate | date:'yyyy-MM-dd'}}</td>
+                  <td class="dueDate">{{invoice.dueDate | date:'yyyy-MM-dd'}}</td>
+                  <td class="customerName">{{invoice.customerName}}</td>
+                  <td class="projectName">{{invoice.projectName}}</td>
+                  <td class="invoiceNumber">{{invoice.invoiceNumber}}</td>
+                  <td class="invoiceTemplateName elipsis" title="{{invoice.invoiceTemplateName}}">
+                    <span>
+                      {{invoice.invoiceTemplateName}}
+                    </span>
+                  </td>
+                  <td class="invoiceAmount">{{invoice.invoiceAmount}} {{invoice.projectCurrencyCode}}</td>
+                  <td class="taxableInvoiceAmount">{{invoice.taxableInvoiceAmount}} {{invoice.projectCurrencyCode}}</td>
+                  <td class="invoiceBalance">
+                    <span style="color:#2bd5f9;cursor: pointer;" *ngIf="invoice.invoiceBalance > 0 || invoice.invoiceStatus == 'O'  || 
+                        invoice.invoiceStatus == 'T' || invoice.invoiceStatus == 'P' || 
+                        invoice.invoiceStatus == 'Y' || invoice.invoiceStatus == 'Z'"
+                      (click)="getPaymentsDetails(invoice)">{{invoice.invoiceBalance}}
+                      {{invoice.projectCurrencyCode}}</span>
+                  </td>
+                  <td class="invoiceAmount">{{(invoice.invoiceAmount - invoice.invoiceBalance).toFixed(2)}}
+                    {{invoice.projectCurrencyCode}}</td>
+                  <td class="invoiceStatus"><span>{{invoice.invoiceStatus | invoiceStatus}}</span></td>
+                  <td class="externalReferenceId">{{invoice.externalReferenceId}}</td>
+                  <td class="softextNumber" style="color:#2bd5f9;cursor: pointer;" (click)="editSoftexNumber(invoice)">
+                    {{invoice?.softexNumber ? invoice?.softexNumber : 'Add'}}
+                  </td>
+                  <!-- <td class="EDIT" style="color:#2bd5f9;cursor: pointer;" (click)="editSoftexNumber(invoice)">
+                    {{invoice?.softextNumber ? 'Edit' : 'Add'}}
+                  </td> -->
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf="invoiceList.length === 0" class="text-center no-records-found-row d-flex align-items-center justify-content-center py-4">
+              <div class="no-records-found-wrap">
+                <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records" class="icon-27"></figure>
+              <h5 class="text-center mt-2 m-0">No Records Found</h5>
+              </div>
+            </div>
+            <!-- <tfoot>
+              <div *ngIf="invoiceList.length === 0" class="text-center" style="width: 158vh; height: 30vh;">
+                <h6 class="text-danger">No Records Found</h6>
+              </div>
+              <div># of Invoices: <strong>{{invoiceTotalSummary?.totalInvoiceRecords}}</strong> <span>&nbsp;</span>
+                Invoice Total Amount:
+                <strong>{{invoiceTotalSummary?.invoiceTotalAmount | number}}</strong> <span>&nbsp;</span>
+                {{invoiceTotalSummary?.projectCurrencyCode}}
+              </div>
+              <div style="padding-top: 10px;"># of Invoices:
+                <strong>{{invoiceTotalSummary?.totalInvoiceRecords}}</strong>
+                <span>&nbsp;</span>
+                Invoice Total Paid Amount:
+                <strong>{{invoiceTotalSummary?.invoiceTotalPaidAmount | number}}</strong><span>&nbsp;</span>
+                {{invoiceTotalSummary?.projectCurrencyCode}}
+              </div>
+            </tfoot> -->
+          </div>
+          <div class="mt-4">
+            <app-pagination [list]="listedItems" (emiter)="changePagedItems($event)">
+            </app-pagination>
+          </div>
+        </section>
+        <!-- /.content -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-loading *ngIf="showLoader"></app-loading>

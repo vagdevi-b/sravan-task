@@ -1,0 +1,101 @@
+<div class="v-height">
+  <div class="breadcrumb-holder">
+    <div class="container-fluid">
+      <ul class="breadcrumb" style="padding: 1;margin: 0;padding-top: 10px;width: 1199px;height: 35px;">
+        <li class="breadcrumb-item">
+          <a class="breadcrumb-item" href="#/pmoTimeSheetEntry">All Timesheets</a>
+          <a class="breadcrumb-item" href="#/pmotimesheetview">{{myEntityName}}</a>
+          <a class="breadcrumb-item">TimeSheet History</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="inner-wrapper">
+    <!-- <div class="row" >
+      <div
+        ng-class="{ 'alert col-md-offset-1 col-sm-10 text-center no-padding': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error'}"
+        *ngIf="flash" ng-bind="flash.message"></div>
+    </div> -->
+    <div class="right-side" id="rightPnl">
+
+      <!-- Main content -->
+      <section class="content">
+        <!--MAIN BODY START-->
+        <div class="employee-timeSheet-history-section">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <p *ngIf="uniqueName" style="float:left;">
+                <b style="font-size: 0.9em;color: #666;">{{uniqueName}} : </b> {{uniqueValue}}
+                <p *ngIf="uniqueDateValue" style="float:right">
+                  <b style="font-size: 0.9em;color: #666;">{{uniqueDate}} : </b>
+                  {{uniqueDateValue | date:'dd-MMM-yyyy'}}</p>
+            </div>
+            <div class="col-sm-12 col-md-6 text-right">
+              <p *ngIf="weekStart">
+                <b style="font-size: 0.9em;color: #666;">{{uniqueDate}} : </b> {{weekStart | date:'dd-MMM-yyyy'}} To
+                {{weekEnd | date:'dd-MMM-yyyy'}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="box1">
+          <div class="box-body table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th ng-click="sort('updatedDate')">Date Time
+                    <!-- <span class="glyphicon sort-icon glyphicon-filter" ng-show="sortKey == 'updatedDate'"
+                      ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+                  </th>
+                  <th ng-click="sort('projId')">User
+                    <!-- <span class="glyphicon sort-icon glyphicon-filter" ng-show="sortKey == 'projId'"
+                      ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+                  </th>
+                  <th ng-click="sort('projectStatus')">Action
+                    <!-- <span class="glyphicon sort-icon glyphicon-filter" ng-show="sortKey == 'projectStatus'"
+                      ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+                  </th>
+                  <th ng-click="sort('comments')">Notes
+                    <!-- <span class="glyphicon sort-icon glyphicon-filter" ng-show="sortKey == 'comments'"
+                      ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span> -->
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="tbody">
+                <tr *ngIf="auditLogs && auditLogs.length == 0">
+                  <div style="text-align: center;">
+                    <h6 class="text-danger">No Records Found</h6>
+                  </div>
+                </tr>
+                <tr *ngFor="let audit of auditLogs">
+                  <td>{{audit.lastUpdatedDate| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                  <!-- <td>{{audit.createdBy}}</td> -->
+                  <!-- <td>{{audit.weekStartDate | date:'yyyy-MM-dd'}}</td> -->
+                  <td>{{audit.createdBy}}</td>
+                  <!-- <td>{{audit.taskName}}</td>
+                  <td>{{audit.shiftName}}</td>
+                  <td>{{audit.billable}}</td> -->
+                  <td>{{audit.status}}</td>
+                  <td style="word-break: break-all;">{{audit.comments}}</td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

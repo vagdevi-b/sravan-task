@@ -1,0 +1,26 @@
+<div class="modal-content">
+  <!-- Modal Header -->
+  <!-- Modal Body -->
+  <form [formGroup]="acceptLWDForm">
+    <div class="modal-body confirm-modal">
+      <h4>Resignation Confirmation</h4>
+      <div class="body-message-notes">
+        <div id="actions">
+          <div class="row confirm-modal-text">
+            <div class="col-12">
+              <h5>Are you sure you want to submit the resignation?</h5>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- Modal Footer -->
+  <div class="modal-footer custom-modal-footer confirm-modal-footer">
+    
+    <button type="button" class="btn btn-outline-secondary btn-style-1 radius-border-3"
+      (click)="close()">Cancel</button>
+      <button type="button" (click)="save()" class="btn btn-primary btn-style-1 radius-border-3">Submit</button>
+  </div>
+</div>

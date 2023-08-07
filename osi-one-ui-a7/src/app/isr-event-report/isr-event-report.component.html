@@ -1,0 +1,109 @@
+<div>
+  <section>
+    <div class="card" style="width: 100%;">
+      <div class="card-body">
+        <!-- <div *ngIf="showAlert" class="row notificationRow">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-8 notificationTextDiv" id="successMessage">
+            <div class="alert alert-success alert-dismissible notificationText" id="successMessage">
+              <a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close"></a>
+              <strong>{{successMessage}}</strong>
+            </div>
+          </div>
+          <div class="col-sm-2"></div>
+        </div> -->
+        <div class="row dashboardBox">
+          <div class="col-sm-3">
+            <h3 class="title-text">
+              <span class="reportHeading">ISR Events Report</span>
+            </h3>
+          </div>
+          <div class="container-fluid pt-2 pb-2">
+            <div class="row" role="form">
+              <div class="col-md-2">
+                <select name="eventType" class="form-control" [(ngModel)]="eventType" (change)="onChangeEventType($event)">
+                  <option selected value="">Event Type</option>
+                  <option *ngFor="let type of eventTypes" [value]=type?.value>
+                    {{type?.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input style="caret-color: transparent;" type="text" class="form-control" bsDatepicker
+                      id="startDate" name="startDate" [(ngModel)]="startDate" [maxDate]="startDateMax" placeholder="Select Start Date"
+                      (ngModelChange)="onStartDateChange()"
+                      [bsConfig]="datePickerConfig" autocomplete="false">
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <input style="caret-color: transparent;" type="text" class="form-control" bsDatepicker
+                        id="endDate" name="endDate" [(ngModel)]="endDate" [minDate]="endDateMin" [maxDate]="today" placeholder="Select End Date"
+                        (ngModelChange)="onEndDateChange()"
+                        [bsConfig]="datePickerConfig" autocomplete="false">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-md-2">
+                <button class="btn btn-outline-secondary mr-2" (click)="searchDataByFilter()">Search</button>
+                <button type="button" class="btn btn-outline-primary" (click)="clearSearch()">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row tableBox">
+          <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col" width="15%">Mail Id</th>
+                    <th scope="col" width="30%">Event Definitions</th>
+                    <th *ngIf="eventType === 'BOUNCED_MAILS'" scope="col" width="20%">Reason</th>
+                    <th scope="col" width="10%">Date</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr
+                  *ngFor="let item of eventEntriesList | paginate: { itemsPerPage:10, currentPage: crntpage,totalItems: eventEntriesList?.length };"
+                  >
+                  <td scope="row">{{item?.contactEmail}}</td>
+                  <td scope="row">{{item?.eventDefinitions}}</td>
+                  <td *ngIf="eventType === 'BOUNCED_MAILS'" scope="row">{{item?.reason}}</td>
+                  <td scope="row">{{item?.updatedDate | date: 'dd/MM/yyyy'}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <h6 *ngIf="eventEntriesList?.length===0" style="text-align: center;">No Records Found</h6>
+            </div>
+            <div class="col-sm-12 row pb-3">
+              <div class="col-sm-10">
+                <div class="paginate" [hidden]='eventEntriesList?.length<=10'>
+                  <pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- Modal for showing loading text -->
+<div id="eventEntriesReportLoadingModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%; width: 10%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

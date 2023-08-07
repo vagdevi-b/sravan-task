@@ -1,0 +1,43 @@
+<div class="modal-content h-auto modal-animation">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Configure Dashboard</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="reset()" [disabled]="spinner">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="spinner" class="overlay">
+      <div class="loader"></div>
+    </div>
+    <ng-container *ngIf="!spinner">
+      <div class="lin">Please check the items you want to add in your dashboard</div>
+      <div class="row">
+        <div class="col-12" *ngFor="let widgetSet of widgetsByCategory">
+          <ng-container *ngIf="widgetSet.widget[0] && widgetSet.widget[0].length">
+          <span class="title">{{widgetSet.category | titlecase}}</span>
+          <ul class="lin">
+            <div class="custom-control custom-checkbox pb-2" *ngFor="let wid of widgetSet.widget[0]">
+              <input type="checkbox" [(ngModel)]="wid.isSelected" (change)="isSelected(wid, wid.id)"
+                name="dashboardConfigure{{ wid.id }}" class="custom-control-input"
+                id="dashboardConfigure{{ wid.id }}" />
+              <label class="custom-control-label"
+                for="dashboardConfigure{{ wid.id }}">{{ wid.name | titlecase }}</label>
+
+              <sup *ngIf="wid.showNewIcon"><img src="assets/icons/new-icon-animated.gif"></sup>
+
+            </div>
+          </ul>
+        </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary" (click)="reset()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" [class.disabled]="!dashboardDirty" (click)="save()">
+      Save
+    </button>
+  </div>
+</div>

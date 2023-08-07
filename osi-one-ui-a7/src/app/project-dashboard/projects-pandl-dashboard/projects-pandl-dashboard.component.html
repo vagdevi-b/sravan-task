@@ -1,0 +1,117 @@
+<div class="v-height">
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <div class="row">
+        <div class="col-md-2">
+          <label>Organization </label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empOrg"
+            (change)="filterPnLCharts()">
+            <option value="*">All</option>
+            <option *ngFor="let org of prjOrgData">{{org}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>BU </label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empBU"
+            (change)="filterPnLCharts()">
+            <option value="*">All</option>
+            <option *ngFor="let bu of prjBUData">{{bu}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>Practice </label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empPractice"
+            (change)="filterPnLCharts()">
+            <option value="*">All</option>
+            <option *ngFor="let prac of prjPracticeData">{{prac}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label> Sub-Practice </label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empSubPractice"
+            (change)="filterPnLCharts()">
+            <option value="*">All</option>
+            <option *ngFor="let subprac of prjSubPracticeData">{{subprac}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>Year </label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empYear"
+            (change)="filterPnLCharts()">
+            <option *ngFor="let year of prjYearData" [value]="year.key">{{year.key}}</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label>Month </label>
+          <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empMonth"
+            (change)="filterPnLCharts()">
+            <option value=".*">All</option>
+            <option *ngFor="let month of months" [value]="month.id">{{month.value}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartContainer" id="htmle2imagedata">
+
+    <div id="filter">
+      <div class="row">
+        <div class="col-sm-10">
+          <h5>Project Details</h5>
+        </div>
+        <div *ngIf="projectsJSON.data && projectsJSON.data.length" class="col-sm-2 mb-1" data-tooltip
+          title="Download in .xlsx">
+          <button class="btn btn-primary" (click)="downloadDetailsInExel('Project_Details')">
+            Download <span class="glyphicon glyphicon-download-alt"></span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+          [rowData]="projectsJSON.data"
+          [columnDefs]="columnDefsProjects" 
+          [gridOptions]="gridOptionsProjects"
+          [paginationPageSize]="paginationPageSize" 
+          [getRowHeight]="getRowHeightProjects" 
+          pagination="true"
+          rowSelection="single" 
+          (selectionChanged)="onProjectSelected($event)" 
+          [defaultColDef]="defaultColDef"
+          (gridReady)="onGridReadyProjects($event)">
+        </ag-grid-angular>
+      </div>
+
+    </div>
+    <div id="filter">
+      <div class="row">
+        <div class="col-sm-10">
+          <h5>Employee Details of {{selected}}</h5>
+        </div>
+        <div *ngIf="empJSON.data && empJSON.data.length" class="col-sm-2 mb-1" data-tooltip title="Download in .xlsx">
+          <button class="btn btn-primary" (click)="downloadDetailsInExel('Employee_Details')">
+            Download
+            <span class="glyphicon glyphicon-download-alt"></span>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+          [rowData]="empJSON.data"
+          [columnDefs]="columnDefsEmployee" 
+          [gridOptions]="gridOptionsEmployee"
+          [paginationPageSize]="paginationPageSize" 
+          [getRowHeight]="getRowHeightEmployee" 
+          pagination="true"
+          [defaultColDef]="defaultColDef"
+          (gridReady)="onGridReadyEmployee($event)">
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="spinner" class="overlay">
+    <div class="loader"></div>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<div>
+  <div class="sub-header bb-color">
+    <h1>Build History</h1>
+  </div>
+  <section class="content build-history-list-wrapper">
+    <div class='card'>
+      <div class="box-body table-responsive table-shadow border-0 mb-3 mt-3">
+        <table class="table table-hover table-bordered">
+          <thead class="thead_bg">
+            <tr>
+              <th class="data" (click)="sortByRow('buildDate')">Build Date
+                <span
+                    class="glyphicon sort-icon glyphicon-chevron-down"
+                    [ngClass]="{ 'glyphicon-chevron-up': sortFlags.buildDate, 'glyphicon-chevron-down': !sortFlags.buildDate }">
+                </span>
+              </th>
+              <th class="data" (click)="sortByRow('buildType')">Build Type
+                <span
+                    class="glyphicon sort-icon glyphicon-chevron-down"
+                    [ngClass]="{ 'glyphicon-chevron-up': sortFlags.buildType, 'glyphicon-chevron-down': !sortFlags.buildType }">
+                </span>
+              </th>
+              <th class="data" (click)="sortByRow('isDeployed')">Is Deployed
+                <span
+                    class="glyphicon sort-icon glyphicon-chevron-down"
+                    [ngClass]="{ 'glyphicon-chevron-up': sortFlags.isDeployed, 'glyphicon-chevron-down': !sortFlags.isDeployed }">
+                </span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+                *ngFor='let eachRow of buildHistoryRows  | paginate: { itemsPerPage:10, currentPage: currentPage, totalItems: buildHistoryRows.length };'
+                (click)="onRowClick(eachRow)"
+                (dblclick)="onRowDoubleClick(eachRow)"
+                [class.active]='eachRow == selectedRow'>
+              <td class="data">{{ eachRow.buildDate | date:'yyyy-MM-dd'}}</td>
+              <td class="data">{{ eachRow.buildType }}</td>
+              <td class="data">{{ eachRow.isDeployed }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="buildHistoryRows.length === 0" class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+          <div class="no-records-found-wrap">
+            <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records"
+                class="icon-27"></figure>
+            <h5 class="text-center mt-2 m-0">No Records Found!</h5>
+          </div>
+        </div>
+        <div class="col-sm-12 row pb-3">
+          <div class="col-sm-10">
+            <pagination-controls
+                (pageChange)="currentPage = $event"
+                autoHide="true"
+                maxSize="7"
+                previousLabel=""
+                nextLabel=""
+                (click)="resetSelectedRow()">
+            </pagination-controls>
+          </div>
+          <span class="col-sm-2 adjust-crud-op">
+            <i style="cursor: pointer;" class="glyphicon glyphicon-plus" (click)="navigateToCreateBuild()"></i>&nbsp;&nbsp;
+            <i
+                style="cursor: pointer;"
+                class="glyphicon glyphicon-pencil"
+                (click)="navigateToEditBuild()"></i>&nbsp;&nbsp;
+            <i
+                style="cursor: pointer;"
+                class="glyphicon glyphicon-eye-open"
+                (click)="navigateToEditBuild()"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Modal for showing "Loading..." -->
+  <div id="loadingModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="top: 40%;">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

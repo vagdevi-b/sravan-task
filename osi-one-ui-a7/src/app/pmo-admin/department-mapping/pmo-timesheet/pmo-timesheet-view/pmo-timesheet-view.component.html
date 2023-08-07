@@ -1,0 +1,266 @@
+<div class="v-height">
+  <!-- <div class="breadcrumb-wrapper">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#/dashboard">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a (click)="onUrlClick()">Employee TimeSheets 
+        </li>
+        <li class="breadcrumb-item active" aria-current="page"> / {{employeeName}}</a>
+        </li>
+      </ol>
+    </nav>
+  </div> -->
+  <div class="breadcrumb-holder">
+    <div class="container-fluid">
+      <ul class="breadcrumb" style="padding: 1;margin: 0;padding-top: 10px;width: 1199px;height: 35px;">
+        <li class="breadcrumb-item">
+          <a class="breadcrumb-item" href="#/pmoTimeSheetEntry">All TimeSheets</a>
+          <a class="breadcrumb-item">{{employeeName}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="inner-wrapper">
+    <div class="" style="overflow-y:auto;">
+      <div class="employee-info-section table-responsive">
+        <table class="table table-hover table-bordered">
+          <tbody>
+            <tr>
+              <td class="col-md-6 col-xs-6">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div id="empDetailsContainer" class="col">
+                      <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                          <div class="row">
+                            <div class="col-lg-4 text-align-right">
+                              <strong>Name:</strong>
+                            </div>
+                            <div class="col-lg-8">{{employeeName}}</div>
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-4 text-align-right">
+                              <strong>Week:</strong>
+                            </div>
+                            <div class="col-lg-8">{{weekStartDate| date: 'dd-MMM-yyyy' }} To
+                              {{weekEndDate| date: 'dd-MMM-yyyy' }}
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-4 text-align-right">
+                              <strong>Total Week Hours:</strong>
+                            </div>
+                            <div class="col-lg-8">{{totalHours}}</div>
+                          </div>
+                          <div class="row">
+                            <div class="col-lg-4 text-align-right">
+                              <strong>Status:</strong>
+                            </div>
+                            <div class="col-lg-8">{{weekStatus | timesheetStatus}}</div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                          <div class="row" *ngIf="waitingOn.length>0">
+                            <div class="col-md-12">
+                              <div class="pull-right">
+                                <button type="button" class="btn btn-outline-primary"
+                                  (click)="showWaitingPopUp()">Current Status</button>
+                                <button type="button" class="btn btn-outline-primary" (click)="exportToPDF()">Export
+                                  to PDF</button>
+                                <button type="button" class="btn btn-outline-primary" (click)="showHistory()">Show
+                                  History</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="row" *ngIf="waitingOn.length == 0">
+                            <div class="col-md-12">
+                              <div class="pull-right">
+                                <button type="button" class="btn btn-outline-secondary" (click)="exportToPDF()">Export
+                                  to PDF</button>
+                                <button type="button" class="btn btn-outline-primary" (click)="showHistory()">Show
+                                  History</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row" *ngIf="weekStatus=='R'">
+        <div class="pull-left" style="margin-left:20px;">
+          <b *ngIf="tsRejectComment!='' && tsRejectComment!=null" style="color:#007bff !important;">Rejection
+            Reason:</b> {{tsRejectComment}}
+        </div>
+      </div>
+      <div id="tsTableDiv" class="table-responsive" style="height: 300px;">
+        <table id="tsApprTbl" class="table table-hover table-bordered">
+          <thead class="table-inverse">
+            <tr>
+              <th style="width:5%">Date</th>
+              <th style="width:15%">Project</th>
+              <th style="width:10%">Customer</th>
+              <th style="width:8%">Department</th>
+              <th style="width:11%">Task</th>
+              <th style="width:10%">Shift</th>
+              <th style="width:10%">Bill Type</th>
+              <th style="width:5%">Hours</th>
+              <th style="width:24%">Notes</th>
+            </tr>
+          </thead>
+          <tbody id="tsApprTds" style="max-height: 40vh;">
+            <tr *ngFor="let empView of empViewDTO; let i=index;">
+              <td>{{empView.spentDate| date:'dd MMM'}}</td>
+              <td>{{empView.projectName}}</td>
+              <td>{{empView.customerName}}</td>
+              <td>{{empView.departmentName}}</td>
+              <td>{{empView.taskName}}</td>
+              <td>{{empView.shiftName}}</td>
+              <td>{{billTypes[empView.isBillable]}}</td>
+              <td>{{empView.hours}}</td>
+              <td>
+                <span class="notes-container">{{empView.notes }}</span>
+              </td>
+              <td *ngIf="(weekStatus=='G' || weekStatus=='O')">
+                <button type="button"
+                        class="btn btn-default btn-sm" (click)="rejectModalTimeSheetsByProject(empView.projectId);">
+                  <span class="glyphicon glyphicon-share-alt"></span>
+                </button>
+              </td>
+              <td *ngIf="(weekStatus=='G' || weekStatus=='O')">
+                <button
+                    type="button" class="btn btn-default btn-sm" (click)="deleteTimesheetEntry(empView.timeSheetId);">
+                  <span class="glyphicon glyphicon-trash"></span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <div class="col-md-10">
+          <button type="button" class="btn btn-secondary" (click)="previousPge()">Back</button>
+        </div>
+        <div class="col-md-2">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="waitingForApproval" role="dialog">
+  <div class="modal-dialog">
+    <!-- <h4>Current Status</h4> -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Current Status</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="table-responsive table-scroll">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:33.33%">Status</th>
+                    <th style="width:33.33%">Employee</th>
+                    <th style="width:33.33%">Action On</th>
+                  </tr>
+                </thead>
+                <tbody id="tsApprTds">
+                  <tr *ngFor="let empView of waitingOn">
+                    <td>{{empView.status}}</td>
+                    <td>{{empView.sourceName}}</td>
+                    <td>{{empView.comments}}</td>
+                  </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="deleteNotification" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            Are you sure you want to delete the task entry?
+            <br>
+            <br>
+          </div>
+          <div class="col-lg-12 text-align-right">
+            <button type="button" class="btn btn-default tsm-default-btn" data-dismiss="modal">No</button>
+            <button style="margin-left: 10px;" type="button" class="btn btn-primary tsm-primary-btn"
+                    (click)="deleteEntry()" data-dismiss="modal">Yes
+            </button>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Timesheetreject by Project -->
+<div class="modal fade" role="dialog" id="pmoTimeSheetByProjectRejectModel" role="dialog"
+     aria-labelledby="confirmationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reject</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal" ng-click="">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label for="comment">Comment:</label>
+              <textarea class="form-control" rows="3" cols="30" id="comment" [(ngModel)]="rejectTsComment"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <button type="button" class="btn btn-primary" (click)="rejectTimeSheetByProject()">Reject</button>
+            <button type="button" class="btn btn-defaul" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>

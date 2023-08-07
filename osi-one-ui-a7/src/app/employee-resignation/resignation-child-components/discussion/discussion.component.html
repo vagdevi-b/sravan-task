@@ -1,0 +1,51 @@
+<div class="row no-grid-structure mx-0" [formGroup]="discussionForm">
+  <div class="col-12 col-md-3 col-lg-3 col-xl-3 reason-resignation-label-field p-0">
+    <div class="form-group">
+      <label>Reason for Resignation<span *ngIf="displayData == 'RM'" class="required">*</span></label>
+
+      <ng-multiselect-dropdown name="reasons" [placeholder]="'Select Reason'" [data]="reason_values"
+        formControlName="reason" [disabled]="disabled" [(ngModel)]="selectedItems" [settings]="dropdownSettings"
+        (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="onItemDeSelect($event)">
+      </ng-multiselect-dropdown>
+
+      <div class=" fieldError"
+        *ngIf="displayData == 'RM' && discussionForm.get('reason').hasError('required') && discussionForm.get('reason').touched && discussionForm.get('reason')?.errors?.required">
+        <small> Please Select atleast One Reason</small>
+      </div>
+    </div>
+
+    <button *ngIf="displayData != 'RM'"
+      class="btn btn-primary btn-style-1 reason-resignation-submit-btn radius-border-3" type="submit" value="Submit"
+      (click)="saveReasons()">Save</button>
+
+  </div>
+  <div class="col-12 col-md-7 col-lg-7 col-xl-7 reason-resignation-buttons ">
+    <label>&nbsp;</label>
+
+    <div *ngIf="displayData == 'RM'" class="button-with-close-icons-wrap d-flex flex-wrap">
+      <div *ngFor="let value of selectedReasonValue; let i = index" class="button-with-close-icons-item">
+        <div class="button-item-text">{{value.reasonDescription}}</div>
+        <button class="btn btn-primary" type="button" (click)="removeSelectedValue(i)">×</button>
+      </div>
+
+
+    </div>
+
+    <span *ngIf="!reasonForResignation" class="reason-resignation-no-item-text">NO reason Selected </span>
+  </div>
+
+
+
+  <div *ngIf="displayData != 'RM'">
+    <div *ngIf="displayData == 'HR' || 'PD'" class="button-with-close-icons-wrap d-flex flex-wrap">
+      <div *ngFor="let value of selectedReasonValue; let i = index" class="button-with-close-icons-item">
+        <div class="button-item-text">{{value.reasonDescription}}</div>
+        <button class="btn btn-primary" type="button" (click)="removeSelectedValue(i)">×</button>
+      </div>
+
+
+    </div>
+
+  </div>
+
+</div>

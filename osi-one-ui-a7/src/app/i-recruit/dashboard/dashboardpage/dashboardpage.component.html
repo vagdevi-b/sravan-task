@@ -1,0 +1,172 @@
+<!-- <div style=" padding: 0;
+margin: 0;
+text-decoration: none;
+list-style: none;
+box-sizing: border-box;">
+  <nav style=" background: rgb(222, 228, 240);
+  height: 40px;
+  width: 100%;">
+    <label class="logo" style="line-height: 40px;
+    padding: 0 100PX;
+    float: left;
+    color: rgb(109, 109, 226);">iRecruiter</label>
+    <ul style="  float: left;
+    margin-right: 20px;">
+      <li style=" display: inline-block;
+      line-height: 40px;
+      margin: 0 5px;"><a href="#">Dashboard</a></li>
+      <li style=" display: inline-block;
+      line-height: 40px;
+      margin: 0 5px;"><a href="#irecruit/requests">Requests</a></li>
+      <li style=" display: inline-block;
+      line-height: 40px;
+      margin: 0 5px;"><a href="#irecruit/candidates">Candidates</a></li>
+      <li style=" display: inline-block;
+      line-height: 40px;
+      margin: 0 5px;"><a href="#">Scheduled Interviews</a></li>
+    </ul>
+  </nav>
+</div> -->
+<div class="c_breadcrumb c_breadcrumb__container container-fluid">
+  <nav>
+    <ol class="c_breadcrumb__list">
+      <li class="c_breadcrumb__item__title"><span>iRecruiter</span></li>
+      <!-- <li class="c_breadcrumb__item active"><span>Dashboard</span></li> -->
+      <li class="c_breadcrumb__item"><a href="#irecruit/requests">Requests</a></li>
+      <li class="c_breadcrumb__item"><a href="#irecruit/candidates">Candidates</a></li>
+    </ol>
+  </nav>
+</div>
+<div id="dashboardItems" class="container-fluid">
+  <section class="p-2">
+    <div class="row mb-3">
+      <div class="col-sm-12">
+        <div class="card mb-0 pt-3 pb-3">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-12 col-md-5"> <canvas id="parentChart" width="200" height="200" class="m-auto"></canvas></div>
+              <div class="col-sm-12 col-md-7 border-left">
+                <div class="row justify-content-evenly text-center">
+                  <div class="col">
+                    <canvas id="approved" width="150" height="150" class="m-auto"></canvas>
+
+                    <h4 class="mt-4">Approved</h4>
+                  </div>
+                  <div class="col">
+                    <canvas id="inProcess" width="150" height="150" class="m-auto"></canvas>
+                    <h4 class="mt-4">In-Process</h4>
+                  </div>
+                  <div class="col">
+                    <canvas id="rejected" width="150" height="150" class="m-auto"></canvas>
+                    <h4 class="mt-4">Rejected</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-sm-12 col-md-7">
+        <div class="card">
+          <div class="pt-2 pb-3">
+            <span class="h4">Requests</span>
+            <button class="btn btn-primary" style="float: right !important;">View All</button>
+          </div>
+          <div class="table-responsive" style="height: 300px !important">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th *ngFor="let header of requestsTableHeaders">{{header}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let data of requestsTableData">
+                  <tr>
+                    <ng-container *ngFor="let header of requestsTableHeaders">
+                    <td>{{data[header]}}</td>
+                  </ng-container>
+                  </tr>
+                </ng-container>
+                
+              </tbody>
+            </table>
+        </div>
+      </div>
+      </div>
+      <div class="col-sm-12 col-md-5">
+        <div class="card">
+          <span class="h4">Organization View</span>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-sm-12 col-md-5">
+        <div class="card">
+          <div class="pt-2 pb-3">
+            <span class="h4">Application Sources</span>
+            <button class="btn btn-primary" style="float: right !important;">View All</button>
+          </div>
+          <div class="table-responsive" style="height: 300px !important">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th *ngFor="let header of ApplicationSourceHeaders">{{header}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let data of ApplicationSourceData">
+                  <tr>
+                    <ng-container *ngFor="let header of ApplicationSourceHeaders">
+                    <td>{{data[header]}}</td>
+                  </ng-container>
+                  </tr>
+                </ng-container>
+                
+              </tbody>
+            </table>
+        </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-7">
+        <div class="card">
+          <div class="pt-2 pb-3">
+            <span class="h4">Scheduled Interview</span>
+            <button class="btn btn-primary" style="float: right !important;">View All</button>
+          </div>
+          <div class="table-responsive" style="height: 300px !important">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <th *ngFor="let header of scheduledInterviewsHeaders">{{header}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let data of scheduledInterviewsData">
+                  <tr>
+                    <ng-container *ngFor="let header of scheduledInterviewsHeaders">
+                    <td>{{data[header]}}</td>
+                  </ng-container>
+                  </tr>
+                </ng-container>
+                
+              </tbody>
+            </table>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%; width: 15%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h4 style="color: white;">Loading ...</h4>
+      </div>
+    </div>
+  </div>
+</div>

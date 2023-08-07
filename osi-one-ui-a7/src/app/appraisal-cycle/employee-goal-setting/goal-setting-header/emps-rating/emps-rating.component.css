@@ -1,0 +1,22 @@
+.btn-close{ height: 30px !important ; line-height: 30px !important; font-size:26px !important; font-weight: 300 !important; }
+.form-control, input.form-control, textarea, select, select.form-control, .ratings-section select.form-control.border{ height: 30px !important; line-height: 30px !important; border: 1px solid #ddd !important; font-family: 'Montserrat', sans-serif !important; border-radius: 3px !important; }
+.sectionHeader{
+    padding:15px;
+}
+
+.table-row{
+    padding:10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table-row-sm{
+    padding:5px 10px;
+}
+
+.border-top{
+    border-top: 1px solid #dee2e6;
+}
+
+.text-center{
+    text-align:center;
+}

@@ -1,0 +1,48 @@
+.performanceAreas{
+    border:2px solid #dbdbdb;
+    background-color: #FAFAFA;
+}
+
+.button-color {
+    background-color: #FAFAFA;
+}
+
+.padding-top{
+    padding-top: 10px;
+}
+
+.develpment{
+    font-family: Roboto, 'Segoe UI', Tahoma, sans-serif;
+    font-size: 16px;
+}
+
+.card{
+    margin:10px 0px;
+}
+
+.text-center{
+    text-align:center;
+}
+p{
+    color: #000 !important;
+}
+
+[disabled],:disabled{
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
+
+  
+  .flex_resp{
+    display: flex; 
+    flex-wrap: wrap; 
+  }
+
+  .flex_resp>* {
+      padding-left: 5px;
+    flex: 1 1 12%;
+ }
+.break-word {
+    word-break: break-word;
+}

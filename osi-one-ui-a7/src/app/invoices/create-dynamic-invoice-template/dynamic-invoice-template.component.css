@@ -1,0 +1,182 @@
+
+
+
+
+ol ol, ol ul, ul ol, ul ul {
+    margin-bottom: 0;
+    padding: 0em;
+}
+
+@media only screen and (max-width: 600px) {
+    .section-nav p {
+      text-align: center;
+    }
+  }
+
+
+  .ColumnFieldHeight {
+    height: 250px !important;
+  }
+  
+
+.section-nav {
+    padding-right: 1%;
+    border-right: 1px solid #dddd;
+    
+}
+
+
+.operationBtnGap {
+    margin-bottom: 25px !important;
+  }
+
+  .btn-import-all {
+    width: 36px;
+    height: 34px;
+    border-radius: 3px;
+  
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: url("icons/double_right_icon.png") no-repeat center #ececec;
+    border: 1px solid #ccc;
+  }
+
+  
+.btn-export-all {
+    width: 36px;
+    height: 34px;
+    border-radius: 3px;
+  
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: url("icons/double_left_icon.png") no-repeat center #ececec;
+    border: 1px solid #ccc;
+  }
+  
+  .btn-import-right {
+    width: 36px;
+    height: 34px;
+    border-radius: 3px;
+  
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: url("icons/right_icon.png") no-repeat center #ececec;
+    border: 1px solid #ccc;
+  }
+  
+  .btn-import-left {
+    width: 36px;
+    height: 34px;
+    border-radius: 3px;
+  
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: url("icons/left_icon.png") no-repeat center #ececec;
+    border: 1px solid #ccc;
+  }
+  
+  .btn-move-up {
+    width: 36px;
+    height: 34px;
+    border-radius: 3px;
+  
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: url("icons/up_icon.png") no-repeat center #ececec;
+    border: 1px solid #ccc;
+  }
+  
+  .btn-move-down {
+    width: 36px;
+    height: 34px;
+    border-radius: 3px;
+  
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    background: url("icons/down_icon.png") no-repeat center #ececec;
+    border: 1px solid #ccc;
+  }
+
+  
+  
+.btn-export-all {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/double_left_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-import-right {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/right_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-import-left {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/left_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-move-up {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/up_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.btn-move-down {
+  width: 36px;
+  height: 34px;
+  border-radius: 3px;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: url("icons/down_icon.png") no-repeat center #ececec;
+  border: 1px solid #ccc;
+}
+
+.columnMovingButton {
+    width: 32px !important;
+    height: 30px !important;
+    padding-left: 6px;
+    padding-top: 0px;
+  }
+
+
+.sidebar{
+   color : #99979c;
+   cursor: pointer
+}
+
+.sidebar:hover { 
+    color: #007bff;
+  }
+
+  .moveToTop{
+      z-index: 3;
+  }
+
+  .heading{
+      font-size: 128%;
+  }
+
+

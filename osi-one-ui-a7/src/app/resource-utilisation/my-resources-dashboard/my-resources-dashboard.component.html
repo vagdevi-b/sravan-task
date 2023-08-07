@@ -1,0 +1,284 @@
+<div class="v-height" id="htmle2imagedata">
+  <div class="row">
+    <div class="col-sm-11">
+      <span class="lastRefresh">Last Refresh : {{ refreshDate | date:'medium' }}</span>
+    </div>
+    <div class="col-sm-1 mb-1" data-tooltip title="Sync data">
+      <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+        style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="onRefresh()">
+      </span>
+    </div>
+  </div>
+  <app-loading *ngIf="showLoader"></app-loading>
+  <div class="kodama-tooltip" name="kodama">
+    <div name="kodamaTip" [ngStyle]="{'opacity': tooltipOpacity, 'left' : clientX+'px', 'top' : clientY+'px'}"
+      style="position: relative; pointer-events: none; z-index: 9999;">
+      <div style="position: relative; top: -92.5px; left: 204.5px;">
+        <div
+          style="padding: 5px; background: linear-gradient(to top, rgba(220, 230, 240, 0.6) 0%, rgba(235, 240, 245, 0.9) 90%, rgba(230, 235, 240, 0.8) 100%); font-family: Helvetica Neue, Helvetica, Arial, sans-serif; border: 1px solid rgb(220, 230, 250); border-radius: 6px; font-size: 14px; box-shadow: rgba(0, 20, 70, 0.5) 0px 1px 3px;">
+          <div
+            style="text-align: center; padding: 4px; color: rgb(115, 130, 140); font-size: 15px; text-shadow: rgba(255, 255, 255, 0.5) 0px -1px 0px;">
+            <span>
+              <b>Employee Information</b>
+            </span>
+          </div>
+          <table class="table table-hover table-bordered">
+            <tbody>
+              <!-- <tr>
+                    <td class="text-label">Employee Id:</td>
+                    <td class="text-value">US1760</td>
+                  </tr> -->
+              <tr>
+                <td class="text-label">Employee Name:</td>
+                <td class="text-value">{{hoveredEmployee.empName}}</td>
+              </tr>
+              <tr>
+                <td class="text-label">Employee Department:</td>
+                <td class="text-value">{{hoveredEmployee.department}}</td>
+              </tr>
+              <tr>
+                <td class="text-label">Employee Position:</td>
+                <td class="text-value">{{hoveredEmployee.position}}</td>
+              </tr>
+              <tr>
+                <td class="text-label">Employee Supervisor:</td>
+                <td class="text-value">{{hoveredEmployee.supervisor}}</td>
+              </tr>
+              <tr>
+                <td class="text-label">Date of Hire:</td>
+                <td class="text-value">{{hoveredEmployee.startDate}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="accordion" class="accordion">
+      <div class="card mb-0">
+        <div class="card-header collapsed" data-toggle="collapse" href="#collapseOne">
+          <a class="card-title">
+            <h5>
+              <span class="accTitle">Employees</span>
+              <span class="badge badge-pill badge-info float-right">{{resourcesCount}}</span>
+            </h5>
+          </a>
+        </div>
+        <div id="collapseOne" class="card-body collapse" data-parent="#accordion">
+          <ul class="list-group" style="overflow-x: hidden;">
+            <div *ngFor="let emp of myResourceList">
+              <li class="list-group-item heading">
+                <span class="glyphicon glyphicon-plus cursor"
+                  (click)="toggleList('resources', emp.practice, $event)"></span>{{emp.practice}} <span
+                  class="badge badge-pill float-right">{{emp.resources.length}}</span></li>
+              <div id="resources_{{emp.practice}}" class="collapse sub-table">
+                <li class="sub-head border">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      Employee
+                    </div>
+                    <div class="col-sm-3">
+                      Department
+                    </div>
+                    <div class="col-sm-2">
+                      Supervisor
+                    </div>
+                    <div class="col-sm-2">
+                      Designation
+                    </div>
+                    <div class="col-sm-2">
+                      Job Code
+                    </div>
+                    <div class="col-sm-1 text-right">
+                      Cost
+                    </div>
+                    <!-- <div class="col-sm-1">
+                    </div> -->
+                  </div>
+                </li>
+                <li *ngFor="let res of emp.resources" class="list-group-item">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      {{res.empName}}
+                    </div>
+                    <div class="col-sm-3">
+                      {{res.department}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res.supervisor}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res.position}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res?.jobCode}}
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="float-right">
+                        ${{res?.cost.toFixed()}}
+                      </span>
+                    </div>
+                   <!-- <div class="col-sm-1">
+                       <span *ngIf="res.empType === 'Direct Resource'"
+                        class="glyphicon glyphicon-bookmark float-right"></span>
+                    </div> -->
+                  </div>
+                </li>
+              </div>
+            </div>
+          </ul>
+        </div>
+        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          <a class="card-title">
+            <h5>
+              <span class="accTitle">Contractors</span>
+              <span class="badge badge-pill badge-info float-right">{{contractorsCount}}</span>
+            </h5>
+          </a>
+        </div>
+        <div id="collapseTwo" class="card-body collapse" data-parent="#accordion">
+          <ul class="list-group" style="overflow-x: hidden;">
+            <div *ngFor="let emp of myContracters">
+              <li class="list-group-item heading">
+                <span class="glyphicon glyphicon-plus cursor"
+                  (click)="toggleList('contractors', emp.practice, $event)"></span>{{emp.practice}} <span
+                  class="badge badge-pill float-right">{{emp.resources.length}}</span></li>
+              <div id="contractors_{{emp.practice}}" class="collapse sub-table">
+                <li class="sub-head border">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      Employee
+                    </div>
+                    <div class="col-sm-3">
+                      Department
+                    </div>
+                    <div class="col-sm-2">
+                      Supervisor
+                    </div>
+                    <div class="col-sm-2">
+                      Designation
+                    </div>
+                    <div class="col-sm-2">
+                      Job Code
+                    </div>
+                    <div class="col-sm-1 text-right">
+                      Cost
+                    </div>
+                    <!-- <div class="col-sm-1"> -->
+                      <!-- DOJ -->
+                    <!-- </div> -->
+                  </div>
+                </li>
+                <li *ngFor="let res of emp.resources" class="list-group-item">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      {{res.empName}}
+                    </div>
+                    <div class="col-sm-3">
+                      {{res.department}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res.supervisor}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res.position}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res?.jobCode}}
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="float-right">
+                        ${{res?.cost.toFixed()}}
+                      </span>
+                    </div>
+                    <!-- <div class="col-sm-1"> -->
+                      <!-- <span *ngIf="res.empType === 'Direct Contractor'"
+                        class="glyphicon glyphicon-bookmark float-right"></span> -->
+                    <!-- </div> -->
+                  </div>
+                  <!-- <span class="intent"></span>
+                <span class="glyphicon glyphicon-user"></span>{{res.empName}} <span
+                  *ngIf="res.empType === 'Direct Contractor'" class="glyphicon glyphicon-bookmark float-right"></span> -->
+                </li>
+              </div>
+            </div>
+          </ul>
+        </div>
+        <div class="card-header collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+          <a class="card-title">
+            <h5>
+              <span class="accTitle">Inter Org Employees </span>
+              <span class="badge badge-pill badge-info float-right">{{offShoreCount}}</span>
+            </h5>
+          </a>
+        </div>
+        <div id="collapseThree" class="collapse" data-parent="#accordion">
+          <ul class="list-group" style="overflow-x: hidden;">
+            <div *ngFor="let emp of myOffShoreResources">
+              <li class="list-group-item heading">
+                <span class="glyphicon glyphicon-plus cursor"
+                  (click)="toggleList('offshore', emp.practice, $event)"></span>{{emp.practice}} <span
+                  class="badge badge-pill float-right">{{emp.resources.length}}</span></li>
+              <div id="offshore_{{emp.practice}}" class="collapse sub-table">
+                <li class="sub-head border">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      Employee
+                    </div>
+                    <div class="col-sm-3">
+                      Department
+                    </div>
+                    <div class="col-sm-2">
+                      Supervisor
+                    </div>
+                    <div class="col-sm-2">
+                      Designation
+                    </div>
+                    <div class="col-sm-2">
+                      Job Code
+                    </div>
+                    <div class="col-sm-1 text-right">
+                      Cost
+                    </div>
+                    <!-- <div class="col-sm-1">
+                    </div> -->
+                  </div>
+                </li>
+                <li *ngFor="let res of emp.resources" class="list-group-item">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      {{res.empName}}
+                    </div>
+                    <div class="col-sm-3">
+                      {{res.department}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res.supervisor}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res.position}}
+                    </div>
+                    <div class="col-sm-2">
+                      {{res?.jobCode}}
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="float-right">
+                        ${{res?.cost.toFixed()}}
+                      </span>
+                    </div>
+                    <!-- <div class="col-sm-1">
+                    </div> -->
+                  </div>
+                  <!-- <span class="intent"></span>
+                <span class="glyphicon glyphicon-user"></span>{{res.empName}} -->
+                </li>
+              </div>
+            </div>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

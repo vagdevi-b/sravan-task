@@ -1,0 +1,73 @@
+<div class="grid pt-1">
+    <!--Page Title Section Start-->
+    <section class="page-title-box border-bottom-0 mb-0 mt-2">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between py-2">
+                <div class="">
+                    <h5 class="pb-0 float-left">Analytics Dashboard</h5>
+                    <!-- <button type="button" class="btn-link btn-link-lg" style="visibility: hidden;" data-toggle="modal"
+                        data-target="#dashboardConfiguration" #modalOpen>
+                    </button> -->
+                </div>
+                <div class="config_text" (click)="openWidList()">
+                    <span class="glyphicon glyphicon-cog"></span> <span class="text">Configure Dashboard</span>
+                </div>
+                <!-- <div class="cursor-pointer glyphicon glyphicon-cog" style="font-size:20px !important;"
+                    (click)="openWidList()">
+                </div> -->
+            </div>
+        </div>
+    </section>
+    <!-- Card Start -->
+    <section>
+        <div *ngIf="spinner" class="overlay">
+            <div class="loader"></div>
+        </div>
+        <div *ngIf="!spinner">
+            <div class="container-fluid" *ngIf="dashboard">
+                <div class="row" cdkDropList
+                #firstList = "cdkDropList"
+                [cdkDropListData] = "dashboard"
+                [cdkDropListConnectedTo] = "[secondList, thirdList]"
+                (cdkDropListDropped) = "onDrop($event)">
+                    <!-- Left Section Start -->
+                    <ng-container *ngFor="let widget of dashboard;let i= index">
+                        <div *ngIf="widget?.widget?.type !== 'noItem' && widget?.isVisible && widget?.widget?.dashboardType === 'Analytics'"
+                            class="col-12 col-md-6 col-lg-4 widget mb-3" cdkDrag>
+                            <div class="card widget">
+                                <div class="card-header wTitle">
+                                    <div class="title-text">
+                                        <span class="name">{{widget?.widget.name | titlecase}}</span>
+                                    </div>
+                                    <div>
+                                        <span class="glyphicon glyphicon-move"></span>
+                                        <span class="glyphicon glyphicon-remove ml-2"
+                                            (click)="removeWidget(widget)"></span>
+                                    </div>
+                                </div>
+                                <div class="card-body " (click)="openModal(widget, i)">
+                                    <img class="img-fluid widget_img" [src]="widget.imageUrl"
+                                        onerror="this.onerror=null;this.src='assets/images/dashboard-image.png';" />
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="container-fluid" *ngIf="dbwidgets < 1">
+
+                <div class="col-3 col-md-3 widget">
+                    <div class="card dashboard rounded shadow p-4" style="text-align: center; height: 100%;">
+                        <div class="card-body p-5">
+                            <img class="no-widget" src="assets/images/no_widget.svg" alt="" />
+                            <p>No Dashboard Items</p>
+                            <button type="button" class="btn btn-primary mb-4 no-widget-margin"
+                                (click)="openWidList()">Add
+                                Widget</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

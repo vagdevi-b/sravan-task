@@ -1,0 +1,195 @@
+<div tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div [formGroup]="filterForm" class="modal-dialog modal-md my-0 filter-modal-wrap">
+    <div class="modal-content">
+      <div class="modal-header filter-modal-header">
+        <h4 class="modal-title filter-modal-title">Filter</h4>
+        <button type="button" class="close filter-modal-close" (click)="close()" data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group">
+
+          <label class="selectLabel d-block" id="projectOrg">Org</label>
+          <ng-multiselect-dropdown class="dropdown multi-dropdown w-100" [disabled]="spinner" [placeholder]="'Select'" [data]="orgs"
+            (onSelect)="onOrgSelected($event)" formControlName="org" [settings]="projectOrgDropDownSettings"
+            [(ngModel)]="projorg">
+          </ng-multiselect-dropdown>
+
+
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="selectLabel d-block" id="employeeBU">BU</label>
+          <ng-multiselect-dropdown class="dropdown multi-dropdown w-100" [disabled]="spinner" [placeholder]="'Select'"
+            (onSelect)="onBuSelected($event)" formControlName="Bu" [settings]="employeeBuDropDownSettings"
+            [data]="businessUnits" [(ngModel)]="employebu">
+          </ng-multiselect-dropdown>
+
+
+        </div>
+        <div class="form-group">
+
+          <label class="selectLabel d-block" id="employeePractice">Practice</label>
+          <ng-multiselect-dropdown class="dropdown multi-dropdown w-100" (onSelect)="onPracticeSelected($event)" [disabled]="spinner"
+            [placeholder]="'Select'" [settings]="employeePracticeDropDownSettings" formControlName="practice"
+            [data]="practiceData" [(ngModel)]="employeepractice">
+          </ng-multiselect-dropdown>
+
+
+        </div>
+        <div class="form-group">
+
+          <label class="selectLabel d-block" id="subPractice">Sub Practice</label>
+          <ng-multiselect-dropdown class="dropdown multi-dropdown w-100" (onSelect)="onSubPracticeSelected($event)"
+            [disabled]="spinner" [placeholder]="'Select'" [settings]="employeeSubPracticeDropDownSettings"
+            formControlName="subpractice" [data]="subPractice" [(ngModel)]="employeesubpractice">
+          </ng-multiselect-dropdown>
+
+
+        </div>
+        <div class="form-group">
+          <label class="selectLabel d-block" id="subPractice">Status</label>
+          <ng-multiselect-dropdown class="dropdown multi-dropdown w-100" [placeholder]="'Select'" [settings]="statusDropDownSettings"
+            (onSelect)="onStatusSelect($event)" (onDeSelect)="onItemDeSelect($event)" formControlName="status"
+            [data]="Status" [(ngModel)]="status">
+          </ng-multiselect-dropdown>
+        </div>
+
+
+        <div class="date-section-filter-modal">
+          <label>LWD - Range</label>
+          <div class="row">
+            <div class="col-5 pr-0">
+              <div class="form-group">
+                <div class="input-group" #DatePickContainer1>
+
+                  <input id="lwdRangeDate" class="form-control form-control-sm form-field-border"
+                    (ngModelChange)="getDataFromLwd($event)" formControlName="fromlwdRange" name="resgdate"
+                    placeholder="YYYY-MM-DD" ngbDatepicker #d1="ngbDatepicker" [(ngModel)]="fromLwdRangeDate">
+
+
+                  <div class="input-group-append">
+
+                    <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d1.toggle()"
+                      type="button">
+
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                        <i class="fa fa-lg fa-calendar date-pick"></i>
+                      </span>
+
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-2 d-flex justify-content-center align-items-center">
+              <div class="form-group">To</div>
+            </div>
+            <div class="col-5 pl-0">
+              <div class="form-group">
+                <div class="input-group" #DatePickContainer2>
+
+                  <input id="resignationRangeDate" class="form-control form-control-sm form-field-border"
+                    (ngModelChange)="getDataToLwd($event)" formControlName="tolwdRange" placeholder="YYYY-MM-DD"
+                    ngbDatepicker #d2="ngbDatepicker" [(ngModel)]="toLwdRangeDate">
+
+                  <div class="input-group-append">
+
+                    <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d2.toggle()"
+                      type="button" (document:click)="closeFix($event, d2)">
+
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+
+                        <i class="fa fa-lg fa-calendar date-pick"></i>
+
+                      </span>
+
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="date-section-filter-modal">
+          <label>Resignation Date Range</label>
+          <div class="row">
+            <div class="col-5 pr-0">
+              <div class="form-group">
+                <div class="input-group" #DatePickContainer3>
+
+                  <input id="timesheetFromdate3" class="form-control form-control-sm form-field-border"
+                    (ngModelChange)="getDataFromResg($event)" formControlName="fromResignationDate"
+                    placeholder="YYYY-MM-DD" ngbDatepicker #d3="ngbDatepicker" [(ngModel)]="fromResignationRange">
+
+                  <div class="input-group-append">
+
+                    <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d3.toggle()"
+                      type="button">
+
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+
+                        <i class="fa fa-lg fa-calendar date-pick"></i>
+
+                      </span>
+
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-2 d-flex justify-content-center align-items-center">
+              <div class="form-group">To</div>
+            </div>
+            <div class="col-5 pl-0">
+              <div class="form-group">
+                <div class="input-group" #DatePickContainer4>
+
+                  <input id="timesheetFromdate4" class="form-control form-control-sm form-field-border"
+                    (ngModelChange)="getDataToResg($event)" formControlName="toResignationDate" placeholder="YYYY-MM-DD"
+                    ngbDatepicker #d4="ngbDatepicker" [(ngModel)]="toResignationRange">
+
+                  <div class="input-group-append">
+
+                    <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d4.toggle()"
+                      type="button" (document:click)="closeFix1($event, d4)">
+
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+
+                        <i class="fa fa-lg fa-calendar date-pick"></i>
+
+                      </span>
+
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <button class="btn btn-secondary" (click)="resetresignationlist()" type="button">Reset</button>
+        <div class="btn-outer">
+          <button class="btn btn-outline-secondary mr-2" (click)="close()" type="button"
+            value="Cancel">Cancel</button>
+            <button class="btn btn-primary" (click)="getallresignationlist()" type="button">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,270 @@
+<div class="mainpanel">
+  <h3 style="padding: 27px 0px 0px 12px;">Critical Issues/Risks:</h3>
+  <div class="tabcontent" *ngIf="projectRiskArray.length > 0">
+    <div class="card">
+      <div class="table-responsive">
+        <fieldset [disabled]="isDisableProjActi">
+          <table class="table table-hover table-bordered">
+            <thead class="thead_bg text-center">
+              <tr>
+                <th width="20%">Risk/Issue</th>
+                <th width="20%">Risk Type</th>
+                <th width="17%">Criticality</th>
+                <th width="20%">Owner</th>
+                <th width="15%">Is Internal</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let project of projectRiskArray | paginate: { id: 'risk_pagination',itemsPerPage: 5,currentPage: riskpPage,totalItems: riskTotal }; let i = index"
+                [hidden]="project.isDeleted">
+                <td>
+                  <!-- <input type="text" name="risk" class="form-control" [(ngModel)]="project.risk"  > -->
+                  {{project.risk}}{{project.isDeleted}}
+                </td>
+                <td>
+                  {{project.typeName}}
+                </td>
+                <td *ngIf="project.criticality === 'L'">
+                  Low
+                </td>
+                <td *ngIf="project.criticality === 'M'">
+                  Medium
+                </td>
+                <td *ngIf="project.criticality === 'H'">
+                  High
+                </td>
+                <td>
+                  {{project.ownerName}}
+                </td>
+                <td>
+                  {{project.isInternal}}
+                </td>
+                <td *ngIf="projectRiskArray.length > 0" class="tableColumnCenterAlign">
+                  <button [hidden]="i + (riskpPage - 1) * noOfItemsPerPage !=projectRiskArray.length - 1" type="button"
+                    class="btn-link" (click)="addAnotherRow()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </td>
+                <td *ngIf="projectRiskArray.length > 0" class="tableColumnCenterAlign">
+                  <button id="deleteEntry" *ngIf="isDisableDeleteBtn" type="button" class="btn-link"
+                    (click)="deleteRow(i,project.id)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+                </td>
+                <td *ngIf="projectRiskArray.length > 0" class="tableColumnCenterAlign">
+                  <button id="deleteEntry" type="button" class="btn-link" (click)="editProjectRisk(project)">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                  </button>
+
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </fieldset>
+        <div class="col-sm-12 row pb-3">
+          <div class="col-sm-10">
+            <pagination-controls id="risk_pagination" autoHide="true" maxSize="8" previousLabel="" nextLabel=""
+              (pageChange)="riskpPage = $event"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="spinner" class="overlay">
+  <div class="loader"></div>
+</div>
+<div *ngIf="projectRiskArray.length == 0 && isDisableProjActi">
+  <div style="text-align: center;font-weight: 500;">No Risks or Issues exist</div>
+</div>
+
+<div *ngIf="isEnableRisk" class="critical-issue-main">
+  <div class="container">
+    <label>Risk Types<span class="star">*</span></label>
+    <div class="row" #riskType>
+      <div *ngFor="let riskType of riskTypes; let i= index">
+        <div class="col" style="margin-top: 10px;">
+          <button style="cursor: pointer;" class="btn btn-primary form-control btn-block"
+            [ngClass]="{'my-class': step== riskType.riskTypeName}"
+            (click)="step= riskType.riskTypeName;getRiskTypeID(riskType)">{{riskType.riskTypeName}}</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 10px;"></div>
+  </div>
+  <div *ngIf="isRiskType" class="error-msg">Please select risk type
+    <div style="margin-top: 10px;"></div>
+  </div>
+  <div class="form-group row" #risk>
+    <label class="col-sm-4 col-form-label issues-lable">What kind of risk/issue you are facing<span
+        class="star">*</span>:</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="risk" [(ngModel)]="projectRisk.risk" placeholder="Enter risk">
+    </div>
+  </div>
+  <div *ngIf="isRiskTypeEmpty" class="error-msg">Please enter risk/issue
+  </div>
+  <form style="margin-top: 16px;">
+    <div class="form-group row" #criticality>
+      <label class="col-sm-4 col-form-label issues-lable">Choose Criticality<span class="star">*</span>:</label>
+      <div class="col-sm-4">
+        <!-- <input type="password" class="form-control" id="inputPassword" placeholder="Password"> -->
+        <select name="criticality" class="form-control" [(ngModel)]="projectRisk.criticality">
+          <option disabled hidden [ngValue]="selectUndefinedOptionValue">Choose your criticality</option>
+          <option *ngFor="let critical of allCriticals" [ngValue]="critical.code">
+            {{critical.name}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div *ngIf="isCriticality" class="error-msg">Please select criticality</div>
+    <div class="form-group row" #owner>
+      <label class="col-sm-4 col-form-label issues-lable">Who is the Owner<span class="star">*</span>:</label>
+      <div class="col-sm-4">
+        <input type="text" name="owner" class="form-control" (blur)="filteredEmployeeSearch(projectRisk.ownerName)"
+          [(ngModel)]="projectRisk.ownerName" placeholder="Enter Owner">
+      </div>
+    </div>
+    <div *ngIf="isOwnerEmpty" class="error-msg">Please enter owner name
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-4 col-form-label issues-lable">What is the impact:</label>
+      <div class="col-sm-4">
+        <input type="text" name="impact" class="form-control" [(ngModel)]="projectRisk.impact"
+          placeholder="Enter impact">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="inputPassword" class="col-sm-4 col-form-label issues-lable">What is your mitigation plan:</label>
+      <div class="col-sm-4">
+        <input type="text" name="mitigationPlan" class="form-control" [(ngModel)]="projectRisk.mitigationPlan"
+          placeholder="Enter mitigation plan">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="inputPassword" class="col-sm-4 col-form-label issues-lable">Is there any contingency plan in
+        place:</label>
+      <div class="col-sm-4">
+        <input type="text" name="cont" class="form-control" [(ngModel)]="projectRisk.contingencyPlan"
+          placeholder="Enter contingency plan">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="inputPassword" class="col-sm-4 col-form-label issues-lable">Do you need executive attention:</label>
+      <div class="col-sm-4">
+        <select name="executeve" class="form-control" [(ngModel)]="projectRisk.executiveAttention">
+          <option disabled hidden [ngValue]="selectExecuteveValue">Choose your Executeve</option>
+          <option *ngFor="let executeve of executives" [ngValue]="executeve">
+            {{executeve}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="inputPassword" class="col-sm-4 col-form-label issues-lable" placeholder="Enter Comment">Any additional
+        comments:</label>
+      <div class="col-sm-4">
+        <textarea name="comment" class="form-control" [(ngModel)]="projectRisk.comment" maxlength="200"
+          rows="3"></textarea>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="isinternal" class="col-sm-4 col-form-label issues-lable" placeholder="Enter Comment">Is
+        Internal:</label>
+      <div style="padding-top: 9px;">
+        <input type="checkbox" name="isInternal" [(ngModel)]="projectRisk.isInternal"
+          [checked]="projectRisk.isInternal" />
+      </div>
+    </div>
+
+    <!-- <div class="form-group row" style="cursor: pointer;">
+      <label for="inputPassword" class="col-sm-4 col-form-label issues-lable"></label>
+      <div class="col-sm-2" >
+        <button type="button"  class="btnstyle2" (click)="saveProjectRisk()">Save</button>
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btnstyle2" (click)="saveNextProjectRisk()">Save Next</button>
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btnstyle2" style="background-color: coral;" (click)="close()">Close</button>
+      </div>
+    </div> -->
+    <div class="form-group row">
+      <label for="inputPassword" class="col-sm-4 col-form-label issues-lable"></label>
+      <div class="pull-right">
+        
+        <button type="button" class="btn btn-outline-primary" (click)="saveNextProjectRisk()">Save Next</button>
+        <button type="button" class="btn btn-outline-secondary   btn-cancel" (click)="close()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="saveProjectRisk()">Save</button>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+<!-- Employee List Modal -->
+<div class="modal fade" id="criticalempModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Employee List</h5>
+      </div>
+      <div class="modal-body" *ngIf="criticalemployeeList"
+        [ngClass]="{'enable-scroller' : criticalemployeeList.length > 10}">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <div class="input-group">
+              <input class="form-control" id="Employee Name" [(ngModel)]="searchedText"
+                placeholder="Enter Employee Name" maxlength="50" type="text">
+              <div class="input-group-prepend">
+                <button class="btn" (click)="filteredEmployeePopSearch()">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;" (click)="filteredEmployeeSearch1(searchedText)">Search</button>
+          </div> -->
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of criticalemployeeList ;let i=index"
+            (click)="selectedEmployee(users.employeeId,users.fullName)">
+            <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="criticalDeletemodel" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want delete
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-outline-primary" (click)="accept('true')">
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

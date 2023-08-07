@@ -1,0 +1,64 @@
+<div class="v-height">
+  <div class="row p-2">
+    <div class="col-sm-10">
+    </div>
+    <div class="col-sm-2 mb-1" data-tooltip title="Sync data">
+      <button class="btn btn-primary float-right" (click)="refresh()">
+        Refresh <span class="glyphicon glyphicon-refresh"></span>
+      </button>
+    </div>
+  </div>
+  <div class="row" id="pro">
+    <!-- <div class="col-md-4">
+      <label>Project </label>
+      <ng-multiselect-dropdown name="organization" [settings]="dropdownSettings" [data]="orgProjectData"
+        [(ngModel)]="orgProject" (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)"
+        (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+      </ng-multiselect-dropdown>
+    </div> -->
+    <div class="col-md-2">
+      <label>Year </label>
+      <div>
+        <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="orgMaxYear"
+          (change)="updateHrsByResourceGrid()">
+          <option value="*">All</option>
+          <option *ngFor="let year of orgYearData" value="{{year.key}}">{{year.key}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="filter">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card" id="htmle2imagedata">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-sm-6">
+                <h6 style = "padding-top : 5px">Organization Project Revenue</h6>
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="chartType"
+                    (change)="updateChart()"> 
+                    <option *ngFor="let chart of chartData" value="{{chart}}">{{chart | titlecase}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <button type="button" id="toggle" class="btn btn-toggle" data-toggle="button" aria-pressed="false"
+                  autocomplete="off" (click)="toggle($event)">
+                  <div class="handle"></div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="wrapper">
+              <canvas id="OrgProjectRevenue"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="spinner" class="overlay">
+      <div class="loader"></div>
+    </div>
+  </div>

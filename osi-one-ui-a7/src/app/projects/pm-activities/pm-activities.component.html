@@ -1,0 +1,271 @@
+<div class="mainpanel" >
+  <div class="snackbar" #AlertSuccess>{{ successMessage }}</div>
+  <div class="snackbar danger" #AlertError>{{ errorMessage }}</div>
+
+  <div style="display: inline-block;width: 100%;">
+  <div class="sub-header clearfix title">
+    <div class="row mt-3">
+      <div class="col-md-12" style="margin-left: 0px;">
+        <h2>Submit Weekly Project Status</h2>
+      </div>
+    </div>
+  </div>
+  <div class="download-pdf" *ngIf="isDownloadBtnEnable">
+    <button type="button"  class="btn btn-outline-primary" (click)="downloadPdf()"><i class="fa fa-download"></i> PDF</button>
+    <button type="button"  class="btn btn-outline-primary" (click)="downloadWord()"><i class="fa fa-download"></i> Word</button>
+
+  </div>
+  </div>
+  <div style="margin-top: 10px;"></div>
+
+  <div>
+    <div class="row" style="margin-left: 0px;">
+      <div class="col-sm-12 col-md-3">
+        <div>
+          <label>Select Project</label>
+          <div>
+            <select #select
+              class="form-control"
+              [(ngModel)]="selectedProject.projectId"
+              (ngModelChange)="select.value = projectChange($event)"
+            >
+              <option
+                *ngFor="let project of projectsList"
+                value="{{ project.projectId }}"
+              >
+                <label>{{ project.projectName }}</label>
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-2">
+      <div>
+        <label>All Projects?</label>
+      </div>
+      <div class="custom-control custom-checkbox mr-sm-2">
+        <input type="checkbox"  (click)="getAllProjects($event)" class="custom-control-input" id="pmActivity" [(ngModel)]="isChecked">
+        <label class="custom-control-label" for="pmActivity"></label>
+      </div>
+        <!-- <input
+          type="checkbox"
+          
+          value="true"
+          [(ngModel)]="isChecked"
+        /> -->
+      </div>
+      <div class="col-sm-12 col-md-3">
+        <div>
+          <label>Year</label>
+          <select #yearId
+            class="form-control"
+            [(ngModel)]="selectedYear"
+            (ngModelChange)="yearId.value = yearChange($event)"
+          >
+            <option *ngFor="let year of years" value="{{ year }}">
+              {{ year }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-3">
+        <div>
+          <label>Month</label>
+          <select #monthId
+            class="form-control"
+            [(ngModel)]="selectedMonth" 
+            (ngModelChange)="monthId.value = monthChange($event)"
+          >
+            <option *ngFor="let month of months" value="{{ month }}">
+              {{ month }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-left: 0px;">
+      <div class="col-md-12" style="cursor: pointer;">
+        <ul
+          class="nav nav-tabs"
+          role="tablist"
+          style="margin-top: 6px; padding-bottom: 6px;"
+          *ngIf="selectedMonth != ''"
+        >
+          <li class="nav-item" *ngFor="let week of calendarListactive">
+            <a
+              class="nav-link"
+              (click)="setActiveTab(week.weekStartDate, week.calendarId,$event)"
+              role="tab"
+              data-toggle="tab "
+              [ngClass]="{ 'selected-tab': activetab == week.weekStartDate }"
+              [class.disabled]="!week.isactive"
+            >
+              <span>{{ week.weekStartDate | date: "MMM" | uppercase }}</span>
+              <div>
+                <span>{{ week.weekStartDate | date: "dd" }}</span
+                >-
+                <span>{{ week.weekEndDate | date: "dd" }}</span>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="spinner" class="overlay">
+    <div class="loader"></div>
+  </div>
+
+  <div *ngIf="isActivityTabsDis"> 
+    <br />
+    <app-accomplished-activities 
+      [activities]="accomplishedActivities"
+      [selectedProjectId]="selectedProjectId"
+      [isDisableProjActi]="isDisableProjActi"
+      [pageTitle]="'Accomplished Activities (' + wsrWeekStartDate + ' - ' + wsrWeekEndDate + ' )'"
+      (activitiesChange)="updateAccomplishedActivities($event)"
+      (deleteActivitiesChange)="deleteAccomplishedActivities($event)"
+      class="topspace"
+    ></app-accomplished-activities>
+    <br />
+    <app-unaccomplished-activities
+      [accomplishedActivities]="unAccomplishedActivities"
+      [pageTitle]="'Unaccomplished Activities (' + wsrWeekStartDate + ' - ' + wsrWeekEndDate + ' )'"
+      [selectedProjectId]="selectedProjectId"
+      [isDisableProjActi]="isDisableProjActi"
+      (activitiesChange)="updateUnAccomplishedActivities($event)"
+      (deleteUnActivitiesChange)="deleteUnAccomplishedActivities($event)"
+      class="topspace"
+    ></app-unaccomplished-activities>
+    <br />
+    <app-critical-issues
+      [projectRiskArray]="projectRiskArray"
+      [isDisableProjActi]="isDisableProjActi"
+      (activitiesChange)="updateCriticalActivities($event)"
+      (deleteRiskActivitiesChange)="deleteRiskAccomplishedActivities($event)"
+      class="topspace"
+    ></app-critical-issues>
+    <br />
+    <app-project-status
+      [projectStatusArray]="projectStatusArray"
+      [isDisableProjActi]="isDisableProjActi"
+      (activitiesChange)="updateProjectStatusActivities($event)"
+      (deleteStatusActivitiesChange)="deleteStatusAccomplishedActivities($event)"
+      [milestones]="milestones"
+      class="topspace"
+    ></app-project-status>
+    <br />
+    <app-activities-this-week
+      [thisWeekActivities]="activitiesForThisWeek"
+      [selectedProjectId]="selectedProjectId"
+      [isDisableProjActi]="isDisableProjActi"
+      [pageTitle]="'Activities for this  Week (' + nextWeekStartDate + ' - ' + nextWeekEndDate + ' )'"
+      (activitiesChange)="updateThisWeekActivities($event)"
+      (deleteThisWeekAccomplishedActivities)="deleteThisWeekAccomplishedActivities($event)"
+      class="topspace"
+    ></app-activities-this-week>
+    <br />
+    <app-activities-next-week [hidden]="true"
+      [activities]="activitiesForNextWeek"
+        [selectedProjectId]="selectedProjectId"
+      [pageTitle]="'Activities for next  Week (' + nextWeekStartDate + ' - ' + nextWeekEndDate + ' )'"
+      [isDisableProjActi]="isDisableProjActi"
+      (activitiesChange)="updateNextWeekActivities($event)"
+      (deleteNextWeekAccomplishedActivities)="deleteNextWeekAccomplishedActivities($event)"
+      class="topspace"
+    ></app-activities-next-week>
+
+    <div
+      *ngIf="!isDisableProjActi"
+    >
+      <!-- <label
+        for="inputPassword"
+        class="col-sm-6 col-form-label issues-lable"
+      ></label>
+      <div class="col-sm-2">
+        <button
+          type="button"
+          class="btnstyle2"
+          style="background-color: #cacfd2;"
+          (click)="Reset()"
+        >
+          Reset
+        </button>
+      </div>
+      <div class="col-sm-2">
+        <button
+          type="button"
+          class="btnstyle2"
+          (click)="saveProjectActivityData('N', 'Saved')"
+        >
+          Save
+        </button>
+      </div>
+      <div class="col-sm-2">
+        <button
+          type="button"
+          class="btnstyle2"
+          (click)="submitProjectData('Y', 'Submitted')"
+        >
+          Submit
+        </button>
+      </div> -->
+      <div class="row pt-2 pb-3">
+        <div class="col-md-12 " style="margin-left: -10px;">
+            <div class="pull-right">
+                <button type="button" class="btn btn-outline-secondary   btn-cancel" (click)="reset()">Reset</button>
+                <button type="button" class="btn btn-outline-primary" (click)="saveProjectActivityData('N', 'Saved')">Save</button>
+                <button type="button" class="btn btn-primary" (click)="submitProjectData('S', 'Submitted')">Submit</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div
+  id="loadingSubmitModal"
+  class="modal"
+  role="dialog"
+  data-backdrop="static"
+  data-keyboard="false"
+>
+  <div class="modal-dialog" style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="pm-reset" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+        <button
+          type="button"
+          class="close"
+          aria-label="Close"
+          data-dismiss="modal"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to leave your changes?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          NO
+        </button>
+        <button type="button" class="btn btn-outline-primary" (click)="accept()">
+          YES
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

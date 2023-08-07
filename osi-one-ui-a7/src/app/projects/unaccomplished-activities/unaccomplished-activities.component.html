@@ -1,0 +1,229 @@
+<div class="mainpanel">
+  <h4>{{pageTitle}}</h4>
+  <div class="tabcontent">
+    <div class="card">
+      <div class="table-responsive">
+        <fieldset [disabled]="isDisableProjActi">
+          <table class="table table-hover table-bordered">
+            <thead class="thead_bg text-center">
+              <tr>
+                <th width="20%">Activities</th>
+                <th width="20%">Dependency</th>
+                <th width="20%">AssignedTo</th>
+                <th width="20%">Re assigned To</th>
+                <th class="centeralign">Is Internal</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-template ngFor let-activity
+                [ngForOf]="accomplishedActivities | paginate: { id: 'listing_pagination',itemsPerPage: 5,currentPage: crntpage,totalItems: totalRec }"
+                let-i="index">
+                <tr (dblclick)="onRowSelected(activity)" [class.active]='activity == isSelectedRow'
+                  [hidden]="activity.isDeleted">
+                  <td (click)="isRowClicked(activity,i)">
+                    <input type="text" class="form-control" name="Activity{{i}}" (blur)="addedAccomplishedActivities()"
+                      [(ngModel)]="activity.activityName" placeholder="Activity" maxlength="1000">
+                  </td>
+                  <td (click)="isRowClicked(activity,i)">
+                    <input type="text" class="form-control" name="Dependency{{i}}"
+                      (blur)="addedAccomplishedActivities()" [(ngModel)]="activity.activityDependency" maxlength="300"
+                      placeholder="Dependency">
+                  </td>
+                  <td class="tableColumnCenterAlign" (click)="isRowClicked(activity,i)">
+                    <div class="userlist">
+                      <span *ngFor="let employee of activity.assignedToEmployees;let j=index" title="{{employee.name}}"
+                        class="username">
+                        {{ employee.name | slice:0:20 }}{{employee.name.length > 20 ? '...' : ''}}
+                        <span class="glyphicon glyphicon-remove" (click)="removeAddedEmployees(i,j)"
+                          style="float: right !important;margin-right: 5px;"></span>
+                      </span>
+                    </div>
+
+                    <!--  <tag-input [ngModel]="activity.assignedTo"></tag-input>
+                <input type="text" class="form-control" name="fullName{{i}}" (blur)="getEmployeeList($event)" [(ngModel)]="fullName" placeholder="User Name">-->
+                    <button type="button" class="btn-link" (click)="openEmployeeSelection(i,'assigned')"><span
+                        class="glyphicon glyphicon-plus"></span></button>
+                  </td>
+                  <td class="tableColumnCenterAlign" (click)="isRowClicked(activity,i)">
+                    <div class="userlist">
+                      <span *ngFor="let employee of activity.reassignedToEmployees;let j=index"
+                        title="{{employee.name}}">
+                        {{ employee.name | slice:0:20 }}{{employee.name.length > 20 ? '...' : ''}}
+                        <span class="glyphicon glyphicon-remove" (click)="removeAddedReEmployees(i,j)"></span>
+                      </span>
+                    </div>
+
+                    <!--  <tag-input [ngModel]="activity.assignedTo"></tag-input>
+                <input type="text" class="form-control" name="fullName{{i}}" (blur)="getEmployeeList($event)" [(ngModel)]="fullName" placeholder="User Name">-->
+                    <button type="button" class="btn-link" (click)="openEmployeeSelection(i,'reAssigned')"><span
+                        class="glyphicon glyphicon-plus"></span></button>
+                  </td>
+                  <td class="tableColumnCenterAlign" (click)="isRowClicked(activity,i)">
+                    <input type="checkbox" [(ngModel)]="activity.isInternal" [checked]="activity.isInternal" />
+                  </td>
+                  <td class="tableColumnCenterAlign">
+                    <button type="button" class="btn-link"
+                      [hidden]=" i + (crntpage-1) * noOfItemsPerPage != accomplishedActivities.length-1"
+                      (click)="addAnotherRow()">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                  </td>
+                  <td class="tableColumnCenterAlign">
+                    <button id="deleteEntry" *ngIf="isDisableDeleteBtn" type="button" class="btn-link"
+                      (click)="deleteRow(i,activity.id)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </button>
+
+                  </td>
+                </tr>
+                <tr *ngIf="activity">
+                  <td *ngIf="isResonTabDis && i == selectReasonIndex" colspan="5" style="border: none;">
+                    <div class="form-group" style="padding: 8px;">
+                      <label for="exampleInputEmail1">Reason for unaccomplishment:<span class="star">*</span></label>
+                      <input type="text" (blur)="addedAccomplishedActivities()" class="form-control" [(ngModel)]="activity.reason" placeholder="Enter Reason" maxlength="200">
+                    </div>
+                    <!-- <div class="error-msg" [(ngModel)]="isReasonEmpty">Please enter reason for unaccomplishment</div> -->
+                  </td>
+                </tr>
+              </ng-template>
+
+            </tbody>
+
+          </table>
+        </fieldset>
+
+        <div class="col-sm-12 row pb-3">
+          <div class="col-sm-10">
+            <pagination-controls id="listing_pagination" autoHide="true" maxSize="8" previousLabel="" nextLabel=""
+              (pageChange)="crntpage = $event"  (click)="selectedRow()"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Employee List Modal -->
+<div class="modal fade" id="employeeList1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Employee List</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+
+
+      <div class="row" style="margin-left: 17px;margin-top: 10px;">
+        <div class="col-sm-2">
+          <div class="custom-control custom-checkbox mr-sm-2">
+            <input type="checkbox" class="custom-control-input" id="unaccomplishment" [(ngModel)]="isChecked">
+            <label class="custom-control-label" for="unaccomplishment">View All</label>
+          </div>
+        </div>
+
+        <div *ngIf="isChecked" class="col-sm-3">Employee Name</div>
+        <div *ngIf="isChecked" class="col-sm-4">
+          <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText"
+            placeholder="Enter Employee Name" maxlength="50" type="text" />
+        </div>
+        <div *ngIf="isChecked" class="col-sm-2">
+          <div class="col-auto my-1">
+            <button type="submit" (click)="filteredEmployeeSearch1(searchedText)"
+              class="btn btn-primary">Search</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container" *ngIf="isChecked && employeeList1" [ngClass]="{'enable-scroller' : employeeList1.length > 10}">
+        <ul class="list-group" *ngFor="let users of employeeList1; let i = index" (click)="
+                selectedEmployee(
+                  users.fullName,
+                  users.employeeId,
+                  currentActivityIndex
+                )
+              ">
+          <li class="list-group-item" [value]="users.fullName" >
+            {{ users.fullName }}
+          </li>
+        </ul>
+      </div>
+
+
+      <div class="modal-body" *ngIf="!isChecked && AssignedUsersforproject" [ngClass]="{'enable-scroller' : AssignedUsersforproject.length > 10}">
+        <div class="form-group row">
+          <!-- <div class="col-lg-4 text-align-right">
+                <label for="Employee Name" class="control-label"
+                  >Employee Name</label
+                >
+              </div> -->
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of AssignedUsersforproject; let i = index" (click)="
+                  selectedEmployee(
+                    users.employeeName,
+                    users.employeeId,
+                    currentActivityIndex
+                  )
+                ">
+            <li class="list-group-item" [value]="users.employeeName" >
+              <div class="row">
+                <div class="col-sm-6 col-md-3">
+                  <span>{{ users.employeeName }}</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="unAccDeleteModel" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Confirm</h4>
+        <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-outline-primary" (click)="accept('true')">
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- <div class="modal-body">
+            <div class="form-group row">
+              <div class="col-lg-4 text-align-right">
+                <label for="Employee Name" class="control-label">Employee Name</label>
+              </div>
+              <div class="col-lg-5">
+                <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText" placeholder="Enter Employee Name" maxlength="50"
+                  type="text">
+              </div>
+              <div class="col-lg-3">
+                <button class="btn btn-outline-secondary" style="float: right;" (click)="filteredEmployeeSearch1(searchedText)">Search</button>
+              </div>
+            </div>
+            <div class="container">
+              <ul class="list-group" *ngFor="let users of employeeList1 ;let i=index" (click)="selectedEmployee(users.fullName,users.employeeId)">
+                <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}}</li>
+              </ul>
+            </div>
+          </div> -->
+<!-- </div>
+      </div>
+    </div>     -->

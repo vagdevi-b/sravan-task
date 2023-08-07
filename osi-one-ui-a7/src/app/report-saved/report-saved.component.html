@@ -1,0 +1,238 @@
+<div>
+	<section>
+		<div class="card" style="width: 100%;">
+			<div class="card-body">
+				<div class="row notificationRow">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8 notificationTextDiv" id="successMessage">
+						<div class="alert alert-success alert-dismissible notificationText" id="successMessage">
+							<a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close" (click)="closeErrorMessage('successMessage')">&times;</a>
+							{{successMessage}}
+						</div>
+					</div>
+					<div class="col-sm-8 notificationTextDiv" id="errorMessage">
+						<div class="alert alert-danger alert-dismissible notificationText">
+							<a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close" (click)="closeErrorMessage('errorMessage')">&times;</a>
+							{{errorMessage}}
+						</div>
+					</div>
+					<div class="col-sm-2"></div>
+				</div>
+				<div class="row dashboardBox">
+					<div class="col-sm-3">
+						<h3 class="title-text">
+							<span class="reportHeading">Saved Reports</span>
+						</h3>
+					</div>
+					
+					<div class="container-fluid">
+								  <div class="row saved-report-filter">
+									<div class="col-lg-3">
+									  <input class="form-control " name="rptName" [(ngModel)]="rptName" placeholder="Report Name" onfocus="this.placeholder = ''"
+										onblur="this.placeholder = 'Report Name'" type="text">
+									</div>
+									<div class="col-lg-3">
+									  <input class="form-control " name="sharedBys" [(ngModel)]="sharedBys" placeholder="Shared By" onfocus="this.placeholder = ''"
+										onblur="this.placeholder = 'Shared By'" type="text">
+									</div>
+									<div class="col-lg-3">
+									  <button class="btn btn-primary mr-3" (click)="searchReports()">Search</button>
+									  <button type="button" class="btn btn-outline-secondary" (click)="clearSearch()">Clear</button>
+									</div>
+						
+								  </div>					
+						
+							  </div>
+					<!--	<div class="col-sm-2 createReportButton">
+						<a class="btn btn-primary" (click)="gotoCreateNewReport()">Create New Report</a>
+					</div> -->
+				</div>
+				<div class="row"></div>
+				<div class="row tableBox">
+					<div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+						<div class="table-responsive table-shadow border-0">
+							<table class="table table-hover table-bordered">
+								<thead>
+									<tr>
+										<th scope="col" (click)="sorting('rptName')" width="29%">Report Name
+											<span class="glyphicon sort-icon glyphicon-chevron-down" [hidden]="sortKey != 'rptName'" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<!--										<th scope="col" width="28%">Owner</th> -->
+										<th scope="col" (click)="sorting('rptDesc')" width="25%">Shared By
+											<span class="glyphicon sort-icon glyphicon-chevron-down" [hidden]="sortKey != 'rptDesc'" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th scope="col" (click)="sorting('lastRundate')" width="18%">Last Run Date
+											<span class="glyphicon sort-icon glyphicon-chevron-down" [hidden]="sortKey != 'lastRundate'" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+
+										</th>
+										<th scope="col" width="18%">Actions</th>
+									</tr>
+								</thead>
+								<tr *ngFor="let report of reportsResponse">
+									<th scope="row">{{report.rptName}}</th>
+									<td>{{report.rptDesc}}</td>
+									<td>{{report.lastRundate}}</td>
+									<td>
+										<!-- <a class="btn-tiny waves-effect grey lighten-2 waves-light actionButtonStyle btn-pdf" data-toggle="tooltip" title="Run PDF"
+										 (click)="reportReRun(report,'pdf')"></a> -->
+										<a class="btn-tiny waves-effect grey lighten-2 waves-light actionButtonStyle btn-excel" data-toggle="tooltip" title="Run Excel"
+										 (click)="reportReRun(report,'xlsx')"></a>
+										<a class="btn-tiny waves-effect grey lighten-2 waves-light actionButtonStyle btn-share" data-toggle="modal" title="Share Report"
+										 data-target="#shareReportModal" (click)="openToShareReport(report)"></a>
+										<a class="btn-tiny waves-effect grey lighten-2 waves-light actionButtonStyle btn-filter" data-toggle="tooltip" title="Apply Filters"
+										 (click)="getSavedReport(report)"></a>
+										<a class="btn-tiny waves-effect grey lighten-2 waves-light actionButtonStyle btn-delete" data-toggle="modal" title="Delete Report"
+										 (click)="deleteReport(report)" data-target="#deleteReportModal"></a>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div *ngIf="reportsResponse!=null && reportsResponse.length==0">
+							<div class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+								<div class="no-records-found-wrap"  [hidden]=" totalLeaveReq!=0 ">
+									<figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records" class="icon-27"></figure>
+									<h5 class="text-center mt-2 m-0">No Records Found</h5>	
+								</div>
+								</div>
+                    		
+						</div>
+						<div *ngIf="initialReportSearchMsg && showTHis">
+							<span>Note: Please enter filter cirteria and search to get your saved reports</span>
+						</div>
+					</div>
+				</div>
+				<!--	<div class="row tableBox">
+					<div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+            
+            <ul style="list-style-type: none;">
+              <li *ngFor="let report of reportsResponse">
+                  <a style="width:85%" href="javascript:void(0)" (click)="getSavedReport(report)">{{report.rptName}}</a>
+              </li>
+            </ul>
+					</div>
+				</div> -->
+			</div>
+		</div>
+	</section>
+</div>
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+	<div class="modal-dialog"  style="top: 40%;">
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- share the report -->
+<div class="modal fade" id="shareReportModal" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">
+					<strong>Report Name: </strong>{{selectedReportName}}</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<i class="fa fa-times"></i>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<form #f='ngForm'>
+					<div class="form-group row">
+						<div class="col-lg-2 text-align-right">
+							<label for="shareToAll" class="control-label">Share To</label>
+						</div>
+						<div class="col-lg-4">
+							<input class="form-control mail" [disabled]="shareToAll" id="Employee Name" [(ngModel)]="searchedText" #searchedTxt='ngModel'
+							 placeholder="Search Employee" maxlength="50" type="text" [ngModelOptions]="{standalone: true}" (change)="getEmployeesToShare(searchedText)">
+						</div>
+						<div class="col-lg-2">
+							<button class="btn btn-outline-secondary" [disabled]="shareToAll" style="float: right;">Search</button>
+						</div>
+						<div class="col-lg-3">
+							<label>or All Employees</label>
+						</div>
+						<div class="col-lg-1">
+							<input type="checkbox"  class="form-control" id="shareToAll" name="shareToAllEmployee"
+							 [(ngModel)]="shareToAll">
+						</div>
+					</div>
+
+					<!--	<div class="form-group container row">
+					<div class="col-lg-4 text-align-right">
+						<label for="Employee Name" class="control-label">Employee Name</label>
+					</div>
+					<div class="col-lg-5">
+						<input class="form-control mail" [disabled]="shareToAll" id="Employee Name" [(ngModel)]="searchedText"  #searchedTxt='ngModel' placeholder="Enter Employee Name"
+						 maxlength="50" type="text" [ngModelOptions]="{standalone: true}">
+					</div>
+					<div class="col-lg-3">
+						<button class="btn btn-primary" [disabled]="shareToAll" style="float: right;" (click)="getEmployeesToShare(searchedText)" >Search</button>
+					</div>
+				</div> -->
+					<!-- table -->
+					<div [hidden]="shareToAll">
+						<div class="row tableBox">
+							<div class="col-sm-12">
+								<div class="table-responsive">
+									<table class="table table-no-border w-100">
+										<thead class="thead-light">
+											<tr>
+												<th>
+													<input type="checkbox" name="allSearched" [(ngModel)]="selectAllSearched" [checked]="isAllChecked()" (change)="checkAll($event)"
+													/>
+												</th>
+												<th> Employee Name</th>
+												<th> Email Id</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr *ngFor="let item of shareToEmp;let i = index;trackBy:trackByFun">
+												<td>
+													<input type="checkbox" id="{{i}}" [value]="item.employeeId" name="{{item.employeeId}}" [(ngModel)]="item['state']" />
+												</td>
+												<td>
+													<label for="{{i}}"> {{item.fullName}}</label>
+												</td>
+												<td>
+													<label for="{{i}}">{{item.officeEmail | lowercase}} </label>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<!-- <div class="col-md-1"></div> -->
+						</div>
+					</div>
+					<!-- /table -->
+				</form>
+			</div>
+
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-primary" (click)="shareReport(f.value)">Share</button>
+				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" (click)="shareToEmp.length >0 ?shareToEmp=null:'' ;f.reset()">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="deleteReportModal" role="dialog">
+	
+			<div class="modal-dialog">
+	
+					<!-- Modal content-->
+					<div class="modal-content saved-report-delete-modal">
+							<div class="container saved-report-delete-container">
+									<h5 class="saved-report-delete-h4">Do you want to delete this Report ? </h5>
+									<div style="float:right">
+											<button type="button" class="btn btn-outline-primary" (click)="deleteSavedReport()">Yes</button>
+											<button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">No</button>
+										</div>
+							</div>
+					</div>
+			</div>
+	</div>

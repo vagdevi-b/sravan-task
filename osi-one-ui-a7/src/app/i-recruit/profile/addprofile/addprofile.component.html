@@ -1,0 +1,858 @@
+<div style="padding : 1rem !important;">
+
+    <body>
+        <!-- <div class="c_breadcrumb c_breadcrumb__container container-fluid">
+            <nav>
+                <ol class="c_breadcrumb__list">
+                    <li class="c_breadcrumb__item__title"><span>iRecruiter</span></li>
+                    <li class="c_breadcrumb__item pl-0"><span>></span></li>
+                    <li routerLinkActive="active" class="c_breadcrumb__item active"><a>Requests</a></li>
+                    <li class="c_breadcrumb__item"><a href="#irecruit/candidates">Candidates</a></li>
+                </ol>
+            </nav>
+        </div> -->
+        <div class="m-3">
+            <form [formGroup]="add_profile" class="card p-0">
+                <div class="modal-header" style="
+                background-color: #2B3A4E;
+                color: white;padding: unset;">
+                    <h5 class="card-title h3 p-3 mb-0">Registration Form for {{requestNumber}}</h5>
+                    <button type="button" (click)="closePopup();" class="close m-0" data-dismiss="modal"
+                        aria-label="Close" style="color: white;">
+                        ×
+                    </button>
+                </div>
+                <!-- <a  class="btn">Close</a> -->
+                <div class="card-body p-1" style="border: 1px solid rgba(0,0,0,.125);">
+                    <div class="container-fluid">
+                        <!-- <div>
+                            <h4>Job Details for {{reqData['Request Number']}}</h4>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="c_form-inline">
+                                        <label class="col-form-label">Job Title </label>
+                                        <span>{{reqData['Job Title']}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="c_form-inline">
+                                        <label class="col-form-label">Level & Grade</label>
+                                        <span>{{reqData['Level']}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="c_form-inline">
+                                        <label class="col-form-label">Job type</label>
+                                        <span>{{reqData['jobType']}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="c_form-inline">
+                                        <label class="col-form-label">Target Date </label>
+                                        <span>{{reqData['Target Date']}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="c_form-inline">
+                                        <label class="col-form-label"> Location </label>
+                                        <span>{{reqData['Location']}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="c_form-inline">
+                                        <label class="col-form-label">BU & Functional </label>
+                                        <span>{{reqData['BU & Functional']}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label">Job Description</label>
+
+                                <div class="col-sm-10">
+
+                                    <span class="h6 mb-0" *ngIf="!readMore" [innerHTML]="getJobbDesc()"></span>
+                                    <span class="h5 mb-0" *ngIf="readMore" [innerHTML]="jobDesc"></span>
+                                    <button *ngIf="!readMore" (click)='readMore = true' class="btn btn-link"
+                                        id="myBtn">Read
+                                        more</button>
+                                    <button *ngIf="readMore" (click)='readMore = false' class="btn btn-link"
+                                        id="myBtn">Read
+                                        Less</button>
+                                </div>
+
+                            </div>
+                        </div> -->
+                        <div class="mt-3">
+                            <!-- <h4>Applicant Details</h4> -->
+                            <div>
+                                <div class="c_form-container pb-2">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Name <span>*</span></label>
+                                                <div>
+                                                    <input type="text" placeholder="Mobile Number"
+                                                        formControlName="contactNumber1" class="form-control"
+                                                        (input)="checkValue($event)" minlength="10" maxlength="13">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber1').hasError('required') && !add_profile.get('contactNumber1').pristine ">
+                                                        Contact number is required</p>
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber1').hasError('minlength') && !add_profile.get('contactNumber1').pristine ">
+                                                        Min 10 and Max 13 digits Allowed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <input type="text" min="0" placeholder="Mobile Number"
+                                                (input)="checkValue($event)" class="form-control"
+                                                formControlName="contactNumber2" minlength="10" maxlength="13">
+                                                <div>
+                                                    <input type="text" min="0" placeholder="Mobile Number"
+                                                        (input)="checkValue($event)" class="form-control"
+                                                        formControlName="contactNumber2" minlength="10" maxlength="13">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber2').hasError('minlength') && !add_profile.get('contactNumber2').pristine ">
+                                                        Min 10 and Max 13 digits Allowed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Total Exp <span>*</span></label>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="number" min="0" placeholder="Years"
+                                                            class="form-control" (input)="checkValue($event)"
+                                                            formControlName="relaventExpYears">
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpYears').hasError('required') && !add_profile.get('relaventExpYears').pristine ">
+                                                            Relavent Experience is required</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" min="0" placeholder="Months"
+                                                            class="form-control" (input)="checkMonthsValue($event)"
+                                                            formControlName="relaventExpMonths">
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpMonths').hasError('required') && !add_profile.get('relaventExpMonths').pristine ">
+                                                            Relavent Experience is required</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Name <span>*</span></label>
+                                                <div>
+                                                    <input type="text" placeholder="Mobile Number"
+                                                        formControlName="contactNumber1" class="form-control"
+                                                        (input)="checkValue($event)" minlength="10" maxlength="13">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber1').hasError('required') && !add_profile.get('contactNumber1').pristine ">
+                                                        Contact number is required</p>
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber1').hasError('minlength') && !add_profile.get('contactNumber1').pristine ">
+                                                        Min 10 and Max 13 digits Allowed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <div class="flex-grow-1">
+                                                    <input type="text" class="form-control" placeholder="Middle Name" (input)="checkValue($event)"
+                                                        formControlName="middleName">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('middleName').hasError('required') && !add_profile.get('middleName').pristine ">
+                                                        Middle name is required</p>
+                                                </div>&nbsp;
+                                                <div class="flex-grow-1">
+                                                    <input type="text" class="form-control" placeholder="Last Name" (input)="checkValue($event)"
+                                                        formControlName="lastName">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('lastName').hasError('required') && !add_profile.get('lastName').pristine ">
+                                                        Last name is required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Total Experience <span>*</span></label>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="number" min="0" placeholder="Years"
+                                                            class="form-control" (input)="checkValue($event)"
+                                                            formControlName="relaventExpYears">
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpYears').hasError('required') && !add_profile.get('relaventExpYears').pristine ">
+                                                            Relavent Experience is required</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" min="0" placeholder="Months"
+                                                            class="form-control" (input)="checkMonthsValue($event)"
+                                                            formControlName="relaventExpMonths">
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpMonths').hasError('required') && !add_profile.get('relaventExpMonths').pristine ">
+                                                            Relavent Experience is required</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Name <span>*</span></label>
+                                                <input type="text" class="form-control" placeholder="First Name" (input)="checkValue($event)"
+                                                    formControlName="firstName" style="width: 500px;">
+                                                <p style="color: orangered;" class="lblError"
+                                                    *ngIf="add_profile.get('firstName').hasError('required') && !add_profile.get('firstName').pristine ">
+                                                    First name is required</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <div class="flex-grow-1">
+                                                    <input type="text" class="form-control" placeholder="Middle Name" (input)="checkValue($event)"
+                                                        formControlName="middleName">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('middleName').hasError('required') && !add_profile.get('middleName').pristine ">
+                                                        Middle name is required</p>
+                                                </div>&nbsp;
+                                                <div class="flex-grow-1">
+                                                    <input type="text" class="form-control" placeholder="Last Name" (input)="checkValue($event)"
+                                                        formControlName="lastName">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('lastName').hasError('required') && !add_profile.get('lastName').pristine ">
+                                                        Last name is required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                               
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Requisition Number</label>
+                                                <input disabled="true" type="text" class="form-control"
+                                                    value="{{requestNumber}}">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Source Type <span>*</span></label>
+                                                <select class="form-control" (change)="assignSource($event)"
+                                                    formControlName="sourceId">
+                                                    <option value="select" selected="sourceId">Select</option>
+                                                    <option *ngFor='let source of sourceType' [ngValue]="source.id">
+                                                        {{source.lookupDesc}}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label"> Source Name <span>*</span></label>
+                                                <input type="text" placeholder="Name" class="form-control"
+                                                    formControlName="sourcedBy">
+                                                <p style="color: orangered;" class="lblError"
+                                                    *ngIf="add_profile.get('sourcedBy').hasError('required') && !add_profile.get('sourcedBy').pristine ">
+                                                    Souece name is required</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Skills <span>*</span></label>
+                                                <select class="form-control" formControlName="skills">
+                                                    <option value="select">Select</option>
+                                                    <option *ngFor='let skill of skillGroup' [value]="skill.skillName">
+                                                        {{skill.skillName}}</option>
+                                                </select>
+                                                <textarea class="form-control" formControlName="skills"
+                                                    placeholder="Enter Skills"></textarea>
+                                                <p style="color: orangered;" class="lblError"
+                                                    *ngIf="add_profile.get('skills').hasError('required') && !add_profile.get('skills').pristine ">
+                                                    skills are required</p>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Name <span>*</span></label>
+                                                <input type="text" placeholder="First Name" class="form-control"
+                                                    formControlName="firstName">
+                                                <p style="color: orangered;" class="lblError"
+                                                    *ngIf="add_profile.get('firstName').hasError('required') && !add_profile.get('firstName').pristine ">
+                                                    First name is required</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline row">
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control" placeholder="Middle Name"
+                                                        (input)="checkValue($event)" formControlName="middleName">
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="text" class="form-control" placeholder="Last Name"
+                                                        (input)="checkValue($event)" formControlName="lastName">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('lastName').hasError('required') && !add_profile.get('lastName').pristine ">
+                                                        Last name is required</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Profile Received Date</label>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="date" class="form-control"
+                                                            formControlName="profileReceivedDate">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Total Exp <span>*</span></label>
+                                                <div class="row">
+                                                    <div >
+                                                        <div class="row" style="padding-left: 30px;">
+                                                        <input type="number" min="0" placeholder="Years"
+                                                            class="form-control" (input)="checkValue($event)"
+                                                            formControlName="totalExpYears" [(ngModel)]="totalYears"style="width:70px;"> <div style="padding-top: 10px;">Yr</div></div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('totalExpYears').hasError('required') && !add_profile.get('totalExpYears').pristine ">
+                                                            Total Experience is required</p>
+                                                        </div>
+                                                        <div style="padding-left: 60px;">
+                                                           <div class="row" >
+                                                        <input type="number" min="0" placeholder="Months"
+                                                            class="form-control" (input)="checkMonthsValue($event)"
+                                                            formControlName="totalExpMonths" [(ngModel)]="totalMonths" style="width: 70px;"><div style="padding-top: 10px;">Mon</div></div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('totalExpMonths').hasError('required') && !add_profile.get('totalExpMonths').pristine ">
+                                                            Total Experience is required</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Contact 1 <span>*</span></label>
+                                                <div>
+                                                    <input type="text" placeholder="Mobile Number"
+                                                        formControlName="contactNumber1" class="form-control"
+                                                        (input)="checkValue($event)" minlength="10" maxlength="13">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber1').hasError('required') && !add_profile.get('contactNumber1').pristine ">
+                                                        Contact number is required</p>
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber1').hasError('minlength') && !add_profile.get('contactNumber1').pristine ">
+                                                        Min 10 and Max 13 digits Allowed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Contact 2</label>
+                                                <div>
+                                                    <input type="text" min="0" placeholder="Mobile Number"
+                                                        (input)="checkValue($event)" class="form-control"
+                                                        formControlName="contactNumber2" minlength="10" maxlength="13">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('contactNumber2').hasError('minlength') && !add_profile.get('contactNumber2').pristine ">
+                                                        Min 10 and Max 13 digits Allowed</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Relavent Exp <span>*</span></label>
+                                                <div class="row">
+                                                   
+                                                    <div >
+                                                        <div class="row" style="padding-left: 30px;">
+                                                        <input type="number" min="0" placeholder="Years"
+                                                            class="form-control" (input)="checkValue($event)"
+                                                            formControlName="relaventExpYears" style="width:70px;"> <div style="padding-top: 10px;">Yr</div></div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpYears').hasError('required') && !add_profile.get('relaventExpYears').pristine ">
+                                                            Relavent Experience is required</p>
+                                                        </div>
+                                                        <div style="padding-left: 60px;">
+                                                           <div class="row" >
+                                                        <input type="number" min="0" placeholder="Months"
+                                                            class="form-control" (input)="checkMonthsValue($event)"
+                                                            formControlName="relaventExpMonths" style="width: 70px;"><div style="padding-top: 10px;">Mon</div></div> 
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpMonths').hasError('required') && !add_profile.get('relaventExpMonths').pristine ">
+                                                            Relavent Experience is required</p>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Total Exp <span>*</span></label>
+                                                <div class="row">
+                                                    <div>
+                                                        <div class="row" style="padding-left: 30px;">
+                                                            <input type="number" min="0" placeholder="Years"
+                                                                class="form-control" (input)="checkValue($event)"
+                                                                formControlName="totalExpYears" [(ngModel)]="totalYears"
+                                                                style="width:70px;">
+                                                            <div style="padding-top: 10px;">Yr</div>
+                                                        </div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('totalExpYears').hasError('required') && !add_profile.get('totalExpYears').pristine ">
+                                                            Total Experience is required</p>
+                                                    </div>
+                                                    <div style="padding-left: 60px;">
+                                                        <div class="row">
+                                                            <input type="number" min="0" placeholder="Months"
+                                                                class="form-control" (input)="checkMonthsValue($event)"
+                                                                formControlName="totalExpMonths"
+                                                                [(ngModel)]="totalMonths" style="width: 70px;">
+                                                            <div style="padding-top: 10px;">Mon</div>
+                                                        </div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('totalExpMonths').hasError('required') && !add_profile.get('totalExpMonths').pristine ">
+                                                            Total Experience is required</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Skills <span>*</span></label>
+                                                <select class="form-control" formControlName="skills">
+                                                    <option value="select">Select</option>
+                                                    <option *ngFor='let skill of skillGroup' [value]="skill.skillName">
+                                                        {{skill.skillName}}</option>
+                                                </select>
+                                                <textarea class="form-control" formControlName="skills"
+                                                    placeholder="Enter Skills"></textarea>
+                                                <p style="color: orangered;" class="lblError"
+                                                    *ngIf="add_profile.get('skills').hasError('required') && !add_profile.get('skills').pristine ">
+                                                    skills are required</p>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Email 1 <span>*</span></label>
+                                                <div>
+                                                    <input type="text" placeholder="Email Id" formControlName="emailId1"
+                                                        class="form-control" (input)="checkValue($event)">
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('emailId1').hasError('required') && !add_profile.get('emailId1').pristine ">
+                                                        Email ID is required</p>
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('emailId1').hasError('pattern') && !add_profile.get('emailId1').pristine ">
+                                                        Enter Valid Email</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Email 2</label>
+                                                <div>
+                                                    <input type="text" placeholder="Email Id" formControlName="emailId2"
+                                                        class="form-control" (input)="checkValue($event)">
+
+                                                    <p style="color: orangered;" class="lblError"
+                                                        *ngIf="add_profile.get('emailId2').hasError('pattern') && !add_profile.get('emailId2').pristine ">
+                                                        Enter Valid Email</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Profile Received Date</label>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="date"  class="form-control" formControlName="">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Relavent Exp <span>*</span></label>
+                                                <div class="row">
+
+                                                    <div>
+                                                        <div class="row" style="padding-left: 30px;">
+                                                            <input type="number" min="0" placeholder="Years"
+                                                                class="form-control" (input)="checkValue($event)"
+                                                                formControlName="relaventExpYears" style="width:70px;">
+                                                            <div style="padding-top: 10px;">Yr</div>
+                                                        </div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpYears').hasError('required') && !add_profile.get('relaventExpYears').pristine ">
+                                                            Relavent Experience is required</p>
+                                                    </div>
+                                                    <div style="padding-left: 60px;">
+                                                        <div class="row">
+                                                            <input type="number" min="0" placeholder="Months"
+                                                                class="form-control" (input)="checkMonthsValue($event)"
+                                                                formControlName="relaventExpMonths"
+                                                                style="width: 70px;">
+                                                            <div style="padding-top: 10px;">Mon</div>
+                                                        </div>
+                                                        <p style="color: orangered;" class="lblError"
+                                                            *ngIf="add_profile.get('relaventExpMonths').hasError('required') && !add_profile.get('relaventExpMonths').pristine ">
+                                                            Relavent Experience is required</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Current Org</label>
+                                                <div>
+                                                    <input type="text" placeholder="Organization Name"
+                                                        (input)="checkValue($event)"
+                                                        formControlName="currentOrganization" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Skills</label>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <input type="text" placeholder="Skills" class="form-control"
+                                                            formControlName="skills">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Education</label>
+                                                <input type="text" placeholder="Education" formControlName="education"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Current Location</label>
+                                                <div>
+                                                    <input type="text" placeholder="Location"
+                                                        (input)="checkValue($event)" formControlName="currentLocation"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Preferred Location</label>
+                                                <div>
+                                                    <input type="text" placeholder="Prefered Location"
+                                                        formControlName="preferredLocation" (input)="checkValue($event)"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label " title="Notice Period (In Days)">Notice
+                                                    Period (In Days) </label>
+                                                <div>
+                                                    <input type="number" min="0" placeholder="Notice Period"
+                                                        (input)="checkValue($event)" formControlName="noticePeriod"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label " title="Current CTC (in Lacs)">Current CTC
+                                                    (in Lacs)</label>
+                                                <div>
+                                                    <input type="number" placeholder="Enter CTC"
+                                                        (input)="checkValue($event)" formControlName="currentCtc"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label" title="Expected CTC (In Lacs)">Expected
+                                                    CTC (In Lacs)</label>
+                                                <div>
+                                                    <input type="number" min="0" placeholder="Expected CTC"
+                                                        (input)="checkValue($event)" formControlName="expectedCtc"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Expected DOJ </label>
+                                                <div>
+                                                    <input type="date" placeholder="Date" formControlName="expectedDoj"
+                                                        class="form-control">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+
+                                    </div>
+                                    <div *ngIf="showAttach" class="row">
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Resume</label>
+                                                <input type="file" style="display: block;" id="customFile"
+                                                    accept=".pdf,.doc,.txt,.docx" (change)="selectFile($event)">
+                                                <button *ngIf="!updateResume" (click)="onUploadClick();"
+                                                    class="btn btn-primary">Upload</button>
+                                                <button *ngIf="updateResume" (click)="onUpdateResume();"
+                                                    class="btn btn-primary">Upload</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="c_form-inline">
+                                                <!-- <button *ngIf="!updateResume" (click)="onUploadClick();"
+                                                    class="btn btn-primary">Upload</button>
+                                                <button *ngIf="updateResume" (click)="onUpdateResume();"
+                                                    class="btn btn-primary">Upload</button> -->
+                                                <div *ngFor="let attachments of attachArray">
+                                                    <a href="{{attachments.ResumeLink}}"
+                                                        download="{{attachments.fileName}}">{{attachments.fileName}}</a>
+                                                </div>
+                                            </div>
+                                            <!-- <div *ngFor="let attachments of attachArray">
+                                                <a href="{{attachments.ResumeLink}}"
+                                                    download="{{attachments.fileName}}">{{attachments.fileName}}</a>
+                                            </div> -->
+                                        </div>
+                                        <!-- <div class="col-sm-12 col-md-4">
+                                            
+                                        </div> -->
+
+                                    </div>
+                                    <!-- <div class="row" *ngIf="flag">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Resume</label>
+                                                <input type="file" style="display: block;" id="customFile"
+                                                    accept=".pdf,.doc,.txt,.docx" (change)="selectFile($event)">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-8">
+                                            <div class="c_form-inline">
+                                                <button *ngIf="!updateResume" (click)="onUploadClick();"
+                                                    class="btn btn-primary">Upload</button>
+                                                <button *ngIf="updateResume" (click)="onUpdateResume();"
+                                                    class="btn btn-primary">Upload</button>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="row">
+                                       
+                                        </div>
+                                    </div> -->
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div *ngIf="updateStatusFunc" class="c_form-inline">
+                                                <label class="col-form-label"> Current Status</label>
+                                                <input class="form-control" disabled="true" formControlName="oldStatus">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div *ngIf="updateStatusFunc" class="c_form-inline">
+                                                <label class="col-form-label">Status</label>
+                                                <div>
+                                                    <select class="form-control" formControlName="status">
+                                                        <option value="select" >select</option>
+                                                        <option *ngFor='let status of transitionStatusValues'
+                                                            [value]="status.transitionStatus">
+                                                            {{status.transitionStatus}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div *ngIf="showAttach" class="row">
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Offered CTC</label>
+                                                <div>
+                                                    <input type="number" placeholder="Enter CTC"
+                                                        formControlName="offeredCtc" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label " title="Offered Level/Grade">Offered
+                                                    Level/Grade</label>
+                                                <select class="form-control" formControlName="offeredLevel">
+                                                    <option value="select">select</option>
+                                                    <option *ngFor='let grade of gradeLevel'
+                                                        [ngValue]="grade.gradeName">
+                                                        {{grade.gradeName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Offered Position </label>
+                                                <div>
+                                                    <!-- <input type="text" placeholder="Position"
+                                                        formControlName="offeredPosition" class="form-control"> -->
+                                                    <select class="form-control" formControlName="offeredPosition">
+                                                        <option value="" selected="offeredPosition">select</option>
+                                                        <option *ngFor='let jobCode of jobCodes'
+                                                            [ngValue]="jobCode.jobCodeName">
+                                                            {{jobCode.jobCodeName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div *ngIf="showAttach" class="col-sm-12 col-md-8">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Comments</label>
+                                                <textarea formControlName="notes" class="form-control" #myInput
+                                                    [maxlength]="maxChars"></textarea>
+                                                <label
+                                                    style="margin-top: 100px;margin-left: -50px;">{{myInput.value.length}}
+                                                    /{{maxChars}}</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4">
+                                            <div *ngIf="showAttach" class="c_form-inline">
+                                                <label class="col-form-label"> Current Status</label>
+                                                <input class="form-control" disabled="true" formControlName="oldStatus">
+                                            </div>
+
+                                            <div *ngIf="showAttach" class="c_form-inline">
+                                                <label class="col-form-label">Status</label>
+                                                <div>
+                                                    <select class="form-control" formControlName="status">
+                                                        <option value="select">select</option>
+                                                        <option *ngFor='let status of transitionStatusValues'
+                                                            [value]="status.transitionStatus">
+                                                            {{status.transitionStatus}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="!showAttach" class="col-sm-12 col-md-12" style="padding-left: 80%;">
+                                            <button (click)="closePopup();"
+                                                class="btn btn-light ml-3 mr-3">Cancel</button>
+                                            <button *ngIf="isAddFunc" (click)="addProfile()"
+                                                class="btn btn-primary">Save</button>&nbsp;&nbsp;
+                                            <button *ngIf="!isAddFunc" (click)="updateProfile()"
+                                                class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="row">
+                                        <div class="col-sm-12 col-md-8">
+                                            <label >Characters Remaining: {{myInput.value.length}} /{{maxChars}}</label>
+                                        </div>
+                                    </div> -->
+                                    <div *ngIf="showAttach" class="row">
+                                        <div class="col-sm-12 col-md-8">
+                                            <div class="c_form-inline">
+                                                <label class="col-form-label">Previous Comment(s)</label>
+                                                <div>
+                                                    <pre style="font-family: 'Roboto',sans-serif;"
+                                                        *ngFor="let note of Notes"> <span *ngIf="note.notes" >{{note.createdBy}} - {{note.createdon | date : 'MM/dd/yyyy HH:mm'}}- {{note.notes}}</span> </pre>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-12">
+                                            <div class="row">
+                                                <div class="c_form-inline" style="padding-left: 50%;">
+                                                    <button *ngIf="isMoreComments" (click)="getAllComments();"
+                                                        class="btn btn-light ml-3 mr-3">View More</button>
+                                                    <button *ngIf="!isMoreComments" (click)="getLessComments();"
+                                                        class="btn btn-light ml-3 mr-3">View Less</button>
+                                                    <div style="padding-left: 150px;">
+                                                        <button (click)="closePopup();"
+                                                            class="btn btn-light ml-3 mr-3">Cancel</button>
+                                                        <button *ngIf="isAddFunc" (click)="addProfile()"
+                                                            class="btn btn-primary">Save</button>&nbsp;&nbsp;
+                                                        <button *ngIf="!isAddFunc" (click)="updateProfile()"
+                                                            class="btn btn-primary">Save</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row justify-content-center mt-4">
+
+
+                        <button (click)="onResetClick()" class="btn btn-light ml-3 mr-3">Reset</button>
+                        <button *ngIf="isAddFunc" (click)="addProfile()"
+                            class="btn btn-primary">Save</button>&nbsp;&nbsp;
+                        <button *ngIf="!isAddFunc" (click)="updateProfile()" class="btn btn-primary">Update</button>
+                    </div> -->
+                </div>
+            </form>
+        </div>
+    </body>
+</div>

@@ -1,0 +1,110 @@
+<div class="progress" [hidden]="!isUploading">
+    <div class="progress-bar" [style.width.%]="uploadedPercentage">{{uploadedPercentage}}%</div>
+</div>
+<div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+<div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+<!-- Modal for Uploading Attachments -->
+<div id="uploadAttachmentsModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Receipts</h5>
+                <button type="button" class="close modelCloseButton" data-dismiss="modal" aria-label="Close"
+                    (click)="uploadModalClose()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="file-upload" class="custom-file-upload">
+                                <i class="fa fa-cloud-upload"></i>Upload</label>
+                            <input id="file-upload" type="file" #EditAttachFileInput class="hide-text" multiple
+                                (change)="detectFiles($event)">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <ul class="attachment-list">
+                            <li *ngFor="let file of postFileArray;let i=index">
+                                <div *ngIf="!file.isDeleted">
+                                    <span *ngIf="file.name || file.name!=''">{{file.name}}</span>
+                                    <span *ngIf="file.originalFileName">{{file.originalFileName}}</span>
+                                    <span>
+                                        <a (click)="removeFile(i)">
+                                            <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                                        </a>
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <p><strong>Note:</strong> Allowed formats are jpg/jpeg/gif/png/xls,docx, and pdf and maximum
+                    file size should
+                    be less than or equals to 5MB size</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" data-dismiss="modal"
+                    (click)="saveAttachments()">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for showing Preview thumbnails -->
+<div id="previewAttachmentsModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Preview Receipts</h5>
+                <button type="button" class="close" data-dismiss="modal"  aria-label="Close"
+                    (click)="previewClosed()">&times;</button>
+            </div>
+
+            <div class="modal-body preview-height">
+                <div class="row" *ngIf="showPreviewModal">
+                    <div class="col-md-3" *ngFor="let imageData of postFileArray;let i=index">
+                        <div
+                            *ngIf="imageData?.fileType?.includes('jpeg') || imageData?.fileType?.includes('png')
+                        || imageData?.fileType?.includes('gif') || imageData?.fileType?.includes('tiff') || imageData.fileType.includes('bmp')">
+                            <a [hidden]="hideDelete" (click)="removeFile(i)" class="remove-preview">
+                                <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                            </a>
+                            <img [title]="imageData.originalFileName" (click)="showPreview(imageData)"
+                                [src]="uiURL+imageData.attachmentURL" class="img-thumbnail">
+                        </div>
+                        <div *ngIf="imageData?.fileType?.includes('pdf')">
+                            <a [hidden]="hideDelete" (click)="removeFile(i)" class="remove-preview">
+                                <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                            </a>
+                            <div [title]="imageData.originalFileName" (click)="showPreview(imageData)"><img
+                                    class="pdf-icon-show" src="/a7/assets/images/pdfIcon.png"></div>
+                        </div>
+                        <div *ngIf="imageData?.fileType?.includes('wordprocessingml.document')
+                        || imageData.fileType.includes('msword')">
+                            <a [hidden]="hideDelete" (click)="removeFile(i)" class="remove-preview">
+                                <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                            </a>
+                            <div [title]="imageData.originalFileName" (click)="showPreview(imageData)"><img
+                                    class="pdf-icon-show" src="/a7/assets/images/wordIcon.png"></div>
+                        </div>
+                        <div *ngIf="imageData?.fileType?.includes('vnd.ms-excel') 
+                        || imageData?.fileType?.includes('spreadsheetml.sheet')">
+                            <a [hidden]="hideDelete" (click)="removeFile(i)" class="remove-preview">
+                                <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                            </a>
+                            <div [title]="imageData.originalFileName" (click)="showPreview(imageData)"><img
+                                    class="pdf-icon-show" src="/a7/assets/images/excelIcon.png"></div>
+                        </div>
+                    </div>
+                    <div *ngIf="postFileArray.length == 0">
+                        <h5 class="text-danger ml-5">No attachments added for preview</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

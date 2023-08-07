@@ -1,0 +1,63 @@
+<!-- Set  GOAL MODAL START -->
+<div class="team-goal-settings-section team-goal-section">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="addGoalModalLabel">Additional Notes</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="kpaForm" class="spaced">
+        <div class="form-row mb-2">
+          <ng-container *ngIf="!(status===STATUS_CODE_INFO['CLOSED'])">
+            <div class="col-md-12" *ngIf="(!isFromManager)">
+              <textarea name="additionalNotes" formControlName="additionalNotestext" id="additionalNotes" cols="30"
+                rows="3"></textarea>
+            </div>
+            <div class="form-group col-md-12">
+              <label for="range">Progress:</label>
+              <input type="range" formControlName="progress" [attr.disabled]="(!isFromManager ? null : '')" />
+              &nbsp;({{kpaForm?.get('progress')?.value}} %)
+            </div>
+          </ng-container>
+          <div class="box1" style="width: 100%;">
+            <div class="box-body table-responsive" style="max-height: 450px;overflow: auto;">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 80%;">Notes
+                    </th>
+                    <th style="width: 20%;">Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="tbody">
+                  <tr *ngFor="let note of formatedNotes">
+                    <td class="ng-binding">{{note.notes}}</td>
+                    <td class="ng-binding">{{note.dates}}</td>
+                  </tr>
+                </tbody>
+                <tbody class="tbody" *ngIf="!(formatedNotes && formatedNotes?.length)">
+                  <tr>
+                    <td colspan="2" class="ng-binding  text-center">No History Found </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="row float-right">
+        <div class="col">
+          <button type="button" class="btn btn-outline-primary " (click)="close()">Cancel</button>
+          <ng-container *ngIf="(!isFromManager)">
+            <button type="button" class="btn btn-primary" *ngIf="!(status===STATUS_CODE_INFO['CLOSED']) && !isReadOnly"
+              (click)="updateKpaInfo()">Save</button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ADD GOAL MODAL END -->

@@ -1,0 +1,258 @@
+<div class="v-height bg-white">
+
+  <div class="breadcrumb-wrapper">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <!-- <li class="breadcrumb-item">
+          <a href="#/dashboard">Dashboard</a>
+        </li> -->
+        <li class="breadcrumb-item active" aria-current="page">All Timesheets</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="inner-wrapper">
+    <div class="pt-4">
+      <div class="right-side" id="rightPnl">
+        <div>
+          <!--Search Panel-->
+          <div class="container-fluid mb-3">
+            <form [formGroup]="pmoTimesheetForm">
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <div class="col-md-5 no-padding">
+                      <label for="EmployeeName" class="control-label no-padding float-md-right mt-2">
+                        Employee Name </label>
+                    </div>
+                    <div class="col-md-7">
+                      <!-- <select class="form-control rounded-0 form-control-sm form-field-border"
+                      ng-options="employee.employeeId as employee.fullName for employee in vm.searchParamsList"
+                      ng-change="vm.getEmployessTimeSheetSummary()" ng-model="vm.searchParams.pmoemployee ">
+                      <option value="">Select</option>
+                    </select> -->
+                      <!-- <select class="form-control rounded-0 form-control-sm form-field-border"
+                        formControlName="employeeId" (change)="getEmployessTimeSheetSummary()" required>
+                        <option value="">Select</option>
+                        <option *ngFor="let employee of employeeList" value="{{employee.employeeId}}">
+                          {{employee.fullName}}</option>
+                      </select> -->
+                      <input type="text" class="form-control  form-control-sm form-field-border"
+                        name="fullName" (blur)="getEmployeeDetails($event)" (keyup.enter)="getEmployeeDetails($event)"
+                        formControlName="employeeId" placeholder="Enter employee name" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <div class="col-md-5 no-padding">
+                      <label for="Status" class="control-label no-padding float-md-right mt-2">
+                        Status </label>
+                    </div>
+                    <div class="col-md-7">
+                      <select class="form-control  form-control-sm form-field-border" id="status" required
+                        autofocus formControlName="status" (change)="onStatusChange()">
+                        <option value="">All</option>
+                        <option value="N">SAVED</option>
+                        <option value="S">SUBMITTED</option>
+                        <option value="O">APPROVED</option>
+                        <option value="R">REJECTED</option>
+                        <option value="G">CHARGED</option>
+                        <option value="U">ADJUSTED</option>
+                        <!-- <option value="I">INVOICED</option> -->
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <div class="col-md-5 no-padding">
+                      <label for="EmployeeName" class="control-label no-padding float-md-right mt-2">
+                        Project Name </label>
+                    </div>
+                    <div class="col-md-7">
+                      <!-- <select class="form-control  form-control-sm form-field-border"
+                      ng-options="project.projectId as project.projectName for project in vm.projectsList | orderBy:'projectName'"
+                      ng-change="vm.getEmployessTimeSheetSummary()" ng-model="vm.projectsList.projectId ">
+                      <option value="">All</option>
+                    </select> -->
+                      <!-- <select class="form-control  form-control-sm form-field-border"
+                        formControlName="projectId" (change)="getEmployessTimeSheetSummary()" required>
+                        <option value="">All</option>
+                        <option *ngFor="let project of projectsList" value="{{project.projectId}}">
+                          {{project.projectName}}</option>
+                      </select> -->
+                      <input type="text" class="form-control  form-control-sm form-field-border"
+                        name="fullName" (blur)="getProjectDetails($event)" (keyup.enter)="getProjectDetails($event)"
+                        formControlName="projectId" placeholder="Enter project name" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-4">
+                  <div class="form-group row">
+                    <div class="col-md-5 no-padding">
+                      <label for="startDate" class="control-label no-padding float-md-right mt-2">
+                        Start Date </label>
+                    </div>
+                    <div class="col-md-7">
+                      <select class="form-control form-control-sm form-field-border"
+                        formControlName="startDate" (change)="getEmployessTimeSheetSummary()" required autofocus>
+                        <!-- <option value="">Select</option> -->
+                        <option value="1">This Month</option>
+                        <option value="4">Last Month</option>
+                        <option value="12">Last 3 Months</option>
+                        <option value="25">Last 6 Months</option>
+                        <option value="51">Last 1 Year</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-8">
+                  <div class="form-group row m-2">
+                    <span *ngIf="employeeLength" style="color: red;">No Match found with the given Employee Name</span>
+                  </div>
+                  <div class="form-group row m-2">
+                    <span *ngIf="projectLength" style="color: red;">No Match found with the given Project Name</span>
+                  </div>
+                </div>
+
+              </div>
+            </form>
+          </div>
+          <!--Search Panel END-->
+          <!-- Main content -->
+          <section class="content">
+            <!--MAIN BODY START-->
+
+            <h3 class="p-2">Time Sheets</h3>
+            <div class="box1 table-responsive">
+              <table class="table table-hover table-bordered">
+                <thead class="thead_bg">
+                  <tr>
+                    <th style="width:10%">Date</th>
+                    <th style="width:20%">Week</th>
+                    <th style="width:25%">Project</th>
+                    <th style="width:20%">Employee Name</th>
+                    <th style="width:15%">Status</th>
+                    <th style="width:10%">Hours</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="empTimesheetList.length == 0">
+                    <div style="text-align: center; margin-top: 5%; margin-bottom: 3%;">
+                      <h6>Search for timesheet details</h6>
+                    </div>
+                  </tr>
+                  <tr (click)="employeeTs(emplist)" *ngFor="let emplist of empTimesheetList">
+                    <td style="width:10%">{{emplist.weekStartDate| date: 'dd MMM yyyy'}}</td>
+                    <td style="width:20%">{{emplist.weekStartDate| date: 'dd MMM yyyy'}} -
+                      {{emplist.weekEndDate| date: 'dd MMM yyyy'}}</td>
+                    <td style="width:25%">{{emplist.projectName}}</td>
+                    <td>{{emplist.employeeName}}</td>
+                    <td style="width:15%">{{emplist.status | timesheetStatus}}</td>
+                    <td style="width:10%">{{emplist.hours}}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-sm-12">
+      <div class="col-sm-6">
+        <div style="margin-top: 1px;">
+          <dir-pagination-controls max-size="10" direction-links="true" boundary-links="true"
+            on-page-change="clearSelectedRow()">
+          </dir-pagination-controls>
+        </div>
+      </div>
+    </div> -->
+
+  </div>
+</div>
+
+
+<!-- Employee List Modal -->
+<div class="modal fade" id="employeeList" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Employee List</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText"
+              placeholder="Enter Employee Name" maxlength="50" type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;"
+              (click)="filteredEmployeeSearch(searchedText)">Search</button>
+          </div>
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of employeeList ;let i=index"
+            (click)="selectedEmployee(users.fullName, users.orgId, users.employeeId)">
+            <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}} -
+              <b>({{users.employeeStatus == 1 ? 'Active' : 'Inactive' }})</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Project List Modal -->
+<div class="modal fade" id="projectList" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Project List</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Project Name" class="control-label">Project Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Project Name" [(ngModel)]="searchedPrjText"
+              placeholder="Enter Project Name" maxlength="50" type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-primary" style="float: right;"
+              (click)="filteredProjectSearch(searchedPrjText)">Search</button>
+          </div>
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of projectsList ;let i=index"
+            (click)="selectedProject(users.projectName, users.projectId)">
+            <li class="list-group-item " [value]="users.projectName" *ngIf="i<10">{{users.projectName}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

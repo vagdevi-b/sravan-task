@@ -1,0 +1,25 @@
+.heading{
+    justify-content: space-between;
+}
+.heading .personal_view_text{
+    color: #666666;
+    font-family: Montserrat;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 22px;
+}
+.heading .config_text {
+    cursor: pointer;
+}
+.heading .config_text span.glyphicon-cog{
+    width: 16px;
+    height: 16px;
+}
+.heading .config_text .text {
+    color: #181A1D;
+    font-family: Montserrat;
+    font-size: 13px;
+    letter-spacing: 0;
+    line-height: 16px;
+}

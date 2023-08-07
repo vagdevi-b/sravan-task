@@ -1,0 +1,263 @@
+<div class="v-height">
+  
+  <div id="filter">
+    <h3>Project P & L</h3>
+  </div>
+  <!-- P & L -->
+  <section class="content">
+
+    <div id="filter1">
+      <div style="padding-top: 5px">
+        <label>ORG &nbsp; </label>
+        <select [(ngModel)]="empOrg" (change)="filterPnLCharts()">
+          <option value="*">All</option>
+          <option *ngFor="let org of prjOrgData">{{org}}</option>
+        </select>
+      </div>
+      <div style="padding-top: 5px">
+        <label>BU &nbsp; </label>
+        <select [(ngModel)]="empBU" (change)="filterPnLCharts()">
+          <option value="*">All</option>
+          <option *ngFor="let bu of prjBUData">{{bu}}</option>
+        </select>
+      </div>
+      <div style="padding-top: 5px">
+        <label>Prac &nbsp; </label>
+        <select [(ngModel)]="empPractice" (change)="filterPnLCharts()">
+          <option value="*">All</option>
+          <option *ngFor="let prac of prjPracticeData">{{prac}}</option>
+        </select>
+      </div>
+      <div style="padding-top: 5px">
+        <label> Sub-Prac &nbsp; </label>
+        <select [(ngModel)]="empSubPractice" (change)="filterPnLCharts()">
+          <option value="*">All</option>
+          <option *ngFor="let subprac of prjSubPracticeData">{{subprac}}</option>
+        </select>
+      </div>
+      <div style="padding-top: 5px">
+        <label>Year &nbsp; </label>
+        <select [(ngModel)]="empYear" (change)="filterPnLCharts()">
+          <option *ngFor="let year of prjYearData" [value]="year.key">{{year.key}}</option>
+        </select>
+      </div>
+      <div style="padding-top: 5px">
+        <label>Month &nbsp; </label>
+        <select [(ngModel)]="empMonth" (change)="filterPnLCharts()">
+          <option value=".*">All</option>
+          <option *ngFor="let month of monthsInWord.data" [value]="month.value">{{month.key}}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="chartContainer">
+
+      <div id="filter">
+        <div class="col-sm-2" style="text-align: left; padding: 0%">
+          <h5>Project Details</h5>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="container">
+              <table class="table table-hover table-bordered">
+                <thead>
+                  <tr>
+                    <!-- <th>Employee Name</th> -->
+                    <th>
+                      <div>
+                        <form class="form-inline" style="padding-bottom: 0px;">
+                          <div>
+                            <div class="input-group">
+                              <input type="text" class="form-control" name="searchString" placeholder="Name" [(ngModel)]="searchString" autocomplete="off"
+                              />
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </th>
+                    <!-- <th>BU</th> -->
+                    <th>
+                      <div class="col-sm-12" style="text-align: center; padding: 3px">
+                        <!-- <label>BU &nbsp; </label> -->
+                        <select [(ngModel)]="firstTableBU" (change)="filterPnLCharts()">
+                          <option value="*">BU</option>
+                          <option *ngFor="let b of prjBUData">{{b}}</option>
+                        </select>
+                      </div>
+                    </th>
+                    <!-- <th>Practice</th> -->
+                    <th>
+                      <div class="col-sm-12" style="text-align:center; padding: 3px">
+                        <select [(ngModel)]="firstTablePractice" (change)="filterPnLCharts()">
+                          <option value="*">Prac</option>
+                          <option *ngFor="let p of prjPracticeData">{{p}}</option>
+                        </select>
+                      </div>
+                    </th>
+                    <!-- <th>Sub-Practice</th> -->
+                    <th>
+                      <div class="col-sm-2" style="text-align: center; padding: 3px">
+                        <select [(ngModel)]="firstTableSubPractice" (change)="filterPnLCharts()">
+                          <option value="*">Sub-Prac</option>
+                          <option *ngFor="let sp of prjSubPracticeData">{{sp}}</option>
+                        </select>
+                      </div>
+                    </th>
+                    <th style="padding: 3px; text-align: center">Cost</th>
+                    <th style="padding: 3px; text-align: center">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let emp of projectsJSON.data | filter : 'name' : searchString | paginate: { itemsPerPage: count, currentPage: p, id:'first' }"
+                    (click)="pnLProjectsTableData(emp)" [ngClass]="{'highlight' : emp.name == selectedRecord}">
+                    <td>{{ emp.name }}</td>
+                    <td style="text-align: center">{{ emp.bu }}</td>
+                    <td style="text-align: center">{{ emp.practice }}</td>
+                    <td style="text-align: center">{{ emp.subPractice }}</td>
+                    <td style="text-align: center">${{ emp.cost }}</td>
+                    <td style="text-align: center">${{ emp.revenue }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!--Including the pagination control.-->
+              <div class="text-right">
+                <pagination-controls (pageChange)="p = $event" id='first'></pagination-controls>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 col-lg-6 col-xl-4 mb-3">
+            <div class="card">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <h6>{{titlePnL}}'s Monthly Trend</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive" style="overflow-y: auto;">
+                  <canvas id="lineEmpPnL"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <div id="filter">
+        <div class="col-sm-8" style="text-align: left; padding: 0%">
+          <h5>Employee Details of {{selected}}</h5>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="container">
+              <table class="table" style="cursor: pointer">
+                <thead style="background: lightgray">
+                  <tr>
+                    <!-- <th>Employee Name</th> -->
+                    <th>
+                      <div>
+                        <form class="form-inline" style="padding-bottom: 0px;">
+                          <div>
+                            <div class="input-group">
+                              <input type="text" class="form-control" name="secondSearchString" placeholder="Name" [(ngModel)]="secondSearchString" autocomplete="off"
+                              />
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </th>
+                    <th style="text-align: center">BU</th>
+                    <!-- <th>
+                        <div class="col-sm-12" style="text-align: center; padding: 3px">
+                          <select [(ngModel)]="secondTableBU" (change)="filterPnLCharts()">
+                            <option value="*">BU</option>
+                            <option *ngFor="let b of empBUData">{{b}}</option>
+                          </select>
+                        </div>
+                      </th> -->
+                    <th style="text-align: center">Practice</th>
+                    <!-- <th>
+                        <div class="col-sm-12" style="text-align:center; padding: 3px">
+                          <select [(ngModel)]="secondTablePractice" (change)="filterPnLCharts()">
+                            <option value="*">Prac</option>
+                            <option *ngFor="let p of empPracticeData">{{p}}</option>
+                          </select>
+                        </div>
+                      </th> -->
+                    <th style="text-align: center">Sub-Practice</th>
+                    <!-- <th>
+                        <div class="col-sm-2" style="text-align: center; padding: 3px">
+                          <select [(ngModel)]="secondTableSubPractice" (change)="filterPnLCharts()">
+                            <option value="*">Sub-Prac</option>
+                            <option *ngFor="let sp of empSubPracticeData">{{sp}}</option>
+                          </select>
+                        </div>
+                      </th> -->
+                    <th style="padding: 3px; text-align: center">Cost</th>
+                    <th style="padding: 3px; text-align: center">Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let emp of empJSON.data | filter : 'name' : secondSearchString | paginate: { itemsPerPage: cnt, currentPage: page, id:'second' }"
+                    (click)="pnLEmpTableData(emp)" [ngClass]="{'highlight' : emp.name == selectedRecordSec}">
+                    <td>{{ emp.name }}</td>
+                    <td style="text-align: center">{{ emp.bu }}</td>
+                    <td style="text-align: center">{{ emp.practice }}</td>
+                    <td style="text-align: center">{{ emp.subPractice }}</td>
+                    <td style="text-align: center">${{ emp.cost }}</td>
+                    <td style="text-align: center">${{ emp.revenue }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!--Including the pagination control.-->
+              <div class="text-right">
+                <pagination-controls (pageChange)="page = $event" id='second'></pagination-controls>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 col-lg-6 col-xl-4 mb-3">
+            <div class="card">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <h6>{{titlePnLSec}}'s Monthly Trend</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive" style="overflow-y: auto;">
+                  <canvas id="lineSecPnL"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+
+<!-- Modal for showing loading text -->
+<div id="loadingInvoiceDetailsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%; width: 10%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

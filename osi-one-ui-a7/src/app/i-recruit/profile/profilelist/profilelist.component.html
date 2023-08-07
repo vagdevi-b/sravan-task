@@ -1,0 +1,97 @@
+<body>
+  <div class="c_breadcrumb c_breadcrumb__container container-fluid">
+    <nav>
+      <ol class="c_breadcrumb__list">
+        <li class="c_breadcrumb__item__title"><span>iRecruiter</span></li>
+        <!-- <li class="c_breadcrumb__item"><a href="#irecruit/dashboard"><span>Dashboard</span></a></li> -->
+        <li class="c_breadcrumb__item"><a href="#irecruit/requests">Requests</a></li>
+        <li routerLinkActive="active" class="c_breadcrumb__item active"><a href="#irecruit/candidates">Candidates</a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <main id="dashboardItems" class="p-3">
+    <div class="card p-0">
+    <h5 class="card-title h3 p-3 mb-0">{{Candidates}}</h5>
+      <hr class="m-0">
+      <div class="card-body p-3">
+        <div class="container-fluid">
+          <div class="row align-items-center mb-3">
+            <button (click)="getAllProfiles();" class="btn btn-primary">View All</button>&nbsp;
+            <!-- <button class="btn btn-primary">Emloyee</button>&nbsp;
+                <button class="btn btn-primary">Employee referal</button>&nbsp;
+                <button class="btn btn-primary">Vendor</button>&nbsp;
+                <button class="btn btn-primary" class="btn btn-primary">Partner</button>&nbsp;
+                <button class="btn btn-primary">Social Channels</button>&nbsp;
+                <button style="margin-right: 100px;" class="btn btn-primary">Job portal</button>&nbsp; -->
+            <div class="col">
+              <div class="container-fluid">
+                <div class="row align-items-center justify-content-sm-center justify-content-lg-end">
+                  <select (change)="getSearchType($event);" class="form-control ml-1 mr-1" style="width: 200px;" [(ngModel)]="selectedType">
+                    <option value="">Select</option>
+                    <option value="Request No">Request No</option>
+                    <option value="Status">Status</option>
+                    <option value="Source">Source</option>
+                    <option value="Name">Name</option>
+                    <option value="Mobile No">Mobile No</option>
+                    <option value="Email">Email</option>
+                    <!-- <option>Requesition Created Date range</option> -->
+                  </select>
+                  <div *ngIf="IsSourceSelected">
+                    <!-- <label class="col-form-label">Source Type</label> -->
+                    <select (change)="getSourceType($event);" class="form-control ml-1 mr-1" style="width: 200px;">
+                      <option value="">Source Type</option>
+                      <option *ngFor="let sourceType of sourceData" [value]="sourceType.id">{{sourceType.lookupValue}}
+                      </option>
+
+                      <!-- <option>Requesition Created Date range</option> -->
+                    </select>
+                  </div>
+                  <div *ngIf="IsStatusSelected">
+                    <select (change)="getSourceType($event);" class="form-control ml-1 mr-1" style="width: 200px;">
+                      <option value="">Status</option>
+                      <option *ngFor="let status of statusData" [value]="status.status"> {{status.status}}</option>
+
+                      <!-- <option>Requesition Created Date range</option> -->
+                    </select>
+                  </div>
+                  <input *ngIf="isSearchTextRequired" style="width: 250px;" placeholder="Search here" type="text"
+                    [(ngModel)]="searchItem" class="form-control ml-1 mr-1">&nbsp;
+                  <button (click)='getprofilesBySearch();' class="btn btn-primary">Search</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <table style="margin-left: 50px;">
+              <thead style="background-color:steelblue;">
+                  <th>Request ID</th>
+                  <th>Job Title</th>
+                  <th>No.of Positions</th>
+                  <th>Job Details</th>
+                  <th>Submitted On</th>
+                  <th>Status</th>
+                  <th>action</th>
+              </thead>
+              <tbody style="margin-top: 10px;">
+                  <tr >
+                      <td>1</td>
+                      <td>Developer</td>
+                      <td>36</td>
+                      <td>angular,react</td>
+                      <td>26/09/2021</td>
+                      <td>shortlisted</td>
+                      <td>
+                          <button>Edit</button>&nbsp;
+                          <button>Delete</button>&nbsp;
+                          <button>View More</button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table> -->
+        <app-profiletable></app-profiletable>
+      </div>
+    </div>
+  </main>
+</body>

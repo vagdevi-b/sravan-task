@@ -1,0 +1,46 @@
+<div class="modal-content">
+  <!-- Modal Header -->
+  <!-- Modal Body -->
+  <form [formGroup]="acceptLWDForm">
+    <div class="modal-body confirm-modal">  
+      <h4>Resignation Confirmation</h4>
+      <div class="body-message-notes">
+        <div id="actions">
+          <div class="row confirm-modal-text">
+            <div class="col-12">
+              <h5>Are you sure you want to accept the resignation?</h5>
+            </div>
+          </div>
+
+          <div class="form-group row confirm-modal-form-field">
+            <label class="col-sm-5 col-form-label">Last working date <span class="required">*</span>
+              (LWD)</label>
+            <div class="col-sm-7">
+
+              <div class="col-sm-12 input-group date custom-date datepicker-wrap" id="reservationdate2"
+                data-target-input="nearest" #DatePickContainer2>
+                <input id="resignationRangeDate" class="form-control datetimepicker-input custom-border-right"
+                  formControlName="requestedDateOfReleasing" placeholder="yyyy-mm-dd" ngbDatepicker #d2="ngbDatepicker">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary date-pick right-22" name="NGB-DATEPICKER" (click)="d2.toggle()"
+                    type="button" (document:click)="closeFix($event, d2)">
+                    <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                      <i class="fa fa-lg fa-calendar date-pick"></i>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- Modal Footer -->
+  <div class="modal-footer custom-modal-footer confirm-modal-footer">
+    <button type="button" class="btn btn-outline-secondary btn-style-1 radius-border-3" (click)="close()">No</button>
+    <button type="button" (click)="save()" class="btn btn-primary btn-style-1 radius-border-3">Yes</button>
+    
+  </div>
+</div>

@@ -1,0 +1,320 @@
+<div class="container-fluid">
+<app-expense-attachment></app-expense-attachment>
+  <div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+  <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+  <div class="row">
+    <div class="col-md-9">
+      <h3 class="pagetitle">Reimburse Expenses</h3>
+    </div>
+    <div class="col-md-2 mt-3">
+      <button type="button" class="btn btn-outline-primary" (click)="previewCalled()">Preview Receipts</button>
+    </div>
+    <div class="col-md-1 mt-3">
+      <div class="dropdown pull-right">
+        <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+        <div class="dropdown-content">
+          <ul>
+            <li>Items Per Page</li>
+            <li [class.active]="pageCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+            <li [class.active]="pageCount==0" (click)="chengePageSize(0)">All</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid pt-3 pb-1">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Expense Start Date</b>
+          </label>
+          <div class="input-group">
+            {{expenseStartDate}}
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-1"></div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Employee Name</b>
+          </label>
+          <div class="input-group"> {{employeeFullName}} </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-2"></div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Tracking ID</b>
+          </label>
+          <div class="input-group">
+            <div class="row">
+              <div class="col-md-4 mt-1" title="Parent Report" *ngIf="parentReportId && parentReportId != 0">{{parentReportId}}</div>
+              <div class="col-md-1 pb-1" *ngIf="parentReportId && parentReportId != 0">
+                <i class="glyphicon glyphicon-arrow-right" aria-hidden="true"></i>
+              </div>
+              <div class="col-md-3 mt-1">{{reportid}} </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Total Amount</b>
+          </label>
+          <div> {{totalAmount | number: '1.2-2'}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>
+            <b>Description</b>
+          </label>
+          <textarea id="description" name="description" maxlength="255" class="form-control form-control-sm border-radius-zero" rows="2"
+            [(ngModel)]="user.description" placeholder='Description' disabled></textarea>
+        </div>
+      </div>
+      <div class="col-md-2 col-md-2 mt-2 pt-4 pr-0 text-right">
+        <button type="button" (click)="reimburseExpense()" [disabled]="!checkSelectedStatus()" class="btn btn-primary" data-toggle="modal"
+          data-target="#reimburseModal">Reimburse</button>
+      </div>
+      <div class="col-md-6">
+        <div class="row mt-2 pt-4">
+          <div class="col">
+            <button type="button" (click)="downloadAllAttachments()" class="btn btn-outline-primary">Download Attachments</button>
+          </div>
+          <div class="col pl-0">
+            <button type="button" (click)="getPdfData()" [disabled]="fieldArray.length==0" class="btn btn-outline-secondary">Export To PDF</button>
+          </div>
+          <div class="col pl-0">
+            <select title="PDF Layout" class="form-control" name="exportLayoutType" [(ngModel)]="exportLayoutType">
+              <option value="l">Landscape</option>
+              <option value="p">Portrait</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br/>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box1">
+        <div class="box-body table-responsive">
+          <table class="table table-hover table-bordered">
+           <thead>
+            <tr>
+              <th>
+                <input type="checkbox" class="onoffswitch-checkbox" [checked]="isAllChecked()" (change)="checkAll($event)">
+              </th>
+              <th>
+                <b>Status</b>
+              </th>
+              <th>
+                <b>Project</b>
+              </th>
+              <th class="task-size">
+                <b>Task</b>
+              </th>
+              <th class="date-size">
+                <b>Expense Date</b>
+              </th>
+              <th>
+                <b>Expense Type</b>
+              </th>
+              <th>
+                <b>Quantity</b>
+              </th>
+              <th>
+                <b>Receipt Currency</b>
+              </th>
+              <th>
+                <b>Receipt Price</b>
+              </th>
+              <th class="base-amt">
+                <b>Employee Base Currency Amount</b>
+              </th>
+              <th>
+                <b>Exchange Rate</b>
+              </th>
+            </tr>
+           </thead>
+            <tbody>
+              <tr *ngFor="let field of fieldArray | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                <td>
+                  <input type="checkbox" value="{{field.id}}" name="{{field.id}}" class="onoffswitch-checkbox" [(ngModel)]="field.selected"
+                    (change)="onEditChecked($event)">
+                </td>
+                <!-- <td>{{field.status}}</td> -->
+                <td *ngIf="field.status == 'O'"> Approved </td>
+                <td *ngIf="field.status == 'R'"> Rejected </td>
+                <td *ngIf="field.status == 'S'"> Submitted </td>
+                <td *ngIf="field.status == 'N'"> Open </td>
+                <td *ngIf="field.status == 'G'"> Charged </td>
+                <td *ngIf="field.status == 'I'"> Invoiced </td>
+                <td *ngIf="field.status == 'U'"> Reversed </td>
+                <td> {{field.projectName}}</td>
+                <td> {{field.projectTaskName}}</td>
+                <td> {{field.expenseDate}}</td>
+                <td> {{field.expenseTypeName}}</td>
+                <td> {{field.quantity}}</td>
+                <td> {{field.currencyCode}}</td>
+                <td> {{field.receiptPrice | expenseDecimalFormat }}</td>
+                <td> {{getCurr(field.baseExchangeAmt)}} {{getVal(field.baseExchangeAmt)| number: '1.2-2'}}</td>
+                <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}} {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <br/>
+  <br/>
+  <div class="row">
+    <div class="col-md-8">
+      <pagination-controls (pageChange)="p = $event" maxSize="5" previousLabel="" nextLabel="" autoHide="true"></pagination-controls>
+    </div>
+
+    <div class="col-md-4" id="paddingbuttons">
+      <div class="pull-right">
+        <!-- <button type="button" (click)="rejectExpense()" [disabled]="!checkSelectedStatus()" class="btn btn-primary" data-toggle="modal">
+          Reject</button> -->
+        <button value="Reject" [disabled]="!checkSelectedStatus()" data-toggle="modal" class="btn btn-outline-warning" (click)="checkAnySelected('reject_expense')">Reject</button>
+        <button type="button" (click)="cancel()" class="btn btn-primary">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Reject Modal -->
+<div class="modal fade custom-modal-padding" id="reject_expense" role="dialog" data-backdrop="static" data-keyboard="false">
+  <form name="form" (ngSubmit)="f2.form.valid" #f2="ngForm" novalidate>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reason to Reject</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Reason</label>
+            <textarea type="text" name="rejectReason" maxlength="199" #rejectReason="ngModel" class="form-control" [(ngModel)]="user.rejectReason"
+              [ngModelOptions]="{standalone: true}" [required]="true" rows="3">
+                                  </textarea>
+            <!--<textarea class="form-control" rows="1" name="notes" id="notes" [(ngModel)]="editExpense.notes"></textarea>-->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-primary" type="submit" data-toggle="modal" data-target="#approveRejectModal" data-dismiss="modal"
+            [disabled]="!user.rejectReason" (click)="rejectExpense()">Submit</button>
+          <button class="btn btn-outline-secondary btn-cancel" type="button" data-dismiss="modal" (click)="rejectReasonClose()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- Modal -->
+<div class="modal fade custom-modal-padding" id="reimburseModal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Payment Status</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+      </div>
+      <form #paymentForm="ngForm">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col">
+              <span style="font-size: 16px;"> Total Payment due {{baseExchangeCurrency}} {{selectedTotalExpenses | expenseDecimalFormat}} for expense report
+                {{reportid}}</span>
+            </div>
+          </div>
+          <br>
+          <div class="row" *ngIf="formError">
+            <div class="col">
+              <div class="alert alert-danger">
+                <span style="font-size: 16px;">{{alertText}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <table class="table table-hover table-bordered">
+               <thead>
+                <tr>
+                  <th>Payment Date</th>
+                  <th>Description</th>
+                  <th>Ref. No</th>
+                  <th>Amount</th>
+                </tr>
+               </thead>
+               <tbody>
+                <tr *ngFor="let payDetail of paymentDetailsFields;let i=index; trackBy: trackByFn">
+                  <td>
+                    <div class="input-group">
+                      <input id="paymentdate{{i}}" name="startdate{{i}}" class="form-control form-control-sm" placeholder="yyyy-mm-dd" [(ngModel)]="payDetail.paymentDate"
+                        [maxDate]="minDate" ngbDatepicker #d2="ngbDatepicker" style="border-left: 1px solid #ced4da;">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button">
+                          <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                            <i class="fa fa-lg fa-calendar"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <input type="text" [(ngModel)]="payDetail.description" name="description{{i}}" class="form-control form-control-sm input-sm">
+                  </td>
+                  <td>
+                    <input type="text" [(ngModel)]="payDetail.refNo" name="refNo{{i}}" class="form-control form-control-sm input-sm">
+                  </td>
+                  <td>
+                    <input type="text" appDecimal [(ngModel)]="payDetail.amount" name="amount{{i}}" class="form-control form-control-sm input-sm"
+                      disabled>
+                  </td>
+                </tr>
+               </tbody>
+              </table>
+              <!-- {{paymentForm.value|json}} -->
+              <!-- {{paymentDetailsFields |json}} -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="savePaymentDetails()">Save</button>
+        </div>
+      </form>
+    </div>
+
+
+  </div>
+</div>
+<!--  end of reimburess div..... -->
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+
+  </div>
+</div>

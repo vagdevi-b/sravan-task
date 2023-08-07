@@ -1,0 +1,159 @@
+<div class="v-height" id="modal-container">
+  <div class="row mb-3">
+    <div class="col-sm-11 ">
+      <!-- <span class="lastRefresh">Last Refresh : {{ refreshDate | date:'medium' }}</span> -->
+    </div>
+    <div class="col-sm-1" style="justify-content: space-around; display: flex;">
+      <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+        style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="refresh()"></span>
+      <span class="glyphicon glyphicon-download-alt" data-tooltip title="Download in excel"
+        style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="exportDetailsInExcel()"></span>
+    </div>
+  </div>
+
+  <div class="form-filter">
+    <div class="col-form-filter mb-3">
+      <!-- <label>Org </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="prjOrg"
+              (change)="updateHrsByPrjGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let org of prjOrgData" value="{{org}}">{{org}}</option>
+            </select>
+          </div> -->
+      <label>Organization </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="orgData"
+        [settings]="dropdownSettings" [(ngModel)]="org" id="mddOrg" (onSelectAll)="onSelectDeselectAll($event,'org')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'org')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <!-- <label>Xfer Org</label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="prjXferOrg"
+              (change)="updateHrsByPrjGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let xferOrg of prjXferOrgData" value="{{xferOrg}}">{{xferOrg}}</option>
+            </select>
+          </div> -->
+      <label>Region </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="regionData"
+        [settings]="dropdownSettings" [(ngModel)]="region" id="mddRegion"
+        (onSelectAll)="onSelectDeselectAll($event,'region')" (onDeSelectAll)="onSelectDeselectAll($event,'region')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <!-- <label>Practice</label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="prjPract"
+              (change)="updateHrsByPrjGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let practice of prjPracticeData" value="{{practice}}">{{practice}}</option>
+            </select>
+          </div> -->
+      <label>Practice </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="practiceData"
+        [settings]="dropdownSettings" [(ngModel)]="practice" id="mddPractice"
+        (onSelectAll)="onSelectDeselectAll($event,'practice')" (onDeSelectAll)="onSelectDeselectAll($event,'practice')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <!-- <label>Sub-Practice</label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="prjSubPract"
+              (change)="updateHrsByPrjGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let subPract of prjSubPracticeData" value="{{subPract}}">{{subPract}}</option>
+            </select>
+          </div> -->
+      <label>Sub-practice </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="subPracticeData"
+        [settings]="dropdownSettings" [(ngModel)]="subPractices" id="mddSubPractice"
+        (onSelectAll)="onSelectDeselectAll($event,'subPractice')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'subPractice')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <!-- <label>Project Name</label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="prjName"
+              (change)="updateHrsByPrjGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let project of projectData" value="{{project}}">{{project}}</option>
+            </select>
+          </div> -->
+      <label>Client </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="clientData"
+        [settings]="dropdownSettings" [(ngModel)]="client" id="mddClient"
+        (onSelectAll)="onSelectDeselectAll($event,'client')" (onDeSelectAll)="onSelectDeselectAll($event,'client')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Project </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="projectData"
+        [settings]="dropdownSettings" [(ngModel)]="project" id="mddProject"
+        (onSelectAll)="onSelectDeselectAll($event,'project')" (onDeSelectAll)="onSelectDeselectAll($event,'project')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Spent Date</label>
+      <div>
+        <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="spentDate"
+          (change)="updateHrsByPrjGrid()">
+          <option value="1">Last week</option>
+          <option value="3">Last 3 Weeks</option>
+          <option value="6">Last 6 weeks</option>
+          <option value="12">Last 12 weeks</option>
+          <!-- <option value="18">Last 18 weeks</option>
+          <option value="24">Last 24 weeks</option> -->
+        </select>
+      </div>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Billability</label>
+      <div>
+        <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="isBillable"
+          (change)="updateHrsByPrjGrid()">
+          <option value="*">All</option>
+          <option value="BILLABLE">Billable</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Emp status</label>
+      <div>
+        <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empStatus"
+          (change)="updateHrsByPrjGrid()">
+          <option value="*">All</option>
+          <option value="Active">Active</option>
+          <option value="Terminated">Terminated</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12" id="htmle2imagedata">
+      <ag-grid-angular style="width: auto;" class="ag-theme-balham" [rowData]="hrsByPrjObj" [columnDefs]="columnDefs"
+        [gridOptions]="gridOptions" [paginationPageSize]="paginationPageSize" [getRowHeight]="getRowHeight"
+        pagination="true" enableSorting enableFilter enableColResize (gridReady)="onGridReady($event)">
+      </ag-grid-angular>
+    </div>
+
+  </div>
+  <div *ngIf="spinner" class="overlay">
+    <div class="loader"></div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="modal-content h-auto">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">
+      Configure Favourites
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="reset()"><span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body" style="max-height: 75vh !important;overflow: auto;overflow-x: hidden;">
+    <div>
+      <p class="">Please check the items you want to add in Favourites</p>
+    </div>
+    <div class="form-row">
+      <div class="col-9" *ngIf="favList?.length">
+        <div class="custom-control custom-checkbox pb-2" *ngFor="let menu of favList;let i=index;">
+          <div class="fav-header">
+            <span class="favitem">{{ menu.groupTitle }}</span><br/>
+            <div>
+              <ul *ngIf="menu?.children">
+                <li *ngFor="let subMenu of menu.children;let j=index;">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox"
+                           [(ngModel)]="subMenu.isFavourite"
+                           (ngModelChange)="updateFavourites(subMenu, checkboxRef)"
+                           class="custom-control-input"
+                           id="toolbar{{subMenu.itemFunctionId}}"
+                           name="toolbar{{subMenu.itemFunctionId}}"
+                           #checkboxRef>
+                    <label class="custom-control-label"
+                           for="toolbar{{subMenu.itemFunctionId}}">{{subMenu?.itemTitle}}</label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-primary" (click)="reset()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="saveFavourites()"
+            [class.disabled]="!toolbarDirty || selectedList.length === 0">Save
+    </button>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+<div class="reg-emp-details w-100">
+  <div class="reg-emp-details-head">
+    <table class="table reg-emp-details-table">
+      <tbody>
+        <tr>
+          <td><span class="reg-emp-details-label">Full Name</span>: {{rowdata.employeeName}}</td>
+          <td><span class="reg-emp-details-label">Resignation Type</span>: {{rowdata.requestType}}</td>
+          <td><span class="reg-emp-details-label">Replacement Required</span>:
+            {{rowdata.isReplacementRequired == true ? "Yes" : "No"}}
+          </td>
+          <td><span class="reg-emp-details-label">Dependency</span>: {{rowdata.levelOfDependency}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="reg-emp-details-content">
+    <table class="table table-no-bg table-no-border no-padding-td">
+      <tbody>
+        <tr>
+          <td><span class="reg-emp-details-date-label">Date of Resignation</span>:
+            {{rowdata.resignationDate}}
+          </td>
+          <td><span class="reg-emp-details-date-label">Date of Creation</span>: {{rowdata.creationDate |
+            date:'yyyy-MM-dd'}}
+          </td>
+          <td><span class="reg-emp-details-date-label">Date of Decision</span>: {{rowdata.decisionDate}}
+          </td>
+          <td><span class="reg-emp-details-date-label">&nbsp;</span>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><span class="reg-emp-details-date-label">Requested Releasing
+              Date</span>:{{rowdata.requestedLWD}} </td>
+          <td><span class="reg-emp-details-date-label">Last Date as per
+              Policy</span>:
+            {{rowdata.policyLWD | date:'yyyy-MM-dd'}}
+          </td>
+          <td><span class="reg-emp-details-date-label">Last Working Date</span>: {{rowdata.relievingDate}}
+          </td>
+          <td><span class="reg-emp-details-date-label">&nbsp;</span>&nbsp;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

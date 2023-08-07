@@ -1,0 +1,316 @@
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
+  <div class="wrapper">
+    <!-- Preloader -->
+
+    <!-- Navbar -->
+
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper" style="margin-bottom:50px;">
+      <!-- Main content -->
+      <!-- <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="custom-crumb breadcrumb-item active" aria-current="page">Resignation Management</li>
+
+        </ol>
+      </nav> -->
+      <div class="card custom-margin custom-card">
+        <div class="card-header custom-header d-flex justify-content-between">
+          Resignation Request
+          <div class="action-badge-with-value-sec d-flex align-items-center">
+            <div class="action-badge-value-wrap">
+              <ul class="">
+                <li>HR SLA <span class="action-badge-value danger-action-badge-value">{{rowdata.hrSla}}</span></li>
+                <li>BU SLA <span class="action-badge-value primary-action-badge-value">{{rowdata.pdSla}}</span></li>
+              </ul>
+            </div>
+            <div *ngIf="isAccepted === true && rowdata.pdSla > 0" class="action-badge-wrap">
+              Action {{rowdata.pdSla}} days left | <span class="badge-dark badge-pill py-1"
+                style="font-size: 13px;">{{rowdata.status}}</span>
+            </div>
+            <div *ngIf="isAccepted === true && rowdata.pdSla <= 0" class="action-badge-wrap">
+              PD SLA Breached | <span class="badge-dark badge-pill py-1"
+                style="font-size: 13px;">{{rowdata.status}}</span>
+            </div>
+            <div *ngIf="isAccepted === false && rowdata.pdSla > 0" class="action-badge-wrap accepted-badge">
+              Accepted Resignation | <span class="badge-dark badge-pill py-1"
+                style="font-size: 13px;">{{rowdata.status}}</span>
+            </div>
+            <div *ngIf="isAccepted === false && rowdata.pdSla <= 0" class="action-badge-wrap accepted-badge">
+              PD SLA Breached | <span class="badge-dark badge-pill py-1"
+                style="font-size: 13px;">{{rowdata.status}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class=" w-100">
+            <!-- <app-emp-resignation-details></app-emp-resignation-details> -->
+            <!-- New Reg Employee Details Start -->
+            <app-emp-resignation-basic-view-details [basicDetails]="rowdata"></app-emp-resignation-basic-view-details>
+
+            <!-- New Reg Employee Details End -->
+          </div>
+
+
+          <div class="w-100 hr_emp_details" *ngIf="flag === true">
+            <app-emp-details [empaccordianinfo]="rowdata"></app-emp-details>
+          </div>
+
+
+
+          <div class="row p-0 m-0 w-100">
+            <!-- Start 1 -->
+            <div class="discussion-with-employee-sec w-100">
+              <div class="row align-items-stretch" *ngIf="spinner == false">
+                <div class="col-12 col-md-4 col-lg-4 col-xl-4 border-right">
+                  <div *ngIf="isAccepted === true && flag === true && rowdata.status != 'Exit'"
+                    class="discussion-with-employee-sec-item pd-discussion-item resignation_pd_reason">
+                    <h4>PD Discussion with Employee</h4>
+                    <app-discussion [displayData]="'PD'" [completeEmpData]="emprequestinfo"
+                      [selectedValues]="displaySelectedReasons" (selectedDiscussion)="discussionData($event)">
+                    </app-discussion>
+                    <!-- <app-discussion *ngIf="flag1 == true" [displayData]="'PD'" [completeEmpData]="emprequestinfo"
+                      [selectedValues]="displaySelectedReasons"></app-discussion> -->
+
+                  </div>
+                  <div *ngIf="isAccepted === false || rowdata.status == 'Exit'" class="col-12">
+                    <div *ngIf="displaySelectedReasonsinfo.length > 0"
+                      class="discussion-with-employee-sec-item pd-discussion-item">
+                      <h4>PD Discussion with Employee</h4>
+                      <ul *ngFor="let item of displaySelectedReasonsinfo">
+                        <li>{{item}}</li>
+                      </ul>
+                    </div>
+                    <div *ngIf="displaySelectedReasonsinfo.length == 0"
+                      class="discussion-with-employee-sec-item pd-discussion-item">
+                      <h4>PD Discussion with Employee</h4>
+                      <p>No Reason Selected</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4 col-xl-4 border-right">
+                  <div *ngIf="hrDiscussionData.length > 0"
+                    class="discussion-with-employee-sec-item hr-discussion-item px-3">
+                    <h4>HR Discussion with Employee</h4>
+                    <p class="mb-2">Reasons for Resignation</p>
+                    <ul *ngFor="let item of hrDiscussionData">
+                      <li>{{item}}</li>
+                    </ul>
+                  </div>
+                  <div *ngIf="hrDiscussionData.length == 0"
+                    class="discussion-with-employee-sec-item hr-discussion-item">
+                    <h4>HR Discussion with Employee</h4>
+                    <p>No Reason Selected</p>
+                  </div>
+                </div>
+                <div class="col-12 col-md-4 col-lg-4 col-xl-4 border-right">
+                  <div *ngIf="rmDiscussionData.length > 0" class="discussion-with-employee-sec-item rm-discussion-item">
+                    <h4>RM Discussion with Employee</h4>
+                    <p class="mb-2">Reasons for Resignation</p>
+                    <ul class="rm-discussion-item-list" *ngFor="let item of rmDiscussionData">
+                      <li>{{item}}</li>
+                    </ul>
+                  </div>
+                  <div *ngIf="rmDiscussionData.length == 0"
+                    class="discussion-with-employee-sec-item rm-discussion-item">
+                    <h4>RM Discussion with Employee</h4>
+                    <p>No Reason Selected</p>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <!-- End 1 -->
+          <div class="row">
+            <div class="col-lg-6 col-md-6 notes-section">
+              <div
+                class="notes-column notes-with-checkbox-group d-flex justify-content-between align-items-center note-component-wrap">
+                <h4>Notes</h4>
+                <div class="attach-col filter-with-attach d-flex" [formGroup]="filterForm">
+
+
+                  <div class="filter-checkbox-sec d-flex align-items-center">
+                    <label class=" filter-label mb-0 mr-2">Filter:</label>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="viewall" (change)="filterNotesall($event)"
+                        type="checkbox" id="inlineCheckbox1">
+                      <label class="form-check-label" for="inlineCheckbox1">PD</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="hr" (change)="filterNotesHr($event)"
+                        type="checkbox" id="inlineCheckbox2">
+                      <label class="form-check-label" for="inlineCheckbox2">HR</label>
+                    </div>
+
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" formControlName="rm" (change)="filterNotesRm($event)"
+                        type="checkbox" id="inlineCheckbox3">
+                      <label class="form-check-label" for="inlineCheckbox3">RM</label>
+                    </div>
+                  </div>
+
+
+                  <button *ngIf="isAccepted == true" (click)="openNotesPopupModal()" class="btn ml-2">
+                    <img src="assets/images/icon_action_add.svg"> &nbsp; Add Notes</button>
+                </div>
+              </div>
+              <div class="note-scroll-height-350">
+              <div class="d-flex flex-column mt-4 pd-5 note-info-data-body">
+                <div class="category-item d-flex" *ngFor="let item of filterednotesdata">
+                  <span class="sub-name right badge badge-danger">{{item.osiEmployeesCurrentDto.userName.substring(0,
+                    2).toUpperCase()}}</span>
+                  <div class="summary text-break flex-grow-1">
+                    <div class="title font-16 fw-600 ml-2">
+                      {{item.osiEmployeesCurrentDto.userName}}
+                      <h3 class=" title font-14 fw-500 float-right notes-title-sub">
+                        <span class="sub-title right badge badge-danger">{{item.role}}</span> | <span
+                          class="text-muted discussion-text">Discussion : {{item.createdDate | date}}</span>
+                      </h3>
+                    </div>
+                    <p class="font-14 text-muted">
+
+                    </p>
+                    <p>{{item.notes}}</p>
+                  </div>
+                </div>
+
+
+                <div class="category-item d-flex" *ngFor="let item of notesdata">
+                  <span class="sub-name right badge badge-danger mr-2">-</span>
+                  <div class="summary flex-grow-1">
+                    <div class="title font-16 fw-600">
+                      -
+                      <h3 class="title font-14 fw-500 float-right">
+                        <span class="sub-title right badge badge-danger">-</span> | <span
+                          class="text-muted discussion-text">Discussion : </span>
+                      </h3>
+                    </div>
+                    <p class="font-14 text-muted">
+
+                    </p>
+                    <p>{{item.notes}}</p>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 notes-section-col-2">
+
+              <div class="row">
+
+                <div class="col-12  px-3">
+                  <div class="attached-header-title d-flex justify-content-between align-items-center">
+                    <h1 class="doc-title mb-0">Attached Documents</h1>
+                    <button *ngIf="isAccepted == true" (click)="openAttachPopupModal()" class="btn mr-1">
+                      <img src="assets/images/icon_action_upload.svg"> Add Attachment</button>
+                  </div>
+
+                  <div class="attached-info-body mb-2 note-scroll-height-350">
+                    <div *ngFor="let item of filteredAttachments">
+                      <h4 class="doc-sub-title">
+                        <div *ngIf="getFileType(item.fileType)">
+                          <i [ngClass]="getClassNameByFileType(item.fileType)"></i> <a
+                            [href]="downloadFileUrl+item.filePath" target="_blank" title={{item.displayName}}>
+                            {{item.displayName.slice(0,15)+'...'}}</a>
+                          <!-- <span class="float-right">By {{item.osiEmployeesCurrentDto.userName}}</span>|
+                        <span>Attached On : {{item.createdDate | date}}</span> -->
+                          <div class="float-right">
+                            <span class="">By {{item.osiEmployeesCurrentDto.userName}}</span>|
+                            <span class="font-12"> On : {{item.createdDate | date}}</span>
+                          </div>
+                        </div>
+
+                      </h4>
+                    </div>
+                    <div *ngIf="filesresponse == 'success'">
+                      <h4 class="doc-sub-title" *ngFor="let item of filesArray ">
+                        <div *ngIf="item.type === 'application/pdf'">
+                          <i class="fa fa-file-pdf-o"></i> {{item.fileName.slice(0,15)+'...'}}
+                          <div class="float-right">
+                            <span class="">By {{userInfo}}</span>|
+                            <span class="font-12"> On : {{currentDate | date}}</span>
+                          </div>
+                        </div>
+                        <div
+                          *ngIf="item.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
+                          <i class="fa fa-envelope"></i> {{item.fileName.slice(0,15)+'...'}}
+                          <div class="float-right">
+                            <span class="">By {{userInfo}}</span>|
+                            <span class="font-12"> On : {{currentDate | date}}</span>
+                          </div>
+                        </div>
+                        <div *ngIf="item.type === 'image/jpeg'">
+                          <i class="fa fa-file-image-o"></i> {{item.fileName.slice(0,15)+'...'}}
+                          <div class="float-right">
+                            <span class="">By {{userInfo}}</span>|
+                            <span class="font-12"> On : {{currentDate | date}}</span>
+                          </div>
+                        </div>
+                        <div *ngIf="item.type === 'image/png'">
+                          <i class="fa fa-file-image-o"></i> {{item.fileName.slice(0,15)+'...'}}
+                          <div class="float-right">
+                            <span class="">By {{userInfo}}</span>|
+                            <span class="font-12"> On : {{currentDate | date}}</span>
+                          </div>
+                        </div>
+                        <div *ngIf="item.type === 'message/rfc822'">
+                          <i class="fa fa-envelope-o"></i> {{item.fileName.slice(0,15)+'...'}}
+                          <div class="float-right">
+                            <span class="">By {{userInfo}}</span>|
+                            <span class="font-12"> On : {{currentDate | date}}</span>
+                          </div>
+                        </div>
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row m-0">
+          <div class="col-12  d-flex pt-3 align-items-center justify-content-between px-4">
+            <div><button type="button" class="backbutton" class="btn btn-secondary mr-3 ml-0"
+                (click)="navigateToInitiate()">Back</button></div>
+            <div class="float-right" *ngIf="rowdata.status != 'Exit'">
+              <button class="btn btn-outline-primary mr-2" (click)="navigateToInitiate()">Cancel</button>
+              <button *ngIf="isAccepted === true" class="btn btn-outline-primary mr-2"
+                (click)="navigateToRetain()">Retain Employee</button>
+              <button *ngIf="isAccepted === true" class="btn btn-primary"
+                (click)="openAcceptResignation()">Accept
+                Resignation</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+
+  <div class="modal fade bs-example-modal-new" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <!-- Modal Content: begins -->
+      <app-attachmentpopup></app-attachmentpopup>
+    </div>
+  </div>
+
+  <div class="modal fade bs-example-modal-notes" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <!-- Modal Content: begins -->
+      <!-- Modal Content: begins -->
+      <app-notepopup></app-notepopup>
+    </div>
+  </div>

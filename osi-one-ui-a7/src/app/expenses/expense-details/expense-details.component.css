@@ -1,0 +1,58 @@
+.addIcon{
+    margin-top: 15%;
+    font-size: 20px;
+}
+
+.minusIcon{
+    margin-top: 15%;
+    font-size: 20px;
+}
+
+/* Styles for alert */
+.snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-right: -125px;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 10;
+    right: 11%;
+    top: 10%;
+    font-size: 17px;
+    background-color: #4CAF50;
+  }
+  
+  .snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 2.5s 2s;
+    animation: fadein 0.5s, fadeout 2.5s 2s;
+  }
+  
+  .snackbar.danger{
+    background-color: #d9534f;
+  }
+  
+  @-webkit-keyframes fadein {
+    from {right: 0; opacity: 0;} 
+    to {right: 10%; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+    from {right: 0; opacity: 0;}
+    to {right: 10%; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+    from {right: 10%; opacity: 1;} 
+    to {right: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+    from {right: 10%; opacity: 1;}
+    to {right: 0; opacity: 0;}
+  }
+
+ 

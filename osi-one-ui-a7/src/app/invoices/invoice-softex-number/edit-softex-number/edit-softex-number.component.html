@@ -1,0 +1,47 @@
+<!-- Modal content-->
+<div class="modal-content h-auto modal-animation">
+  <div class="modal-header">
+    <h5 class="modal-title">{{title | titlecase}}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()" [disabled]="showLoader">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="tabcontent">
+      <table class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th class="invoiceNumber">Invoice Number
+              <span class="glyphicon sort-icon"></span>
+            </th>
+            <th class="invoiceStatus">Invoice Status
+              <span class="glyphicon sort-icon"></span>
+            </th>
+            <th class="softextNumber">Softex Number
+              <span class="glyphicon sort-icon"></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <input id="invoiceNumber" type="text" class="form-control form-control-sm" [(ngModel)]="invoiceNumber"
+                disabled>
+            </td>
+            <td>
+              <input id="invoiceStatus" type="text" class="form-control form-control-sm" [(ngModel)]="invoiceStatus"
+                disabled>
+            </td>
+            <td>
+              <input id="softextNumber" type="text" class="form-control form-control-sm" [(ngModel)]="softextNumber">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary tsm-primary-btn" (click)="saveSoftex()">Save</button>
+    <button type="button" class="btn btn-primary tsm-primary-btn" data-dismiss="modal" (click)="close()">Cancel</button>
+  </div>
+</div>

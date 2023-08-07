@@ -1,0 +1,506 @@
+<div class="v-height row-offcanvas row-offcanvas-left">
+  <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+    <div class="inner-wrapper">
+
+      <div class="sub-header border-bottom">
+        <h1>{{header}} Event Definition</h1>
+      </div>
+      <section class="forms" style="margin-left: 20px !important;padding:12px 19px !important">
+        <div style="width: 97%;">
+          <br>
+          <div class="row">
+            <div class="col-md-6">
+              <!-- first row -->
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label for="orgName">
+                    <strong>Webinar</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+					<input type="text" class="form-control rounded-0 form-control-sm form-field-border" [disabled]="isUpdatable==='view' || isPublished"
+                        name="webinarName" maxlength="512" [(ngModel)]="isrEventDefinition.webinarName" placeholder="Enter webinar name" required>
+                </div>
+              </div>    
+			   <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Duration (In Mins)</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <input type="number" class="form-control rounded-0 form-control-sm form-field-border" [disabled]="isUpdatable==='view' || isPublished" required
+                        name="duration" maxlength="3" [(ngModel)]="isrEventDefinition.duration" placeholder="Enter Duration" min="1" max="60" onKeyUp="if(this.value>61 || this.value==0) return false;">
+                  </div>
+                </div>
+            </div>
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Topics</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <textarea class="form-control rounded-0 form-control-sm form-field-border" rows="4" cols="10" [disabled]="isUpdatable==='view' || isPublished"
+                        name="webinarTopics" maxlength="1000" [(ngModel)]="isrEventDefinition.webinarTopics" placeholder="Enter webinar topics"></textarea>
+                  </div>
+                </div>
+              </div>
+			<!--  <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Manual Content?:</strong>
+                  </label>
+                </div>
+                <div class="col-sm-6">
+                     <input type="checkbox" name='isrEventDefinition.manualLinkEnabled' [checked]="isrEventDefinition.manualLinkEnabled" [(ngModel)]="isrEventDefinition.manualLinkEnabled" [disabled]="isUpdatable==='view'">
+                </div>
+              </div> -->
+            </div>
+
+            <!-- second row -->
+            <div class="col-md-6">
+			             <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Schedule Date & Time (PST)</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="input-group" #DatePickerContainer1>
+                  <input id="webinarDate" name="webinarDate" class="form-control col-sm-5 form-control-sm form-field-border" placeholder="yyyy-mm-dd " [disabled]="isUpdatable==='view' || isPublished"
+                    [(ngModel)]="webinarDateField" ngbDatepicker #d1="ngbDatepicker" required readonly="disableDateField" [minDate]="minPickerDate">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (document:click)="onClick($event,d1,'d1')" (click)="d1.toggle()" type="button" [disabled]="isUpdatable==='view' || isPublished">
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                        <i class="fa fa-lg fa-calendar"></i>
+                      </span>
+                    </button>
+
+                  </div>
+				  <div class="col-md-6" style="display: table;padding: 0px;">
+				  <div style="display: table-cell;">
+                 <!--   <input type="number" class="form-control col-sm-12" [disabled]="isUpdatable==='view' || isPublished"
+                        name="webinarHr" [(ngModel)]="webinarHr" required placeholder="Hours" min="1" max="24"> -->
+					<select name="webinarHr" class="form-control" [(ngModel)] ="webinarHr" [disabled]="isUpdatable==='view' || isPublished">
+					  <option value="">Hours</option>
+					  <option *ngFor="let hours of hoursList" [value]=hours>
+						{{hours}}
+					  </option></select> 
+						</div>
+					<div style="display: table-cell;">
+					<!--<input type="number" class="form-control col-sm-12" name="webinarMin" [disabled]="isUpdatable==='view' || isPublished"
+                         [(ngModel)]="webinarMin" required placeholder="Minutes" min="1" max="60">	-->
+						 <select name="webinarMin" class="form-control" [(ngModel)] ="webinarMin" [disabled]="isUpdatable==='view' || isPublished">
+					  <option value="">Mins</option>
+					  <option *ngFor="let mins of minsList" [value]=mins>
+						{{mins}}
+					  </option></select>
+				  </div>
+                </div>
+                </div>
+                </div>
+              </div>  
+			  <div class="row">
+
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong> Prior Events:</strong>
+                  </label>
+                </div>
+                <div class="col-sm-6">
+                   <select name="osiIsrPriorEvents" style="height: 100% !important;" multiple [disabled]="isUpdatable==='view' || isPublished" class="form-control" [(ngModel)] ="osiIsrPriorEvents" size="5">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let priorEvent of allPublishedEventDefinitions" [value]=priorEvent.eventDefId>
+						{{priorEvent.webinarName}}
+					  </option>
+					</select>
+                </div>
+              </div>
+			  <!--<div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Registration Required?:</strong>
+                  </label>
+                </div>
+                <div class="col-sm-6">
+                     <input type="checkbox" name='active' [value]="isrEventDefinition.registrationRequired" [(ngModel)]="isrEventDefinition.registrationRequired" [disabled]="isUpdatable==='view'" checked>
+                </div>
+              </div> -->
+            </div>
+          </div>
+		<div class="leave-status-section">
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link active" id="targetLocationId" data-toggle="pill" href="#targetLocation" (click)="onNavClick('targetLocation')">Target Locations</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="pill" href="#notificationRule" (click)="onNavClick('notificationRule')">Notification Rules</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="eventEntryId" data-toggle="pill" href="#eventEntry" (click)="onNavClick('eventEntry')">Event Entries</a>
+				</li>
+			</ul>
+		</div>
+		<div *ngIf="disableOntargetLocation && !isPublished && isUpdatable!=='view'">
+			<div class="row">
+            <div class="col-sm-12">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="25%">Country</th>
+					  <th scope="col" width="25%">State</th>
+					  <th scope="col" width="25%">City</th>
+					  <th scope="col" width="25%">Actions</th>
+                    </tr>
+                  </thead>
+                 <tbody>
+                  <tr *ngFor="let item of isrEventDefinition.osiIsrEventTargetLocations; let i=index; ">
+                    <td scope="row">
+					<select (change)="getStatesbyCountryCode(item.countryCode, i)" name="{{'countryCode'+i}}" class="form-control" [(ngModel)] ="item.countryCode" >
+					  <option value="">Select</option>
+					  <option *ngFor="let country of countries" [value]=country.countryCode>
+						{{country.countryCode}} - {{country.countryName}}
+					  </option>
+					</select></td>
+					<td scope="row">
+					<select (change)="getCititesbyStateName(item.stateCode, i)" name="{{'stateName'+i}}" class="form-control" [(ngModel)] ="item.stateCode" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let state of states[i]" [value]=state.stateName>
+						{{state.stateName}} - {{state.stateLongName}}
+					  </option>
+					</select></td>
+					<td scope="row"><select name="{{'cityName'+i}}" class="form-control" [(ngModel)] ="item.cityCode" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let city of cities[i]" [value]=city.cityName>
+						{{city.cityCode}} - {{city.cityName}}
+					  </option>
+					</select></td>
+					<td>
+					<div>
+						<i style="cursor: pointer;" *ngIf="isrEventDefinition.osiIsrEventTargetLocations.length>1" class="glyphicon glyphicon-remove" (click)="deleteTargetLocation(i)"></i>&nbsp;&nbsp;
+						<i style="cursor: pointer;" *ngIf="isrEventDefinition.osiIsrEventTargetLocations.length-1==i" class="glyphicon glyphicon-plus" (click)="addTargetLocation()" ></i>
+						</div>
+					</td>
+                  </tr>
+                 </tbody>
+                </table>
+              </div>
+            </div>
+		</div>
+		</div>
+		<div *ngIf="disableOntargetLocation && (isPublished || isUpdatable==='view')">
+					 <div class="row">
+            <div class="col-sm-8">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="25%">Country</th>
+					  <th scope="col" width="25%">State</th>
+					  <th scope="col" width="25%">City</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of isrEventDefinition.osiIsrEventTargetLocations; let i=index; ">
+                      <td scope="row">
+            {{item.countryCode}}
+            </td>
+            <td scope="row">
+            {{item.stateCode}}
+            </td>
+            <td scope="row">
+            {{item.cityCode}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+		</div>
+		</div>
+		<div *ngIf="disableOnnotificationRule && !isPublished  && isUpdatable!=='view'">
+			 <div class="row tableBox">
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="10%">Type</th>
+					  <th scope="col" width="10%">Frequency Unit</th>
+					  <th scope="col" width="10%">Frequency value</th>
+					  <th scope="col" width="25%">Subject</th>
+					  <th scope="col" width="35%">Mail Content</th>
+					  <th scope="col" width="10%">Actions</th>
+                    </tr>
+                  </thead>
+                 <tbody>
+                  <tr *ngFor="let item of isrEventDefinition.osiIsrEventEmailNotificationRules; let i=index;">
+                    <td scope="row">
+					<select name="{{'eventType'+i}}" class="form-control" [(ngModel)] ="item.eventType">
+					  <option value="">Select</option>
+					  <option *ngFor="let eType of typesList" [value]=eType.name [disabled]="eType.status">
+						{{eType.desc}}
+					  </option>
+					</select></td>
+					<td scope="row">
+					<select name="{{'type'+i}}" class="form-control" [(ngModel)] ="item.remainderBeforeUnit" *ngIf="item.eventType==='REMINDER'">
+					  <option value="">Select</option>
+					  <option *ngFor="let frequency of frequencyList" [value]=frequency.name>
+						{{frequency.desc}}
+					  </option>
+					</select>
+					<select name="{{'type'+i}}" class="form-control" [(ngModel)] ="item.remainderBeforeUnit" *ngIf="item.eventType==='FINAL_REMINDER'">
+					  <option value="">Select</option>
+					  <option *ngFor="let frequency of frequencyForFinalReminderList" [value]=frequency.name>
+						{{frequency.desc}}
+					  </option>
+					</select>			
+					<select name="{{'type'+i}}" class="form-control" [(ngModel)] ="item.remainderBeforeUnit" *ngIf="item.eventType!='CAMPAIGN_START' && item.eventType!='FINAL_REMINDER' && item.eventType!='REMINDER'">
+					  <option value="">Select</option>
+					</select>
+					</td>
+					<td scope="row">
+					<input type="number" class="form-control col-sm-10" *ngIf="item.eventType!='CAMPAIGN_START'"
+                        name="{{'remainderBeforeValue'+i}}" [(ngModel)]="item.remainderBeforeValue" placeholder="Enter Value" maxLength="2">
+					</td>
+					<td scope="row">
+					<input type="text" class="form-control"
+                        name="{{'subject'+i}}" [(ngModel)]="item.subject" placeholder="Enter Subject" maxlength="512">
+					</td>
+					<td scope="row">
+					<ckeditor [(ngModel)]="item.templateText" name="{{'templateText'+i}}"></ckeditor>
+					<!-- <ckeditor class="form-control"
+                        name="{{'templateText'+i}}" [(ngModel)]="item.templateText" [config]="config" debounce="500"></ckeditor>-->
+					<!-- <textarea class="form-control"
+                        name="{{'templateText'+i}}" [(ngModel)]="item.templateText" placeholder="Enter Content" rows="4" cols="50"></textarea> -->
+					</td>
+					<td>
+					<div>
+					<i style="cursor: pointer;" *ngIf="isrEventDefinition.osiIsrEventEmailNotificationRules.length>1" class="glyphicon glyphicon-remove" (click)="deleteNotificationRule(i)"></i>&nbsp;&nbsp;
+						<i style="cursor: pointer;" *ngIf="isrEventDefinition.osiIsrEventEmailNotificationRules.length-1==i" class="glyphicon glyphicon-plus" (click)="addNotificationRule()" ></i>
+						</div>
+					</td>
+                  </tr>
+                 </tbody>
+                </table>
+              </div>
+            </div>
+		</div>
+		</div>
+		<div *ngIf="disableOnnotificationRule && (isPublished || isUpdatable==='view' )">
+			 <div class="row tableBox">
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="10%">Type</th>
+					  <th scope="col" width="10%">Frequency Unit</th>
+					  <th scope="col" width="10%">Frequency value</th>
+					  <th scope="col" width="25%">Subject</th>
+					  <th scope="col" width="35%">Mail Content</th>
+                    </tr>
+                  </thead>
+                 <tbody>
+                  <tr *ngFor="let item of isrEventDefinition.osiIsrEventEmailNotificationRules; let i=index;">
+                    <td scope="row">
+					{{item.eventType==='REMINDER'?'Reminder':'Registration'}}
+					</td>
+					<td scope="row">
+					{{item.remainderBeforeUnit}}
+					</td>
+					<td scope="row">
+					{{item.remainderBeforeValue}}
+					</td>
+					<td scope="row">
+					{{item.subject}}
+					</td>
+					<td scope="row">
+					<ckeditor [(ngModel)]="item.templateText" name="{{'templateText'+i}}" [disabled]="isPublished || isUpdatable==='view'"></ckeditor>
+					</td>
+                  </tr>
+                 </tbody>
+                </table>
+              </div>
+            </div>
+		</div>
+		</div>
+		<div *ngIf="disableOneventEntry">
+		 <div class="row tableBox"> 
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+			<div class="input-group">
+				 <input class="form-control col-sm-6" type="text" name="searchText" [(ngModel)] ="searchText" placeholder="Search by Customer, Contact First, Contact Last, Designation, Contact Email, Country, State, City and ISR columns">
+				<div class="input-group-append">
+				  <button class="btn btn-secondary" type="button">
+					<i class="fa fa-search"></i>
+				  </button>
+				</div>
+			  </div>
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+					  <th scope="col" style="width: 60px;"><input type="checkbox" [checked]="checkAllEntries" name="checkAllEntries" [disabled]="isPublished || isUpdatable==='view'" (change)="allEventEntries($event)">ALL</th>
+                      <th scope="col" [class.active]="order === 'customer'" (click)="setOrder('contactFirst')">Customer<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" [class.active]="order === 'contactFirst'" (click)="setOrder('contactFirst')"> Contact First <span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" [class.active]="order === 'contactLast'" (click)="setOrder('contactLast')">Contact Last<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" [class.active]="order === 'designation'" (click)="setOrder('designation')">Designation<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" [class.active]="order === 'contactEmail'" (click)="setOrder('contactEmail')">Contact Email<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" style="width: 85px;" [class.active]="order === 'countryCode'" (click)="setOrder('countryCode')">Country<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" style="width: 85px;" [class.active]="order === 'stateCode'" (click)="setOrder('stateCode')">State<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" style="width: 110px;" [class.active]="order === 'cityCode'" (click)="setOrder('cityCode')">City<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" style="width: 110px;" [class.active]="order === 'isrNumber'" (click)="setOrder('isrNumber')">ISR<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" >Email Personalization</th>
+					  <th scope="col" style="width: 110px;" [class.active]="order === 'isRegistered'" (click)="setOrder('isRegistered')">Registered?<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" style="width: 60px;" [class.active]="order === 'dnc'" (click)="setOrder('dnc')">DNC?<span [hidden]="reverse">▼</span><span [hidden]="!reverse">▲</span></th>
+					  <th scope="col" style="width: 103px;">Prior Events</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+                  <tr *ngFor="let item of isrEventDefinition.osiIsrEventEntries | orderBy: order:reverse:'case-insensitive' | customerIsrFilter: searchText | paginate: { itemsPerPage:10, currentPage: crntpage,totalItems: total }; let i=index;">
+                    <td scope="row"><input type="checkbox" name='item.sendNotification' [checked]="item.sendNotification" (change)="toggleChecked(item, $event)" [disabled]="isPublished || isUpdatable==='view'" ></td>
+					<td scope="row">{{item.customer}}</td>
+					<td scope="row">{{item.contactFirst}}</td>
+					<td scope="row">{{item.contactLast}}</td>
+					<td scope="row">{{item.designation}}</td>
+					<td scope="row">{{item.contactEmail}}</td>
+					<td scope="row">{{item.countryCode}}</td>
+					<td scope="row">{{item.stateCode}}</td>
+					<td scope="row">{{item.cityCode}}</td>
+					<td scope="row">{{item.isrNumber}}</td>
+					<td scope="row" ><textarea class="form-control" name="{{'emailPersonalization'+i}}" [(ngModel)]="item.emailPersonalization" placeholder="Enter Content" rows="4" cols="10" [disabled]="isPublished || isUpdatable==='view'"></textarea></td>
+					<td scope="row">{{item.isRegistered===true?'Yes':'No'}}</td>
+					<td scope="row">{{item.dnc===true?'Yes':'No'}}</td>
+					<td scope="row"><i style="cursor: pointer;" *ngIf="item.osiIsrPriorEvents!=undefined" class="glyphicon glyphicon-eye-open" (click)="openPriorEvents(item)"></i>&nbsp;&nbsp;</td>
+                  </tr>
+				  </tbody>
+                </table>
+              </div>
+				<div>
+                  <h6 *ngIf="isrEventDefinition.osiIsrEventEntries!=undefined && isrEventDefinition.osiIsrEventEntries.length==0" style="text-align: center;">Please get contacts from salesforce</h6>
+                </div>
+			<div class="col-sm-12 row pb-3">
+				<div class="col-sm-10">
+					<!-- pagination -->
+					<div class="paginate" [hidden]=' (total<=10)'>
+						<!-- hide when result is less than 5 -->
+						<pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+					</div>
+					<!-- END OF PAGE CONTROL -->
+				</div>
+			</div>
+            </div>
+		</div>
+		</div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-right">
+                  <button class="btn btn-outline-secondary" type="button" data-dismiss="modal" (click)="onCancel()"> Cancel</button>
+                  <button *ngIf="!isPublished && isUpdatable!='view'" [disabled]="!f.form.valid" class="btn btn-outline-primary" type="button" (click)="saveIsrEventDefinition('SAVED', false)">Save</button>
+				  <button *ngIf="this.isrEventDefinition.osiIsrEventEntries!=undefined && this.isrEventDefinition.osiIsrEventEntries.length>0 && disableOneventEntry && !isPublished && isUpdatable!='view'" [disabled]="!f.form.valid" class="btn btn-outline-primary" (click)="deleteEventEntries()">Delete Entries</button>
+				  <button *ngIf="disableOneventEntry && !isPublished && isUpdatable!='view'" [disabled]="!f.form.valid" class="btn btn-outline-primary" (click)="uploadExcel()">Upload Excel</button>
+				  <button *ngIf="disableOneventEntry && !isPublished && isUpdatable!='view'" [disabled]="!f.form.valid" class="btn btn-outline-primary" type="button" (click)="getEventEntriesFromSalesForce()">Get Entries from SF</button>
+				  <button *ngIf="this.isrEventDefinition.status==='SAVED' && this.isrEventDefinition.osiIsrEventEntries!=undefined && this.isrEventDefinition.osiIsrEventEntries.length>0 && !isPublished && isUpdatable!='view'" [disabled]="!f.form.valid" class="btn btn-outline-primary" type="button" (click)="publishEvent()">Publish</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </form>
+</div>
+
+<div class="team-goal-settings-section team-goal-section" id="priorEventModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-content" style="margin-top: 5%;margin-left: 28%;width:50%">
+    <div class="modal-header">
+      <h5 class="modal-title">Prior Events</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close('no')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+			 <div class="row tableBox">
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+              <div class="table-responsive">
+                <table width="50%" class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="25%">Event Name</th>
+					  <th scope="col" width="15%">Is Registered?</th>
+					  <th scope="col" width="15%">Is Attended?</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of priorEventData.osiIsrPriorEvents">
+                      <td scope="row">{{item.childEventName}}</td>
+            <td scope="row">{{item.isRegistered===true?'Yes':'No'}}</td>
+            <td scope="row">{{item.isAttended===true?'Yes':'No'}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+		</div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-primary" (click)="close('no')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="team-goal-settings-section team-goal-section" id="uploadEventEntriesModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-content" style="margin-top: 5%;margin-left: 28%;width:50%">
+    <div class="modal-header">
+      <h5 class="modal-title">Upload Event Entries</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close('no')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+			 <div class="row tableBox">
+           <div class="col-sm-12 col-md-12">
+				<div class="form-group">
+					<label>Attachment:</label>
+					<input type="file" (change)="selectFile($event)" style="display:block" [(ngModel)]="file">
+				</div>
+				<pre>(<u style="color: black">Note</u>:First Sheet Name should be <strong>ISRBULK</strong> and allowed format are xls/xlsx <br>and maximum file size should be less than 5MB)
+				</pre>
+			</div>
+			<div class="col-sm-12 col-md-12" *ngIf="errorList.length>0">
+				<div class="form-group" style="color:red">
+					<div>
+						<label><strong>Error List</strong></label>
+					</div>
+					<ul *ngFor="let error of errorList">
+						<li>{{error}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div class="modal-footer">
+		<button type="button" class="btn btn-outline-primary" [disabled]="file===''" (click)="uploadFile()">Upload</button>
+      <button type="button" class="btn btn-outline-primary" (click)="closeUploadWindow()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="eventDefinitionModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,134 @@
+<div class="v-height">
+
+  <div class="row mb-3">
+    <div class="col-sm-11">
+      <span class="lastRefresh">Last Refresh : {{ refreshDate | date:'medium' }}</span>
+    </div>
+    <div class="col-sm-1" style="justify-content: space-around; display: flex;">
+    <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+      style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="refresh()"></span>
+    <span class="glyphicon glyphicon-download-alt" data-tooltip title="Download in excel"
+      style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="exportDetailsInExcel()"></span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <div class="row">
+        <div class="col-md-1">
+          <label>Organization </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empOrg"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let org of empOrgData" value="{{org}}">{{org}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <label>Xfer Org </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empXferOrg"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let xferOrg of empXferOrgData" value="{{xferOrg}}">{{xferOrg}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <label>Practice </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empPract"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let practice of empPracticeData" value="{{practice}}">{{practice}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <label>Sub-Practice </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empSubPract"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let subPract of empSubPracticeData" value="{{subPract}}">{{subPract}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label>Employee Name </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empName"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let project of employeeData" value="{{project}}">{{project}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <label>Spent Date </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="spentDate"
+              (change)="updateHrsByResourceGrid()">
+              <option value="1">Last week</option>
+              <option value="3">Last 3 Weeks</option>
+              <option value="6">Last 6 weeks</option>
+              <option value="12">Last 12 weeks</option>
+              <option value="18">Last 18 weeks</option>
+              <option value="24">Last 24 weeks</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <label>Billability </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="isBillable"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option value="BILLABLE">Billable</option>
+              <!-- <option value="NON BILLABLE">Non Billable</option> -->
+            </select>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <label>Emp status </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empStatus"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option value="Active">Active</option>
+              <option value="Terminated">Terminated</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <ag-grid-angular style="width: auto;" class="ag-theme-balham" [rowData]="hrsByResourceObj"
+        [columnDefs]="columnDefs" [gridOptions]="gridOptions" [paginationPageSize]="paginationPageSize"
+        [getRowHeight]="getRowHeight" pagination="true" enableSorting enableFilter enableColResize
+        (gridReady)="onGridReady($event)" id="htmle2imagedata">
+      </ag-grid-angular>
+    </div>
+
+  </div>
+  <div *ngIf="spinner" class="overlay">
+    <div class="loader"></div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

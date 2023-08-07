@@ -1,0 +1,87 @@
+.card {
+  background-color: transparent;
+  box-shadow: inherit;
+  -webkit-box-shadow: inherit;
+  -moz-box-shadow: inherit;
+}
+.all-report-section {
+  padding: 15px;
+  /* margin-bottom: -80px; */
+}
+.dashboardBox > div {
+  margin: 10px 0;
+ 
+  margin-top: 6px;
+ 
+}
+.report-blocks {
+  height: auto;
+  /* max-height:100%; */
+  background-color: #fff;
+  padding: 14px;
+  /* overflow-y: auto; */
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.1);
+}
+h4.reportHeading {
+  font: 600 16px/22px "Roboto", sans-serif;
+  color: #393836;
+  padding: 0 0 8px;
+  margin: 0 0 10px;
+  border-bottom: 3px solid #f29736;
+}
+.report-content {
+  min-height: 147px !important;
+  overflow: auto;
+}
+
+.report-content ul {
+  padding-bottom: 15px;
+}
+.report-content ul li {
+  padding: 0 0 0 12px;
+  margin: 0 0 4px;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  /* background: url("icons/pointer.png") no-repeat 0 6px; */
+}
+.report-content ul li a {
+  color: #329ade;
+  background-color: inherit;
+}
+.report-content ul li a:hover {
+  color: #16669b;
+  background-color: inherit;
+  text-decoration: none;
+}
+
+.report-content1 {
+  min-height: 390px;
+  overflow: auto;
+  height: 395;
+}
+.report-content1 ul {
+  padding-bottom: 15px;
+}
+.report-content1 ul li {
+  padding: 0 0 0 12px;
+  margin: 0 0 4px;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  /* background: url("icons/pointer.png") no-repeat 0 6px; */
+}
+.report-content1 ul li a {
+  color: #329ade;
+  background-color: inherit;
+}
+.report-content1 ul li a:hover {
+  color: #16669b;
+  background-color: inherit;
+  text-decoration: none;
+}

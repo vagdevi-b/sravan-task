@@ -1,0 +1,53 @@
+<div class="v-height">
+  <div class="breadcrum-team-goal-section">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#/reviewcycle/teamgoals">Team Goals</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{apprisalService?.breadcrumbText}}</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="team-goal-section">
+    <!-- Team Goals Top Section Start -->
+    <app-goal-setting-header (changeWeightageEvent)="changeWeightage()"></app-goal-setting-header>
+    <!-- Team Goals Top Section End -->
+    <!-- Team Goals Bottom Section Start -->
+    <div class="team-goal-settings-section">
+      <div class="row nav nav-tabs">
+        <div class="p-0" [ngClass]="{'col-md-10':displayChangeWeightageBtn,'col-md-12':!displayChangeWeightageBtn}">
+          <!-- Nav Tab Start -->
+          <ul class="nav nav-tabs">
+            <li class="nav-item " [ngClass]="{'disable_Projects': projectsWeightage === 0}">
+              <a class="nav-link cursor-class" (click)="navigateRoute('/reviewcycle/goalsetting/projects','projects')"
+                [ngClass]="{'active':routerLink==='projects'}">Projects
+                ({{projectsWeightage}}%)</a>
+            </li>
+            <li class="nav-item" *ngIf="!(employeeDetails?.isProjectResource==='Yes')">
+              <a class="nav-link cursor-class"
+                (click)="navigateRoute('/reviewcycle/goalsetting/careerdevelopment','careerdevelopment')"
+                [ngClass]="{'active':routerLink==='careerdevelopment'}">Career ({{carrerWeightage}}%)</a>
+            </li>
+            <li class="nav-item" *ngIf="!(employeeDetails?.isProjectResource==='Yes')">
+              <a class="nav-link cursor-class"
+                (click)="navigateRoute('/reviewcycle/goalsetting/organization','organization')"
+                [ngClass]="{'active':routerLink==='organization'}">Organization ({{orgWeightage}}%)</a>
+            </li>
+          </ul>
+          <!-- Nav Tab End -->
+        </div>
+        <div class="col-md-2 weightage-btn d-flex justify-content-center" *ngIf="displayChangeWeightageBtn">
+          <input type="button" class="btn btn-primary float-right" [disabled]="apprisalService.epmsStatus==='Closed'"
+            value="Weightage" (click)="changeWeightage()" />
+        </div>
+      </div>
+
+
+      <router-outlet></router-outlet>
+
+    </div>
+    <!-- Team Goals Bottom Section End -->
+  </section>
+</div>

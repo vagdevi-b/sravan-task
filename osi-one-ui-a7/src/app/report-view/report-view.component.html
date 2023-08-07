@@ -1,0 +1,107 @@
+<!---------------------------------------- View Report ---------------------------------------->
+
+
+<div class="row top-head mt-3">
+  <div class="col-sm-8 col-md-8">
+    <h3 class="headingStyle">Report Name : {{reportName}}</h3>
+  </div>
+  <div class="col-sm-3 col-md-4">
+    <div class="pull-right">
+
+      <a class="btn btn-outline-secondary" data-toggle="tooltip" title=" Download As PDF" [href]="reportPdfFileName" target="_blank" [download]="viewReportsResponse.reportFileName + '.pdf'">PDF
+        <i class="tiny material-icons">picture_as_pdf</i>
+      </a>
+
+      <a class="btn btn-outline-secondary" data-toggle="tooltip" title=" Download As XLS " href="{{reportExcelFileName}}" target="_blank">XLS
+        <i class="tiny material-icons">filter_none</i>
+      </a>
+      
+      <span *ngIf="savedOrRun">
+        <a class="btn btn-outline-secondary" data-toggle="tooltip" title=" Back To Report List " (click)="backToReportList('saved')">
+          Back
+          <i class="tiny material-icons">arrow_back</i>
+        </a>
+      </span>
+
+      <span *ngIf="!savedOrRun">
+        <a class="btn waves-effect light-blue darken-4 waves-light" data-toggle="tooltip" title=" Back To Report List " (click)="backToReportList('run')">
+          Back
+          <i class="tiny material-icons">arrow_back</i>
+        </a>
+      </span>
+    </div>
+  </div>
+</div>
+<!--<div class="row">
+  <div class="col-sm-9 col-md-9">
+      <a href="javascript:void(0)">modify report </a>
+     <a href="javascript:void(0)" (click)="reRun()">re-run report </a>
+  </div>
+</div> -->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="target" *ngIf="reportPdfFileName">
+        <embed [src]="reportPdfFileName" type="application/pdf" width="100%" style="overflow: auto; height: 450px !important;">
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div class="row card card-body">
+  
+ <table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th *ngFor="let header of headerColumns">{{header}}</th>
+    </tr>
+  </thead>
+  <tr  *ngFor="let report of results">
+    <td  *ngFor="let value of report" >{{value}}</td>
+  </tr>
+</table> 
+</div>-->
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  function download_file(fileURL, fileName) {
+    // for non-IE
+    if (!window.ActiveXObject) {
+      var save = document.createElement('a');
+      save.href = fileURL;
+      save.target = '_blank';
+      var filename = fileURL.substring(fileURL.lastIndexOf('/') + 1);
+      save.download = fileName || filename;
+      if (navigator.userAgent.toLowerCase().match(/(ipad|iphone|safari)/) && navigator.userAgent.search("Chrome") < 0) {
+        document.location = save.href;
+        // window event not working here
+      } else {
+        var evt = new MouseEvent('click', {
+          'view': window,
+          'bubbles': true,
+          'cancelable': false
+        });
+        save.dispatchEvent(evt);
+        (window.URL || window.webkitURL).revokeObjectURL(save.href);
+      }
+    }
+
+    // for IE < 11
+    else if (!!window.ActiveXObject && document.execCommand) {
+      var _window = window.open(fileURL, '_blank');
+      _window.document.close();
+      _window.document.execCommand('SaveAs', true, fileName || fileURL)
+      _window.close();
+    }
+  }
+</script>

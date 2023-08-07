@@ -1,0 +1,220 @@
+<div class="v-height">
+  <div id="filter1">
+    <div>
+      <label>Organization &nbsp; </label>
+      <select [(ngModel)]="empOrg" (change)="updateTable()">
+        <option value="*">All</option>
+        <option *ngFor="let o of empOrgData">{{o}}</option>
+      </select>
+    </div>
+    <div>
+      <label>BU &nbsp; </label>
+      <select [(ngModel)]="empBU" (change)="updateTable()">
+        <option value="*">All</option>
+        <option *ngFor="let b of empBUData">{{b}}</option>
+      </select>
+    </div>
+    <div>
+      <label>Practice &nbsp; </label>
+      <select [(ngModel)]="empPractice" (change)="updateTable()">
+        <option value="*">All</option>
+        <option *ngFor="let p of empPracticeData">{{p}}</option>
+      </select>
+    </div>
+    <div>
+      <label> Sub-Practice &nbsp; </label>
+      <select [(ngModel)]="empSubPractice" (change)="updateTable()">
+        <option value="*">All</option>
+        <option *ngFor="let sp of empSubPracticeData">{{sp}}</option>
+      </select>
+    </div>
+    <div>
+      <label>Year &nbsp; </label>
+      <select [(ngModel)]="empYear" (change)="updateTable()">
+        <option *ngFor="let y of empYearData" [value]="y.key">{{y.key}}</option>
+      </select>
+    </div>
+    <div>
+      <label>Month &nbsp; </label>
+      <select [(ngModel)]="empMonth" (change)="updateTable()">
+        <option value=".*">All</option>
+        <option *ngFor="let m of monthsInWord.data" [value]="m.value">{{m.key}}</option>
+      </select>
+    </div>
+    <div>
+      <label>Project &nbsp; </label>
+      <select [(ngModel)]="empProject" (change)="updateTable()" style="width: 200px">
+        <option value="*">All</option>
+        <option *ngFor="let pr of empProjectData">{{pr}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <div class="chartContainer" id="htmle2imagedata">
+      <div id="filter">
+        <div class="row" style="display: flex">
+          <div class="col-md-12 col-lg-6 col-xl-4">
+            <div class="card">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <h6>Overall</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive" style="overflow-y: auto;">
+                  <canvas id="pieProjectType"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 col-lg-6 col-xl-8">
+            <div class="card">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-sm-4 col-md-6">
+                    <h6>By Practices</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive" style="overflow-y: auto;">
+                  <canvas id="barProjectTypePracticeswise"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="filter">
+        <div class="col-md-12 col-lg-12 col-xl-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-4 col-md-6">
+                  <h6>By Sub-Practices</h6>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style="overflow-y: auto;">
+                <canvas id="barProjectTypeSubPracticeswise"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="filter">
+        <div class="row">
+          <div class="col-sm-10">
+            <h5>Employee Details</h5>
+          </div>
+          <div *ngIf="json.data && json.data.length" class="col-sm-2 mb-1 download" data-tooltip
+            title="Download in .xlsx">
+            <button class="download btn btn-primary" (click)="downloadDetailsInExel('Employee_Details')">
+              <!-- <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> -->
+              Download
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-12">
+            <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+              [rowData]="json.data"
+              [columnDefs]="columnDefsEmployee" 
+              [gridOptions]="gridOptionsEmployee"
+              [paginationPageSize]="paginationPageSize" 
+              [getRowHeight]="getRowHeightEmployee" 
+              pagination="true"
+              rowSelection="single" 
+              (selectionChanged)="onEmployeeSelection($event)" 
+              [defaultColDef]="defaultColDef"
+              (gridReady)="onGridReadyEmployee($event)">
+            </ag-grid-angular>
+          </div>
+
+
+          <!-- <div class="col-md-12 col-lg-6 col-xl-4 mb-3">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-12 col-md-12">
+                  <h6>{{title}}'s Monthly Trend</h6>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style="overflow-y: auto;">
+                <canvas id="lineEmpProjectType"></canvas>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        </div>
+
+      </div>
+
+      <div id="filter">
+        <div class="row">
+          <div class="col-sm-10">
+            <h5>Project Details of {{title}}</h5>
+          </div>
+          <div *ngIf="prjResUtilJSON.data && prjResUtilJSON.data.length" class="col-sm-2 mb-1" data-tooltip
+            title="Download in .xlsx">
+            <button class="btn btn-primary" (click)="downloadDetailsInExel('Project_Details')">
+              <!-- <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> -->
+              Download
+            </button>
+          </div>
+        </div>
+        <div>
+          <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+            [rowData]="prjResUtilJSON.data"
+            [columnDefs]="columnDefsProjects" 
+            [gridOptions]="gridOptionsProjects"
+            [paginationPageSize]="paginationPageSize" 
+            [getRowHeight]="getRowHeightProjects" 
+            pagination="true"
+            [defaultColDef]="defaultColDef"
+            (gridReady)="onGridReadyProjects($event)">
+          </ag-grid-angular>
+        </div>
+
+      </div>
+
+      <div id="filter">
+        <div class="col-sm-8" style="text-align: left; padding: 0%">
+          <h5>Monthly Trend</h5>
+        </div>
+
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-12 col-md-12">
+                  <h6>{{title}}'s Monthly Trend</h6>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive" style="overflow-y: auto;">
+                <canvas id="lineEmpProjectType"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+  <app-loading *ngIf="showLoader"></app-loading>
+</div>

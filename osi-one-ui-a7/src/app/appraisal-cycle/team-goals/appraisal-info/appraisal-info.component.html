@@ -1,0 +1,135 @@
+<div class="team-goal-top-section">
+    <div class="container-fluid">
+      <!-- Row Start -->
+      <div class="row">
+        <div class="col-12 col-md-2">
+          <div class="form-group">
+            <label for="appraisalCycle">Appraisal Year</label>
+            <select class="form-control"
+            [(ngModel)]="year"            
+            id="appraisalCycle" (change)="onCycleYearChange($event)">
+              <option value="">Select</option>
+              <option  *ngFor="let yearInfo of yearsList" 
+              [value]="yearInfo?.epmsHdrId">{{yearInfo?.year}} - ({{yearInfo.frequency}})</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12 col-md-2">
+          <div class="form-group">
+            <label for="reviewCycle">Review Cycle</label>
+             <select class="form-control"          
+            id="reviewCycle" [(ngModel)]="epmsHdrId"  (change)="onreviewCycleChange($event)">
+              <option value="">Select</option>
+              <option  *ngFor="let data of reviewCycleList" 
+              [value]="data.epmsHdrId">{{data.frequency}}</option>
+            </select> 
+          </div>
+        </div>       
+        <div class="col-12 col-md-8">
+          <div class="form-group float-right">
+            <label for="overallRating">Overall Rating</label>
+            <input type="text" readonly class="form-control-plaintext overall-rating font-normal cursor-class" id="overallRating" value="{{selfGoalInfo?.overallRating ? selfGoalInfo?.overallRating : 0}}">
+          </div>
+          <div class="form-group float-right mr-3">
+            <label>&nbsp;</label>
+            <input type="text" readonly class="form-control-plaintext overall-rating font-normal cursor-class"  value="My Goals"
+            (click)="navigateMyGoals()"
+            >
+          </div>
+      </div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-3">
+          <div class="form-group">
+            <label for="designation">Designation</label>
+            <input type="text" readonly class="form-control-plaintext" id="designation"
+              value="{{selfGoalInfo?.designation }}">
+          </div>
+        </div>        
+        <div class="col-12 col-md-2">
+          <div class="form-group">
+            <label for="reportingManager">Reporting Manager</label>
+            <input type="text" readonly class="form-control-plaintext" id="reportingManager"
+              value="{{selfGoalInfo?.supervisorName}}">
+          </div>
+        </div>
+        <div class="col-12 col-md-2">
+            <div class="form-group">
+              <label for="experience">Experience</label>
+              <input type="text" readonly class="form-control-plaintext" id="experience"
+              *ngIf="selfGoalInfo?.totalExp"
+                value="{{selfGoalInfo?.totalExp | number : '1.1-1'}} years">
+            </div>
+          </div>
+       </div> 
+      <!-- Row End  -->
+      <!-- Row Start -->
+      <div class="form-row">
+        <div class="col-12 col-md-4">
+          <div class="card card-points">
+            <div class="card-body">
+              <div class="form-row pb-2">
+                <div class="col-8">
+                  <h5 class="card-title">Projects</h5>
+                </div>
+                <div class="col-4">
+                  <input class="btn btn-outline-primary float-right" type="button" value="{{selfGoalInfo?.delEmpRmPmRating ? selfGoalInfo?.delEmpRmPmRating : 0}}">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-12 col-md-7">
+                  <p class="mb-0">Projects Assigned - {{selfGoalInfo?.projectCount ? selfGoalInfo?.projectCount : 0}}</p>
+                </div>
+                <div class="col-12 col-md-5 text-right">
+                  <p class="mb-0">Goals Set - {{selfGoalInfo?.delGoalCount ? selfGoalInfo?.delGoalCount : 0}}</p> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-points">
+            <div class="card-body">
+              <div class="form-row pb-2">
+                <div class="col-8">
+                  <h5 class="card-title">Career Development</h5>
+                </div>
+                <div class="col-4">
+                  <input class="btn btn-outline-primary float-right" type="button"  value="{{selfGoalInfo?.carEmpRmPmRating ? selfGoalInfo?.carEmpRmPmRating : 0}}">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-12 col-md-7">
+                  <p class="mb-0">Goals Set - {{selfGoalInfo?.carGoalCount ? selfGoalInfo?.carGoalCount : 0}}</p>
+                </div>
+                <div class="col-12 col-md-5 text-right">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
+          <div class="card card-points">
+            <div class="card-body">
+              <div class="form-row pb-2">
+                <div class="col-8">
+                  <h5 class="card-title">Organization</h5>
+                </div>
+                <div class="col-4">
+                  <input class="btn btn-outline-primary float-right" type="button"  value="{{selfGoalInfo?.orgEmpRmPmRating ? selfGoalInfo?.orgEmpRmPmRating : 0}}">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="col-12 col-md-7">
+                  <p class="mb-0">Goals Set - {{selfGoalInfo?.orgGoalCount ? selfGoalInfo?.orgGoalCount : 0}}</p>
+                </div>
+                <div class="col-12 col-md-5 text-right">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Row End -->
+    </div>
+  </div>

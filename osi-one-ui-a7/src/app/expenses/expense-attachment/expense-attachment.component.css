@@ -1,0 +1,115 @@
+ul.attachment-list{ width: 100%; max-height:40vh; overflow-y: auto  }
+ul.attachment-list > li{ width: 100%; font-size: 12px; line-height: 18px; list-style: none }
+ul.attachment-list > li span:first-child{ width: 88%; float: left }
+ul.attachment-list > li span:last-child{ width: 10%; float: right }
+.remove-preview{
+  position: absolute;
+  margin-top: -10px;
+  right: 9px;
+  cursor: pointer;
+  color: #fff !important;
+  border: 1px solid #AEAEAE;
+  border-radius: 30px;
+  background: #605F61;
+  font-weight: bold;
+  display: inline-block;
+  line-height: 0px;
+  padding: 0px 4px 10px 5px;  
+}
+
+.pdf-icon-show{
+  height:100px;
+  width:90px;
+}
+
+.major-preview-content{
+  max-height:75vh;
+  max-width:95vw;
+  overflow: auto;
+}
+
+.pdf-preview{
+  height:60vh;
+  width: 100%;
+}
+
+input[type=file].hide-text {
+    color: transparent;
+}
+
+/* Styles for alert */
+
+.snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-right: -125px;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 10000;
+    right: 11%;
+    top: 10%;
+    font-size: 17px;
+    background-color: #4CAF50;
+}
+
+.snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 2.5s 3s;
+    animation: fadein 0.5s, fadeout 2.5s 3s;
+}
+
+.snackbar.danger {
+    background-color: #d9534f;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        right: 0;
+        opacity: 0;
+    }
+    to {
+        right: 10%;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        right: 0;
+        opacity: 0;
+    }
+    to {
+        right: 10%;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        right: 10%;
+        opacity: 1;
+    }
+    to {
+        right: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        right: 10%;
+        opacity: 1;
+    }
+    to {
+        right: 0;
+        opacity: 0;
+    }
+}
+
+.preview-height {
+    max-height: 70vh;
+    overflow: auto;
+}

@@ -1,0 +1,65 @@
+<div class="v-height">
+  <div class="inner-wrapper">
+
+
+
+    <div class="sub-header bb-color">
+      <h1>View Manager Approval Expense History</h1>
+    </div>
+
+
+
+
+    <section class="content">
+
+      <div class=" table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="thead_bg">
+            <tr>
+              <th class="data" (click)="sorting('lastUpdatedDate')">Date Time
+                <span class="glyphicon sort-icon glyphicon-chevron-down" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+              </th>
+              <th class="data" (click)="sorting('createdBy')">User
+                <span class="glyphicon sort-icon glyphicon-chevron-down" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+              </th>
+              <th class="data" (click)="sorting('status')">Action
+                <span class="glyphicon sort-icon glyphicon-chevron-down" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+              </th>
+              <th class="data" (click)="sorting('comments')">Notes
+                <span class="glyphicon sort-icon glyphicon-chevron-down" [ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+              </th>
+            </tr>
+          </thead>
+          <!-- end of header -->
+          <tbody>
+            <tr *ngFor='let data of rowData  | paginate: { itemsPerPage:10, currentPage: crntpage,totalItems: total }  ;' (click)="isRowClicked(data)"
+              [class.active]='data == isSelectedRow'>
+              <td class="data">{{data.lastUpdatedDate| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+              <td class="data">{{data.createdBy}}</td>
+              <td class="data">{{data.status}}</td>
+              <td class="data">{{data.comments}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <pagination-controls (pageChange)="crntpage = $event" autoHide="true" maxSize="8" previousLabel="<<" nextLabel=">>"></pagination-controls>
+        </div>
+
+        <div *ngIf="total===0">
+          <h6 style="text-align: center; color: red;">No Records Found</h6>
+        </div>
+      </div>
+      <!-- footer -->
+      <div class="container-fluid">
+        <div class="row pt-2 pb-3">
+          <div class="col-md-12 ">
+            <div class="pull-right">
+              <button type="button" (click)="cancel()" class="btn btn-outline-secondary">Back</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>

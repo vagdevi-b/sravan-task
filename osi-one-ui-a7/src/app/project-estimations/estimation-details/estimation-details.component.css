@@ -1,0 +1,95 @@
+.table-scroll {
+	position:relative;
+	max-width:5000px;
+	margin:auto;
+	overflow:hidden;
+}
+.table-wrap {
+	width:100%;
+	overflow:auto;
+}
+.table-scroll table {
+	width:100%;
+	margin:auto;
+	border-collapse:separate;
+	border-spacing:0;
+}
+.table-scroll th, .table-scroll td {
+	background:#fff;
+	white-space:nowrap;
+	vertical-align:top;
+}
+.sm-180 {
+	width:180px;
+}
+.sm-100 {
+	width:100px;
+}
+.sm-50 {
+	width:50px;
+}
+.header-padding{
+	padding-left: 25px;
+    padding-right: 25px;
+}
+.table-scroll thead, .table-scroll tfoot {
+	background:#f9f9f9;
+}
+.div-space{
+	margin-top: 17px;
+	padding-right: 0px;
+}
+.float-right{
+	float: right;
+	margin-right: 10px;
+}
+.fixed-checkbox{
+  position:sticky;
+  left:0;
+  z-index:1;
+  padding-right: 9px;
+}
+.checkbox-alignment{
+margin-top: 10px;
+    margin-left: -5px;
+}
+.fixed-side{
+  position:sticky;
+  left:0;
+  left: 35px;
+  z-index:1;
+}
+.fixed-side1{
+	padding-right:155px;
+}
+.fixed-col-2nd {
+  position:sticky;
+  left:227px;
+  z-index:1;
+}
+.fixed-col-3rd {
+  position:sticky;
+  left:341px;
+  z-index:1;
+}
+.fixed-col-4th {
+  position:sticky;
+  padding-right:55px;
+  left:500px;
+  z-index:1;
+}
+.fixed-col-5th {
+  position:sticky;
+  left:490px;
+  z-index:1;
+}
+.fixed-col-6th {
+  position:sticky;
+  padding-right:4px;
+  left:432px;
+  z-index:1;
+}
+.estimate-location{
+	padding-left: 18px;
+    padding-right: 18px;
+}

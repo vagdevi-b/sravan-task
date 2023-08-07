@@ -1,0 +1,415 @@
+<div class="v-height">
+
+
+    <!-- <div class="breadcrumb-wrapper">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Leaves Summary</li>
+            </ol>
+        </nav>
+    </div> -->
+    <div class="leave-wrapper-section">
+
+        <div class="sub-header">
+            <h1>Leaves Summary</h1>
+        </div>
+        <!--  -->
+        <section class="forms">
+            <div class="  headerBar ">
+                <div class="container-fluid ">
+                    <div class="row ">
+                        <div class="col-md-3 respKeys">
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong>Name: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.employeeName | titlecase}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 respKeys">
+                                    <strong> From Date: </strong>
+
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.fromDate}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6 respKeys">
+                                    <strong> Date Applied: </strong>
+
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.submittedDate}}
+                                </div>
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong>Purpose: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.leaveReason | titlecase}}
+
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="appliedleave.rejectReason">
+                                <div class="col-md-6 respKeys" *ngIf="appliedleave.statusCode==='Reversed' ">
+                                    <strong>Reason for Cancellation: </strong>
+                                </div>
+                                <div class="col-md-6 respKeys" *ngIf="appliedleave.statusCode==='Submitted' && !!appliedleave.rejectReason ">
+                                    <strong>Reason for Rejection: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.rejectReason }}
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong>Leave Type: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.leaveTypeName | titlecase}}
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong>To Date: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.toDate}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong>Also notified: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.emailName | titlecase}}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong> No. of Hours:</strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    {{appliedleave.noOfHours}}
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 respKeys">
+                                    <strong>Attachments: </strong>
+                                </div>
+                                <div class="col-md-6 respValues">
+                                    <ul class="list-unstyled">
+                                        <li *ngFor="let file of appliedleave?.leaveAttachments">
+
+                                            <a style="cursor: pointer;color: #2199e8;" (click)="downloadFile(file.originalFileName,file.duplicateFileName, file.fileType, appliedleave.leaveId)">{{file.originalFileName}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 ">
+                            <div class="row ">
+                                <div class="col-md-1 ">
+                                </div>
+                                <div class="col-md-11 ">
+                                    <section class="forms scrollForTable">
+                                        <div class="box-body table-responsive table-shadow border-0 mb-3">
+                                            <table class="table table-hover table-bordered">
+                                                <thead class="thead">
+                                                    <tr class="thead ">
+                                                        <th style="width: 30%;">Leave Date
+                                                            <span></span>
+                                                        </th>
+                                                        <th class='text-center' style="width: 42%;">Note
+                                                            <span></span>
+                                                        </th>
+                                                        <th class='text-center' style="width: 25%;">No Of Hours
+                                                            <span></span>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    <tr *ngFor="let leaves of appliedleave.leavesTransactionsDTOs">
+
+                                                        <td> {{leaves.leaveDate | date:"EEE, MMM d, yyyy"}}</td>
+                                                        <td class='text-center'> {{leaves.leaveDesc | titlecase}} </td>
+                                                        <td class='text-center'> {{leaves.noOfHours}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </section>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--  -->
+
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-sm-12 col-md-12">
+                    <div class="pull-left">
+                        <button type="button" class="btn btn-outline-secondary btn-cancel" (click)="onCancel()">Back</button>
+                    </div>
+                    <div class="pull-right">
+                        
+
+                        <button type="button" class="btn btn-primary" [disabled]="enableApproveButton" data-toggle="modal" data-target="#modelApprove" [hidden]="appliedleave.statusCode === 'Reversed'"
+                            id="remove-import">Approve</button>
+
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#modelReject" [hidden]="appliedleave.statusCode === 'Reversed'"
+                            id="remove-import">Reject</button>
+
+                        <button type="button" class="btn btn-primary" [disabled]="enableCancelButton" data-toggle="modal" data-target="#modelCancelLeave" [hidden]="appliedleave.statusCode === 'Submitted'"
+                            id="remove-import">Cancel Leave</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sub-header">
+            <div class="row">
+                <div class="col-sm-12 leavesSummary" *ngIf='showLastAppliedLeaves'>
+                    <strong>
+                        Last Applied Leave
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <section class="forms" *ngIf='showLastAppliedLeaves'>
+
+            <div class="table-responsive table-shadow border-0 mb-3">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="25%">Name
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">From date
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">To Date
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">No. of Hours
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="15%">Purpose
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let lastAppliedLeave of lastAppliedLeaves">
+
+                            <td> {{lastAppliedLeave.firstName | titlecase}}</td>
+                            <td> {{lastAppliedLeave.fromDate}}</td>
+                            <td> {{lastAppliedLeave.toDate}}</td>
+                            <td> {{lastAppliedLeave.noOfHours}}</td>
+                            <td> {{lastAppliedLeave.leaveReason | titlecase}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+        <!-- END of Last Applied leaves table -->
+
+        <div class="sub-header">
+            <div class="row">
+                <div class="col-sm-12 leavesSummary" *ngIf='showTeamLeaves'>
+                    <strong>
+                        Team Leaves
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <section class="forms" *ngIf='showTeamLeaves'>
+            <div class="box-body table-responsive table-shadow border-0 mb-3">
+                <table class="table table-hover table-bordered">
+                    <thead class="thead_bg">
+                        <tr class="thead_bg">
+                            <th width="25%">Name
+                                <span ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">From date
+                                <span ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">To Date
+                                <span ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">No. of Hours
+                                <span ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="15%">Purpose
+                                <span ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let field of approvedLeaves | paginate: { itemsPerPage: 5,currentPage: p,totalItems: approvedLeavesLength }">
+
+                            <td> {{field.firstName | titlecase}} </td>
+
+                            <td> {{field.fromDate}}</td>
+
+                            <td> {{field.toDate}}</td>
+
+                            <td> {{field.noOfHours}}</td>
+
+                            <td>{{field.leaveReason | titlecase}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
+                    <h6 [hidden]=" approvedLeaves!=0 " style="text-align: center; color: red;">No Applied Leaves Found</h6>
+                </div>
+
+                <div class="col-sm-12 row">
+                    <!-- pagination -->
+                    <div class="col-sm-10">
+                        <div class="paginate" [hidden]=' (approvedLeavesLength<=5)'>
+                            <!-- hide when result is less than 5 -->
+                            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                        </div>
+                    </div>
+                    <!-- END OF PAGE CONTROL -->
+
+                </div>
+            </div>
+        </section>
+
+        <div class="sub-header">
+            <div class="row">
+                <div class="col-sm-12" *ngIf='showHolidays'>
+                    <strong>
+                        Holidays
+                    </strong>
+                </div>
+            </div>
+        </div>
+
+        <section class="forms" *ngIf='showHolidays'>
+            <div class="table-responsive table-shadow border-0 mb-3">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="80%">Holiday Name
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="20%">Holiday date
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let holiday of holidayDtls">
+                            <td>
+                                {{holiday.holidayName | titlecase}}
+                            </td>
+                            <td>
+                                {{holiday.holidayDate}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MODAL -->
+        <div class="modal fade" id="modelApprove" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <h5 class="modal-title">Do you want to Approve the leave?</h5>
+                        <form action="/action_page.php">
+                            <button type="button" class="btn btn-outline-primary" [disabled]="disableYesButton" (click)="onApprove()">Yes</button>
+                            <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">No</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modelReject" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Do you want to Reject ? </h5>
+                    </div>
+                    <div class="modal-body">
+
+                        <form #reject='ngForm'>
+                            <textarea type="text" size="35" required class="form-control" name='rejectReason' [(ngModel)]="rejectReason" placeholder="Enter Reason For Rejection"></textarea>
+                            <div *ngIf="showMessage" style="margin:1%" class="alert alert-danger validationAlert">{{statusMessage}}</div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary" (click)="onReject(reject.value)">Yes</button>
+                        <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="modelCancelLeave" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Do you want to accept the cancellation request ? </h5>
+                    </div>
+                    <div class="modal-body text-center">
+                        <form action="/action_page.php">
+                            <button type="button" class="btn btn-outline-primary" [disabled]="disableYesButton" data-dismiss="modal" (click)="cancelApprovedLeave()">Yes</button>
+                            <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">No</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

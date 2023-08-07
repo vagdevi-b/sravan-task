@@ -1,0 +1,264 @@
+<div>
+	<section>
+		<div class="card" style="width: 100%;">
+			<div class="card-body">
+				<div class="row notificationRow">
+					<div class="col-sm-2"></div>
+					<div class="col-sm-8 notificationTextDiv" id="successMessage" [hidden]="successMessage === ''">
+						<div class="alert alert-success alert-dismissible notificationText" id="successMessage">
+							<a class="close"  style="padding-top: 3px"data-dismiss="" aria-label="close"	(click)="closeErrorMessage('successMessage')">&times;</a>
+							{{successMessage}}
+						</div>
+					</div>
+					<div class="col-sm-8 notificationTextDiv" id="errorMessage" [hidden]="errorMessage === ''">
+						<div class="alert alert-danger alert-dismissible notificationText">
+							<a class="close" style="padding-top: 3px"data-dismiss="" aria-label="close"	(click)="closeErrorMessage('errorMessage')">&times;</a>
+							 {{errorMessage}}
+						</div>
+					</div>
+					<div class="col-sm-2"></div>
+				</div>
+			
+				<div class="row tableBox" [hidden]="isItPMOReports==false">
+				<!--	<div class="col-sm-3">
+						<div class="report-blocks">
+							<h4 class="reportHeading">Employee</h4>
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+									<li *ngFor="let report of reportsResponseEmployee">
+										<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+									</li>
+								</ul>
+								</div>
+						</div>
+				 </div>
+					<div class="col-sm-3" >
+							<div class="report-blocks"><h4 class="reportHeading">Timesheet</h4> 
+							<div class="report-content">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponseTimesheet">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+						
+							</ul>
+							</div>
+							</div>
+							</div>
+					<div class="col-sm-3">
+							<div class="report-blocks"><h4 class="reportHeading">Leaves</h4> 
+							<div class="report-content">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponseLeaves">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+							</ul>
+							</div>
+							</div>
+							</div>
+						<div class="col-sm-3">
+						<div class="report-blocks"><h4 class="reportHeading">Expense</h4> 
+						<div class="report-content">
+						<ul style="list-style-type: none;">
+						<li *ngFor="let report of reportsResponseExpense">
+						<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+						</li>
+						</ul>
+						</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row dashboardBox" style="margin-top: 66px;
+				margin-bottom: -55px;">
+						<div class="col-sm-3">
+								<div class="report-blocks"><h4 class="reportHeading">Project</h4> 
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+								<li *ngFor="let report of reportsResponseProject">
+								<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+								</li>
+								</ul>
+								</div>
+								</div>
+								</div>
+								<div class="col-sm-3">
+										<div class="report-blocks" ><h4 class="reportHeading">P & L</h4>
+										<div class="report-content">
+										<ul style="list-style-type: none;">
+										<li *ngFor="let report of reportsResponsePAndL">
+										<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+										</li>
+										</ul>
+										</div>
+										</div>
+										</div>
+						<div class="col-sm-3">
+								<div class="report-blocks" ><h4 class="reportHeading">Invoice</h4>
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+								<li *ngFor="let report of reportsResponseInvoice">
+								<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+								</li>
+								</ul>
+								</div>
+								</div>
+								</div>
+						<div class="col-sm-3">
+								<div class="report-blocks" ><h4 class="reportHeading">Miscellaneous</h4>
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+								<li *ngFor="let report of reportsResponseMisc">
+								<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+								</li>
+								</ul>
+								</div>
+								</div>
+								</div>
+							-->
+						<div class="col-sm-4">
+							<div class="report-blocks" ><h4 class="reportHeading">PMO</h4>
+							<div class="report-content1">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponsePMO">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+							</ul>
+							</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="report-blocks" ><h4 class="reportHeading">HR</h4>
+							<div class="report-content1">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponseHR">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+							</ul>
+							</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="report-blocks" ><h4 class="reportHeading">Finance</h4>
+							<div class="report-content1">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponseFinance">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+							</ul>
+							</div>
+							</div>
+						</div>
+			
+
+				</div>			 
+
+				
+				<div class="row dashboardBox" [hidden]="isItPMOReports==true">
+					<div class="col-sm-4">
+						<div class="report-blocks">
+							<h4 class="reportHeading">Employee</h4>
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+									<li *ngFor="let report of reportsResponseEmployeeAll">
+										<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+									</li>
+								</ul>
+								</div>
+						</div>
+				 </div>
+					<div class="col-sm-4" >
+							<div class="report-blocks"><h4 class="reportHeading">Timesheet</h4> 
+							<div class="report-content">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponseTimesheetAll">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+						
+							</ul>
+							</div>
+							</div>
+							</div>
+				<!--	<div class="col-sm-3">
+							<div class="report-blocks"><h4 class="reportHeading">Leaves</h4> 
+							<div class="report-content">
+							<ul style="list-style-type: none;">
+							<li *ngFor="let report of reportsResponseLeavesAll">
+							<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+							</li>
+							</ul>
+							</div>
+							</div>
+							</div> -->
+						<div class="col-sm-4">
+						<div class="report-blocks"><h4 class="reportHeading">Expense</h4> 
+						<div class="report-content">
+						<ul style="list-style-type: none;">
+						<li *ngFor="let report of reportsResponseExpenseAll">
+						<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+						</li>
+						</ul>
+						</div>
+						</div>
+					</div>
+				
+						<div class="col-sm-4">
+								<div class="report-blocks"><h4 class="reportHeading">Project</h4> 
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+								<li *ngFor="let report of reportsResponseProjectAll">
+								<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+								</li>
+								</ul>
+								</div>
+								</div>
+								</div>
+							<!--	<div class="col-sm-3">
+										<div class="report-blocks" ><h4 class="reportHeading">P & L</h4>
+										<div class="report-content">
+										<ul style="list-style-type: none;">
+										<li *ngFor="let report of reportsResponsePAndLAll">
+										<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+										</li>
+										</ul>
+										</div>
+										</div>
+										</div> -->
+						<div class="col-sm-4">
+								<div class="report-blocks" ><h4 class="reportHeading">P&L</h4>
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+								<li *ngFor="let report of reportsResponseInvoiceAll">
+								<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+								</li>
+								</ul>
+								</div>
+								</div>
+								</div>
+								
+								<div class="col-sm-4">
+									<div class="report-blocks">
+										<h4 class="reportHeading">Verification</h4>
+										<div class="report-content">
+											<ul style="list-style-type: none;">
+												<li *ngFor="let report of reportsResponseVerification">
+													<a href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+			
+						<div class="col-sm-4">
+								<div class="report-blocks" ><h4 class="reportHeading">Miscellaneous</h4>
+								<div class="report-content">
+								<ul style="list-style-type: none;">
+								<li *ngFor="let report of reportsResponseMiscAll">
+								<a  href="javascript:void(0)" (click)="getAvailableAndFilterColumns(report)">{{report.rptName}}</a>
+								</li>
+								</ul>
+								</div>
+								</div>
+								</div>
+									 
+</div>
+			</div></div></section></div>

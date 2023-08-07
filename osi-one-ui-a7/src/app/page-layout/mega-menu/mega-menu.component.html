@@ -1,0 +1,28 @@
+<div [ngClass]="{ megaMenu: true, active: toggleMegaMenu }">
+    <div class="hamburger-menu" (click)="closeWidget()">
+        <span></span> <span></span> <span></span>
+    </div>
+    <div class="magamenu-scroll megamenu-wrapper">
+        <div class="widget-lists row">
+            <ng-container *ngFor="let menuItem of menuList;">
+                <div class="col-12 col-md-4 col-lg-3"  >
+                    <!-- *ngIf="menuItem.menu_items && menuItem.menu_items.length" -->
+                    <ul>
+                      <li class="menu_headers">
+                          {{ menuItem.title }}
+                        <ul *ngIf="menuItem.children">
+                          <li *ngFor="let menu of menuItem.children" >
+                              <a (click)="routeTo(menu.url)">
+                                  <!-- <span class="icon-megamenu icon-announcements"></span>  -->
+                                  <span class="icon"><img class="icon-white" [src]="menuItem.icon" alt=""> </span>
+                                  {{menu.title}}
+                              </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

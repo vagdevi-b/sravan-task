@@ -1,0 +1,58 @@
+<div data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+    <div class="wrapper">
+
+        <div class="main pandl-details2">
+            <app-pandl-nav-bar (refreshEmitter)="refresh($event)"></app-pandl-nav-bar>
+            <main class="content content-master">
+                <section class="content-dashboard content--shrinked pl-conntent-dashboard">
+                    <div class="container-fluid p-0">
+                        <app-quick-board [rawData]="chartData"></app-quick-board>
+                        <div class="pl-conntent-dashboard-inner">
+
+                            <div *ngFor="let card of cardsList" class="row">
+								<ng-container *ngFor="let widget of card.widgets">
+									<div class="col-{{widget.width}} col-md-{{widget.width}} d-flex">
+										<div class="card-custom flex-fill w-100 shadow-none pl-conntent-dashboard-inner">
+											<app-grid-widget #gridWidget [widget]="widget"></app-grid-widget>
+										</div>
+									</div>
+								</ng-container>
+							</div>
+
+                            <ng-container *ngIf="chartData?.length">
+                                <app-report-employee-table [tableName]="'Hours By Employee & Month'" [rawData]="chartData" ></app-report-employee-table>
+                            </ng-container>
+                            <ng-container *ngIf="chartData?.length">
+                                <app-report-employee-table [tableName]="'Month On Month Revenue'" [rawData]="chartData" ></app-report-employee-table>
+                            </ng-container>
+                        </div>
+                    </div>
+                </section>
+                <app-filters *ngIf="showFilters" (closefilters)="closingFilters($event)"></app-filters>
+            </main>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-muted">
+                        <div class="col-6 text-left">
+
+                        </div>
+                        <div class="col-6 text-right">
+
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+
+    </div>
+
+    <div>
+        <!-- Add / remove [hidden] class vice-versa according inorder to show or hide according to click -->
+        <button [ngClass]="buttonClass" (click)="showfilters()">
+            <span class="btn__content">
+                <i class="fas fa-filter"></i>
+                <span style="font-size: small;"> Filters</span>
+            </span>
+        </button>
+    </div>

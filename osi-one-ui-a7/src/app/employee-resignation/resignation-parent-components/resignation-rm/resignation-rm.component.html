@@ -1,0 +1,272 @@
+<div class="wrapper" [formGroup]="resignationRmForm">
+
+  <div class="content-wrapper">
+    <!-- Main content -->
+    <!-- <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="custom-crumb breadcrumb-item active" aria-current="page">Resignation Management</li>
+
+      </ol>
+    </nav> -->
+    <div class="card custom-margin custom-card">
+      <div class="card-header custom-header d-flex justify-content-between">
+        <!-- Notiying Resignation -->
+        <div *ngIf="disabled == false">
+          Notify Resignation
+        </div>
+        <div *ngIf="disabled == true">
+          Resignation Request
+        </div>
+        <div class="action-badge-with-value-sec d-flex align-items-center">
+
+          <div *ngIf="disabled == true" class="action-badge-wrap action-badge-wrap">
+            {{rowdata.status}}
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+      <div class="card-body resignation-rm-wrap p-0">
+        <div class="row m-0">
+          <div *ngIf="confirmEdit == false" class="w-100 px-4 py-3" style="background-color: #FBFAFA;">
+            <!-- emp-resignation-basic-input-details -->
+            <app-emp-resignation-details (selectedEmployeedata)="employeedata($event)"
+              (submitFlag)="checkValidation($event)" (empinfo)="empinfo($event)">
+            </app-emp-resignation-details>
+          </div>
+
+          <div *ngIf="confirmEdit == true" class="w-100">
+            <!--  emp-resignation-basic-view-details-->
+            <app-emp-resignation-basic-view-details [basicDetails]="rowdata"></app-emp-resignation-basic-view-details>
+
+            <!-- New Reg Employee Details End -->
+          </div>
+        </div>
+        <div class="w-100 hr_emp_details p-4">
+          <app-emp-details [empaccordianinfo]="empdata"></app-emp-details>
+
+        </div>
+
+        <!-- accordion -->
+        <div class="row p-0 m-0 w-100">
+          <!-- Start 1 -->
+          <div class="discussion-with-employee-sec-default w-100 px-4">
+            <!-- <div class="row reason-resignation-buttons-wrap pb-3"> -->
+            <!-- accordion -->
+            <div *ngIf="confirmEdit == false" class="col-lg-12 col-md-12">
+              <app-discussion (selectedDiscussion)="discussionData($event)" [populateData]="rowdata"
+                [displayData]="'RM'">
+              </app-discussion>
+              <!-- <app-discussion *ngIf="showreasons == true" (selectedDiscussion)="discussionData($event)"
+                [populateData]="rowdata" [displayData]="'RM'" [selectedValues]="displaySelectedReasons">
+              </app-discussion> -->
+            </div>
+            <div *ngIf="confirmEdit == true" class="col-lg-12 col-md-12">
+              <div *ngIf="rmDiscussionData.length > 0"
+                class="discussion-with-employee-sec-item p-3 d-inline-block hr-discussion-item ">
+                <h4 class="font-weight-medium">RM Discussion with Employee</h4>
+                <p class="mb-2">Reasons for Resignation</p>
+                <ul>
+                  <li *ngFor="let item of rmDiscussionData" class="font-weight-light">{{item}}</li>
+                </ul>
+              </div>
+              <div *ngIf="rmDiscussionData.length == 0"
+                class="discussion-with-employee-sec-item rm-discussion-item hr-discussion-item">
+                <h4>RM Discussion with Employee</h4>
+                <p>No Reason Selected</p>
+              </div>
+            </div>
+
+
+
+            <!-- accordion -->
+            <!-- </div> -->
+          </div>
+        </div>
+        <div class="row m-0">
+          <!-- accordion -->
+          <div class="col-lg-12 col-md-12 px-0">
+            <div class="row m-0">
+              <div class="col-lg-6 col-md-6 notes-section p-4">
+                <div class="notes-column d-flex justify-content-between note-component-wrap">
+                  <h4>Notes<span class="required" *ngIf="required">*</span></h4>
+                  <span class="attach-col">
+
+                    <button *ngIf="confirmEdit == true && isCancelled== false" (click)="openNotesPopupModal()"
+                      class="btn">
+                      <img src="assets/images/icon_action_add.svg"> &nbsp; Add Notes</button>
+
+                  </span>
+                </div>
+                <div *ngIf="confirmEdit == false">
+                  <textarea formControlName="notesinfo"
+                    class="form-control form-control-lg" type="text" rows="4" placeholder="Add a Comment "
+                    (focus)="show($event)" (focusout)="hide($event)"></textarea>
+                  <div class="required" *ngIf="required && resignationRmForm.get('notesinfo')?.errors?.required">
+                    <small>Please Enter the Notes </small>
+                  </div>
+                </div>
+                <div class="note-scroll-height-350">
+                <div class="note-info-data-body note-info-data-body">
+                  <div class="category-item d-flex " *ngFor="let item of notesdata.reverse()">
+                    <span
+                      class="sub-name right badge badge-danger mr-2">{{item.osiEmployeesCurrentDto.userName.substring(0,
+                      2).toUpperCase()}}</span>
+                    <div class="summary flex-grow-1">
+                      <div class="title font-16 fw-600">
+                        {{item.osiEmployeesCurrentDto.userName}}
+                        <h3 class="title font-14 fw-500 float-right">
+                          <span class="sub-title right badge badge-danger">{{item.role}}</span> | <span
+                            class="text-muted discussion-text">Discussion : {{item.createdDate | date}}</span>
+                        </h3>
+                      </div>
+                      <p class="font-14 text-muted">
+                      </p>
+                      <p>{{item.notes}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              </div>
+              <div class="col-lg-6 col-md-6 notes-section-col-2">
+                <div class="row">
+                  <div class="col-12  px-3">
+                    <div class="attached-header-title d-flex justify-content-between align-items-center">
+                      <h1 class="doc-title mb-0">Attached Documents</h1><span> <button *ngIf="isCancelled== false"
+                          (click)="openAttachPopupModal()" class="btn mr-1">
+                          <img src="assets/images/icon_action_upload.svg"> Add Attachment</button><span
+                          class="required">*</span></span>
+
+
+                    </div>
+                    <div class="attached-info-body note-scroll-height-350 mb-2">
+                      <div *ngFor="let item of filteredAttachments.reverse()">
+                        <h4 class="doc-sub-title">
+                          <div *ngIf="getFileType(item.fileType)">
+                            <i [ngClass]="getClassNameByFileType(item.fileType)"></i> <a
+                              [href]="downloadFileUrl+item.filePath" target="_blank" title={{item.displayName}}>
+                              {{item.displayName.slice(0,15)+'...'}}</a>
+                            <!-- <span class="float-right">By {{item.osiEmployeesCurrentDto.userName}}</span>
+                          <span class="text-muted discussion-text">Attached On : {{item.createdDate | date}}</span> -->
+                            <div class="float-right">
+                              <span class="">By {{item.osiEmployeesCurrentDto.userName}}</span>|
+                              <span class="font-12"> On : {{item.createdDate | date}}</span>
+                            </div>
+                          </div>
+
+                          <div
+                            *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
+                            <i class="fa fa-envelope"></i> <a [href]="downloadFileUrl+item.filePath" target="_blank"
+                              title={{item.displayName}}>
+                              {{item.displayName.slice(0,15)+'...'}}</a>
+                            <span class="float-right">By {{item.osiEmployeesCurrentDto.userName}}</span>
+                            <span class="text-muted discussion-text"> On : {{item.createdDate | date}}</span>
+
+                          </div>
+                        </h4>
+                      </div>
+                      <div *ngIf="filesresponse == 'success'">
+                        <h4 class="doc-sub-title" *ngFor="let item of filesArray ">
+                          <div *ngIf="item.type === 'application/pdf'">
+                            <i class="fa fa-file-pdf-o"></i> {{item.fileName}}
+                            <div class="float-right">
+                            <span class="">By {{userInfo}}</span> |
+                            <span class="text-muted discussion-text"> On : {{newdate| date}}</span>
+                            </div>
+                          </div>
+                          <div
+                            *ngIf="item.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
+                            <i class="fa fa-envelope"></i> {{item.fileName}}
+                            <div class="float-right">
+                              <span class="">By {{userInfo}}</span> |
+                              <span class="text-muted discussion-text"> On : {{newdate| date}}</span>
+                            </div>
+
+                          </div>
+                          <div *ngIf="item.type === 'image/jpeg'">
+                            <i class="fa fa-file-image-o"></i> {{item.fileName}}
+                            <div class="float-right">
+                              <span class="">By {{userInfo}}</span> |
+                              <span class="text-muted discussion-text"> On : {{newdate| date}}</span>
+                            </div>
+
+                          </div>
+                          <div *ngIf="item.type === 'image/png'">
+                            <i class="fa fa-file-image-o"></i> {{item.fileName}}
+                            <div class="float-right">
+                              <span class="">By {{userInfo}}</span> |
+                              <span class="text-muted discussion-text"> On : {{newdate| date}}</span>
+                            </div>
+
+                          </div>
+                          <div *ngIf="item.type === 'eml'">
+                            <i class="fas fa-envelope custom-mail-icon"></i> {{fileName}}
+                            <div class="float-right">
+                              <span class="">By {{userInfo}}</span> |
+                              <span class="text-muted discussion-text font-12"> On : {{newdate| date}}</span>
+                            </div>
+
+                          </div>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row m-0">
+          <div class="col-12  d-flex pt-3 align-items-center justify-content-between px-4">
+            <div><button type="button" class="backbutton" class="btn btn-secondary"
+                (click)="navigateToInitiate()">Back</button></div>
+
+            <div class="float-right">
+              <button *ngIf="rowdata?.status != 'Initiated'" (click)="navigateToInitiate()"
+                class="btn btn-outline-primary mr-2">Cancel</button>
+              <button *ngIf="disabled == true && isCancelled == false && rowdata.status == 'Initiated'" type="submit"
+                value="Cancel Request" class="btn btn-primary" (click)="cancelRequest()">Cancel
+                Request</button>
+              <button *ngIf="disabled == false && isCancelled== false " type="submit" value="Submit"
+                class="btn btn-primary" (click)="onSave()">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  <aside class="control-sidebar control-sidebar-dark">
+  </aside>
+
+  <div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+	<div class="modal-dialog"  style="top: 40%; width: 15%;">
+			<!-- Modal content-->
+			<div class="modal-content bg-dark text-light">
+				<div class="modal-body">
+					<h3 style="color: white;">Loading ...</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade bs-example-modal-new" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <app-attachmentpopup></app-attachmentpopup>
+  </div>
+</div>
+
+<div class="modal fade bs-example-modal-notes" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <app-notepopup></app-notepopup>
+  </div>
+</div>

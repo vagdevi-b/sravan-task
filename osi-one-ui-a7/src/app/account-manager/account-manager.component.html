@@ -1,0 +1,91 @@
+<div class="v-height">
+
+    <div class="leave-status-section">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="pill">My Accounts</a>
+        </li>
+      </ul>
+    </div>
+
+    <section class="content">
+        <div id="filter">
+          <!-- <div class="col-sm-8" style="text-align: left; padding: 0%">
+            <h5>Account Manager Dashboard</h5>
+          </div> -->
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="container">
+                <div class="table-responsive table-shadow border-0">
+                  <table class="table table-hover table-bordered">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div class="col-sm-12" style="padding-left: 0%">
+                            <form class="" style="padding-bottom: 3px; padding-left: 0px;">
+                              <div>
+                                <div class="input-group">
+                                  <input type="text" class="form-control" name="searchString" placeholder="Customer" [(ngModel)]="searchString" autocomplete="off"
+                                  />
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </th>
+                        <th style="width: 25%; text-align: left">Project</th>
+                        <th style="text-align: left">Project Manager</th>
+                        
+                        <th style="text-align: left">Sales Person</th>
+                        <th style="text-align: left">Account Manager</th>
+                        <th style="text-align: center">Status</th>
+                        <th style="text-align: right">Booked Amt</th>
+                        <!-- <th style="text-align: right">Inv Amt</th> -->
+                        <th style="text-align: right">Sent to Cust</th>
+                        <!-- <th style="text-align: right">Approved</th> -->
+                        <!-- <th style="text-align: right">Not Approved</th> -->
+                        <th style="padding-right: 3px; text-align: right">Paid Amt</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let x of accountManagerData | filter : 'customer' : searchString | paginate: { itemsPerPage: cnt, currentPage: page, id:'first' }"
+                        >
+                        <td>{{ x.customerName }}</td>
+                        <td style="text-align: left">{{ x.projectName }}</td>
+                        <td style="text-align: left">{{ x.projectManager }}</td>
+                        <td style="text-align: left">{{ x.salesPerson }}</td>
+                        <td style="text-align: left">{{ x.accountManager }}</td>
+                        <td style="text-align: center">{{ x.status }}</td>
+                        <td style="text-align: right">${{ x.bookedAmount }}</td>
+                        <!-- <td style="text-align: right">${{ x.invoiced_amount }}</td> -->
+                        <td style="text-align: right">${{ x.amountSentToCustomerUsd }}</td>
+                        <!-- <td style="text-align: right">${{ x.approved }}</td> -->
+                        <!-- <td style="text-align: right">${{ x.not_approved }}</td> -->
+                        <td style="text-align: right">${{ x.paidAmountUsd }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              
+                <!--Including the pagination control.-->
+                <div class="text-right">
+                  <pagination-controls (pageChange)="page = $event" id='first'></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingInvoiceDetailsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>

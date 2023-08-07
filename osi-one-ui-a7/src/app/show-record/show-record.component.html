@@ -1,0 +1,347 @@
+<div class="v-height">
+
+  <div class="leave-wrapper-section">
+    <div class="leave-status-section">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="pill" href="#applied" (click)="onNavClick('applied')">Sales Report</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="pill" href="#accural" (click)="onNavClick('accural')">Aging Report</a>
+        </li>
+      </ul>
+
+    </div>
+
+    <div *ngIf="!disableOnAccural">
+      <section class="content">
+        <div id="filter">
+          <div class="row">
+            <div class="col-sm-10">
+              <h5>Project Details</h5>
+            </div>
+            <div *ngIf="projectInvoices.data && projectInvoices.data.length" class="col-sm-2 mb-1" data-tooltip title="Download in .xlsx">
+              <button class="btn btn-primary" (click)="downloadDetailsInExel('Project_Details')">
+                                   <!-- <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> -->                 Download
+              </button>
+            </div>
+          </div>
+
+          <!-- <div class="row">
+            <div class="col-sm-12">
+              <div class="container">
+                <table class="table" style="cursor: pointer">
+                  <thead style="background: lightgray">
+                    <tr>
+                      <th>
+                        <div class="col-sm-12" style="padding-left: 0%">
+                          <form class="" style="padding-bottom: 3px; padding-left: 0px;">
+                            <div>
+                              <div class="input-group">
+                                <input type="text" class="form-control" name="searchString" placeholder="Customer" [(ngModel)]="searchString" autocomplete="off"
+                                />
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </th>
+                      <th style="width: 25%; text-align: left">Project</th>
+                      <th style="text-align: left">Project Manager</th>
+                      <th style="text-align: left">Account Manager</th>
+                      <th style="text-align: left">Sales Manager</th>
+                      
+                      <th style="text-align: left">Status</th>
+                      <th style="text-align: right">Booked</th>
+                      
+                      <th style="text-align: right">Invoiced</th>
+                      
+                      <th style="padding-right: 3px; text-align: right">Paid</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let x of projectInvoices.data | filter : 'customer' : searchString | paginate: { itemsPerPage: cnt, currentPage: page, id:'first' }"
+                      (click)="OSIProjectInvoicesTable(x)" [ngClass]="{'highlight' : x.project == selectedRecord}">
+                      <td>{{ x.customer }}</td>
+                      <td style="text-align: left">{{ x.project }}</td>
+                      <td style="text-align: left">{{ x.project_manager }}</td>
+                      <td style="text-align: left">{{ x.account_manager }}</td>
+                      <td style="text-align: left">{{ x.sales_person }}</td>
+                      
+                      <td style="text-align: left">{{ x.status }}</td>
+                      <td style="text-align: right">${{ x.amount }}</td>
+                      
+                      <td style="text-align: right">${{ x.sent_to_customer }}</td>
+                      
+                      <td style="text-align: right">${{ x.paid }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                Including the pagination control.
+                <div class="text-right">
+                  <pagination-controls (pageChange)="page = $event" id='first'></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div>
+              <ag-grid-angular 
+                style="width: auto;" 
+                class="ag-theme-balham"
+                [rowData]="projectInvoices.data" 
+                [columnDefs]="columnDefsProjects"
+                [gridOptions]="gridOptionsProjects"
+                [paginationPageSize]="paginationPageSize"
+                [getRowHeight]="getRowHeightProjects"
+                pagination="true"
+                rowSelection="single"
+                (selectionChanged)="onProjectSelected($event)"
+                [defaultColDef]="defaultColDef"
+                (gridReady)="onGridReadyProjects($event)">
+              </ag-grid-angular>
+          </div>
+        </div>
+
+        <div id="filter">
+          <div class="row">
+            <div class="col-sm-10">
+              <h5>Invoice Details of {{projectName}}</h5>
+            </div>
+            <div *ngIf="projectInvoicesThirdTbl.data && projectInvoicesThirdTbl.data.length" class="col-sm-2 mb-1" data-tooltip title="Download in .xlsx">
+              <button class="btn btn-primary" (click)="downloadDetailsInExel('Invoice_Details')">
+                                   <!-- <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> -->                 Download
+              </button>
+            </div>
+          </div>
+
+          <!-- <div class="row">
+            <div class="col-sm-12">
+              <div class="container">
+                <table class="table" style="cursor: pointer">
+                  <thead style="background: lightgray">
+                    <tr>
+                      
+                      <th style="padding: 3px; text-align: left">Invoice No #</th>
+                      <th style="padding: 3px; text-align: center">Invoice Date</th>
+                      <th style="padding: 3px; text-align: center">Due Date</th>
+                      <th style="padding: 3px; text-align: center">Status</th>
+                      <th style="padding: 3px; text-align: right">Invoiced</th>
+                      <th style="padding: 3px; text-align: center">Payment Status</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let x of projectInvoicesThirdTbl.data | filter : 'customer' : searchStringThird | paginate: { itemsPerPage: cntThird, currentPage: pageThird, id:'third' }"
+                    [ngClass]="{'highlight' : x.customer == selectedRecordThird}">
+                      
+                      <td style="text-align: left">{{ x.invNo }}</td>
+                      <td style="text-align: center">{{ x.invDate }}</td>
+                      <td style="text-align: center">{{ x.invDueDate }}</td>
+                      <td style="text-align: center">{{ x.invStatus }}</td>
+                      <td style="text-align: right">${{ x.invAmount }}</td>
+                      <td style="text-align: center">{{ x.paymentStatus }}</td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+
+                Including the pagination control.
+                <div class="text-right">
+                  <pagination-controls (pageChange)="pageThird = $event" id='third'></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div>
+              <ag-grid-angular 
+                style="width: auto;" 
+                class="ag-theme-balham"
+                [rowData]="projectInvoicesThirdTbl.data" 
+                [columnDefs]="columnDefsInvoices"
+                [gridOptions]="gridOptionsInvoices"
+                [paginationPageSize]="paginationPageSize"
+                [getRowHeight]="getRowHeightInvoices"
+                pagination="true"
+                [defaultColDef]="defaultColDef"
+                (gridReady)="onGridReadyInvoices($event)">
+              </ag-grid-angular>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- P & L -->
+    <div *ngIf="disableOnAccural">
+      <section class="content">
+        <div id="filter">
+          <div class="row">
+            <div class="col-sm-10">
+              <h5>Aging Report</h5>
+            </div>
+            <div *ngIf="projectInvoicesSecTbl.data && projectInvoicesSecTbl.data.length" class="col-sm-2 mb-1" data-tooltip title="Download in .xlsx">
+              <button class="btn btn-primary" (click)="downloadDetailsInExel('Aging_Report')">
+                                   <!-- <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> -->                 Download
+              </button>
+            </div>
+          </div>
+
+          <!-- <div class="row">
+            <div class="col-sm-12">
+              <div class="container">
+                <table class="table" style="cursor: pointer">
+                  <thead style="background: lightgray">
+                    <tr>
+                      <th>
+                        <div class="col-sm-12" style="padding-left: 0%">
+                          <form class="" style="padding-bottom: 3px; padding-right: 5px;">
+                            <div>
+                              <div class="input-group">
+                                <input type="text" class="form-control" name="searchString" placeholder="Customer" [(ngModel)]="searchString" autocomplete="off"
+                                />
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </th>
+                      <th style="width: 25%; text-align: left">Project</th>
+                      <th style="text-align: right">Current</th>
+                      <th style="text-align: right">Days (<30)</th>
+                      <th style="text-align: right">Days (31 - 60)</th>
+                      <th style="text-align: right">Days (61 - 90)</th>
+                      <th style="text-align: right">Days (>90)</th>
+                      <th style="padding-right: 3px; text-align: right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let x of projectInvoicesSecTbl.data | filter : 'customer' : searchString | paginate: { itemsPerPage: cntSec, currentPage: pageSec, id:'second' }"
+                    (click)="OSIProjectInvoicesTable(x)" [ngClass]="{'highlight' : x.project == selectedRecord}">
+                      <td>{{ x.customer }}</td>
+                      <td style="text-align: left">{{ x.project }}</td>
+                      <td style="text-align: right">${{ x.current }}</td>
+                      <td style="text-align: right">${{ x.oneToThirty }}</td>
+                      <td style="text-align: right">${{ x.thirtyOneToSixty }}</td>
+                      <td style="text-align: right">${{ x.sixtyOneToNinety }}</td>
+                      <td style="text-align: right">${{ x.aboveNinety }}</td>
+                      <td style="text-align: right">${{ x.total }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                Including the pagination control.
+                <div class="text-right">
+                  <pagination-controls (pageChange)="pageSec = $event" id='second'></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div>
+              <ag-grid-angular 
+                style="width: auto;" 
+                class="ag-theme-balham"
+                [rowData]="projectInvoicesSecTbl.data" 
+                [columnDefs]="columnDefsAging"
+                [gridOptions]="gridOptionsAging"
+                [paginationPageSize]="paginationPageSize"
+                [getRowHeight]="getRowHeightAging"
+                pagination="true"
+                rowSelection="single"
+                (selectionChanged)="onAgingSelected($event)"
+                [defaultColDef]="defaultColDef"
+                (gridReady)="onGridReadyAging($event)">
+              </ag-grid-angular>
+          </div>
+          
+        </div>
+
+        <div id="filter">
+          <div class="row">
+            <div class="col-sm-10">
+              <h5>Invoice Details of {{projectName}}</h5>
+            </div>
+            <div *ngIf="projectInvoicesThirdTbl.data && projectInvoicesThirdTbl.data.length" class="col-sm-2 mb-1" data-tooltip title="Download in .xlsx">
+              <button class="btn btn-primary" (click)="downloadDetailsInExel('Invoice_Details')">
+                                   <!-- <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> -->                 Download
+              </button>
+            </div>
+          </div>
+
+          <!-- <div class="row">
+            <div class="col-sm-12">
+              <div class="container">
+                <table class="table" style="cursor: pointer">
+                  <thead style="background: lightgray">
+                    <tr>
+                      
+                      <th style="padding: 3px; text-align: left">Invoice No #</th>
+                      <th style="padding: 3px; text-align: center">Invoice Date</th>
+                      <th style="padding: 3px; text-align: center">Due Date</th>
+                      <th style="padding: 3px; text-align: center">Status</th>
+                      <th style="padding: 3px; text-align: right">Invoiced</th>
+                      <th style="padding: 3px; text-align: center">Payment Status</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let x of projectInvoicesThirdTbl.data | filter : 'customer' : searchStringThird | paginate: { itemsPerPage: cntThird, currentPage: pageThird, id:'third' }"
+                      [ngClass]="{'highlight' : x.customer == selectedRecordThird}">
+                      
+                      <td style="text-align: left">{{ x.invNo }}</td>
+                      <td style="text-align: center">{{ x.invDate }}</td>
+                      <td style="text-align: center">{{ x.invDueDate }}</td>
+                      <td style="text-align: center">{{ x.invStatus }}</td>
+                      <td style="text-align: right">${{ x.invAmount }}</td>
+                      <td style="text-align: center">{{ x.paymentStatus }}</td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+
+                Including the pagination control.
+                <div class="text-right">
+                  <pagination-controls (pageChange)="pageThird = $event" id='third'></pagination-controls>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <div>
+              <ag-grid-angular 
+                style="width: auto;" 
+                class="ag-theme-balham"
+                [rowData]="projectInvoicesThirdTbl.data" 
+                [columnDefs]="columnDefsInvoices"
+                [gridOptions]="gridOptionsInvoices"
+                [paginationPageSize]="paginationPageSize"
+                [getRowHeight]="getRowHeightInvoices"
+                pagination="true"
+                [defaultColDef]="defaultColDef"
+                (gridReady)="onGridReadyInvoices($event)">
+              </ag-grid-angular>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal for showing loading text -->
+<div id="loadingInvoiceDetailsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+          <div class="modal-body">
+              <h3>Loading..</h3>
+          </div>
+      </div>
+  </div>
+</div>

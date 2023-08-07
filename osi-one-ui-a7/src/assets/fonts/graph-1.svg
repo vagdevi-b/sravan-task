@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="292px" height="139px" viewBox="0 0 292 139" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>graph-1</title>
+    <defs>
+        <polygon id="path-1" points="140.998326 0 176.247908 34.7654012 212.870229 53.7778473 212.870229 88 0 88 0 9.77722146 35.2495816 43.4561256 70.4991632 18.4679459 105.748745 28.2464191"></polygon>
+        <polygon id="path-3" points="140.998326 0 176.247908 34.7654012 212.870229 53.7778473 212.870229 88 0 88 0 9.77722146 35.2495816 43.4561256 70.4991632 18.4679459 105.748745 28.2464191"></polygon>
+    </defs>
+    <g id="graph-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.249187651">
+        <g id="Group-5-Copy" transform="translate(0.000000, 7.000000)">
+            <g id="Group-5" transform="translate(-133.740458, 44.000000)">
+                <g id="Group-6" transform="translate(212.870229, 0.000000)">
+                    <g id="Group-3">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="Clip-2" fill="#9B9B9B" opacity="0.78405907" xlink:href="#path-1"></use>
+                        <polygon id="Fill-1" mask="url(#mask-2)" points="212.870229 88 0 88 0 9.77722146 34.8804761 43.4561256 69.7609521 18.4679459 104.641428 28.2464191 139.521904 0 174.40238 34.7654012 210.641221 53.7778473"></polygon>
+                    </g>
+                    <polyline id="Stroke-4" stroke="#3A81F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="1.11450382 10.8176105 35.9949799 44.63564 70.8754559 19.5442357 105.755932 29.3631031 140.636408 1 175.515492 35.9090147 211.755725 55"></polyline>
+                </g>
+                <g id="Group-6" transform="translate(106.435115, 44.000000) scale(-1, 1) translate(-106.435115, -44.000000) ">
+                    <g id="Group-3">
+                        <mask id="mask-4" fill="white">
+                            <use xlink:href="#path-3"></use>
+                        </mask>
+                        <use id="Clip-2" fill="#9B9B9B" opacity="0.78405907" xlink:href="#path-3"></use>
+                        <polygon id="Fill-1" mask="url(#mask-4)" points="212.870229 88 0 88 0 9.77722146 34.8804761 43.4561256 69.7609521 18.4679459 104.641428 28.2464191 139.521904 0 174.40238 34.7654012 210.641221 53.7778473"></polygon>
+                    </g>
+                    <polyline id="Stroke-4" stroke="#3A81F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="1.11450382 10.8176105 35.9949799 44.63564 70.8754559 19.5442357 105.755932 29.3631031 140.636408 1 175.515492 35.9090147 211.755725 55"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

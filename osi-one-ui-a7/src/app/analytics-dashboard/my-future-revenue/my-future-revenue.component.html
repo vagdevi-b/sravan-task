@@ -1,0 +1,143 @@
+<div class="v-height" id="modal-container">
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="float-right mr-4">
+        <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+          style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="refresh()"></span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 mb-3">
+      <div class="form-filter">
+        <!-- <div class="col-md-3">
+          <label>Year </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empYear"
+              (change)="updateHrsByResourceGrid()">
+              <option value="*">All</option>
+              <option *ngFor="let year of empYearData" value="{{year.key}}">{{year.key}}</option>
+            </select>
+          </div>
+        </div> -->
+
+        <!-- Multi select dropdown for filtering organizations -->
+        <div class="col-form-filter mb-3">
+          <label>Organizations </label>
+          <ng-multiselect-dropdown
+            id="mddOrg"
+            name="organization"
+            [disabled]="spinner"
+            [placeholder]="'Select'"
+            [data]="orgData"
+            [settings]="dropdownSettings"
+            [(ngModel)]="selectedOrgs"
+            (onSelectAll)="onSelectDeselectAll($event, 'selectedOrgs')"
+            (onDeSelectAll)="onSelectDeselectAll($event, 'selectedOrgs')">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div class="col-form-filter mb-3">
+          <label>Practice </label>
+          <ng-multiselect-dropdown name="organization"           
+            id="mddPract"
+            [disabled]="spinner" [placeholder]="'Select'" [data]="practData"
+            [settings]="dropdownSettings" [(ngModel)]="pract" 
+            (onSelectAll)="onSelectDeselectAll($event, 'pract')"
+            (onDeSelectAll)="onSelectDeselectAll($event, 'pract')">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div class="col-form-filter mb-3">
+          <label>Sub Practice </label>
+          <ng-multiselect-dropdown name="organization" id="mddSubPract" [disabled]="spinner" [placeholder]="'Select'" [data]="subPractData"
+            [settings]="dropdownSettings" [(ngModel)]="subPract" 
+            (onSelectAll)="onSelectDeselectAll($event, 'subPract')"
+            (onDeSelectAll)="onSelectDeselectAll($event, 'subPract')">
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div class="col-form-filter mb-3">
+          <label>Employee </label>
+          <ng-multiselect-dropdown [disabled]="spinner" id="mddEmployee" [placeholder]="'Select'" [data]="employeeData" [settings]="dropdownSettings"
+            [(ngModel)]="employee"
+            (onSelectAll)="onSelectDeselectAll($event, 'employee')"
+            (onDeSelectAll)="onSelectDeselectAll($event, 'employee')">
+          </ng-multiselect-dropdown>
+        </div>
+
+      </div>
+    </div>
+    
+  </div>
+
+    <div id="filter">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card" id="htmle2imagedata">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-9">
+                  <h6 style="padding-top : 5px">My Future Revenue - {{currentYear}}</h6>
+
+                </div>
+                <!-- <div class="col-md-2">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <label>Year </label>
+                    </div>
+                    <div class="col-sm-10">
+                      <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empYear"
+                        (change)="updateHrsByResourceGrid()">
+                        <option *ngFor="let year of empYearData" value="{{year.key}}">{{year.key}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div> -->
+                <!-- <div class="col-sm-2 h-25">
+                  <button type="button" id="toggle" class="btn btn-toggle" data-toggle="button" aria-pressed="false"
+                    autocomplete="off" (click)="toggle($event)" [disabled]="isgridChart">
+                    <div class="handle"></div>
+                  </button>
+                </div> -->
+                <div class="col-sm-2 h-25">
+                  <button type="button" id = "gridChart" class="btn btn-toggle_" data-toggle="button" aria-pressed="false"
+                    autocomplete="off" (click)="gridChart($event)">
+                    <div class="handle"></div>
+                  </button>
+                </div>
+                <div class="col-sm-1">
+                  <span class="glyphicon glyphicon-download-alt" data-tooltip title="Download in Excel"
+                    style="font-size: 22px !important; cursor: pointer;" (click)="downloadDetailsInExcel()"></span>
+                  <!-- <img src="../../../assets/images/download.png"(click)="downloadDetailsInExel()"> -->
+                  </div>
+              </div>
+            </div>
+            <div class="card-body"  [hidden]="isgridChart">
+              <div class="table-responsive table-shadow border-0" style="position: relative;">
+                <div>
+                  <canvas id="myTeamUtilization" #canvas></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="card-body"  [hidden]="!isgridChart">
+              <div>
+                <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+                  [rowData]="myFutureRevData"
+                  [columnDefs]="columnDefs" 
+                  [gridOptions]="gridOptions" 
+                  [paginationPageSize]="paginationPageSize"
+                  pagination="true" 
+                  [defaultColDef]="defaultColDef"
+                  (gridReady)="onGridReady($event)">
+                </ag-grid-angular>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div *ngIf="spinner" class="overlay">
+    <div class="loader"></div>
+  </div>
+</div>

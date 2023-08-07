@@ -1,0 +1,15 @@
+.vertical-middle{
+    padding-top:7px;
+}
+
+.goalsection{
+    padding:10px 0px;
+}
+.cursor{
+    cursor: pointer;
+}
+.overflow {
+  height: 50vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

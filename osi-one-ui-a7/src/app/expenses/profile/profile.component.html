@@ -1,0 +1,29 @@
+<br>
+<br>
+<div>	
+	<form name="osiUserInfo" (ngSubmit)="onSubmit()" #f="ngForm" novalidate>		
+		<div class="row">							
+		  <div class="col-md-5">
+             <div class="row">
+               <div class="col-md-6">
+                 <div class="form-group">
+                    
+                 </div>
+               </div>
+	         </div>		
+		  </div>
+		</div>  		
+	</form>
+	<br>
+	<div class="row pull-right">
+		<button type="button" class="btn btn-primary"
+			ng-click="vm.next('tab1');vm.submitted=true" ng-hide="vm.infoView">
+			<span>Save & Next</span>
+		</button>
+		<button type="button" class="btn btn-primary"
+                            ng-click="vm.saveOsiUser();">
+                            <span>Submit</span>
+                        </button> &nbsp;
+	</div>
+	<br>
+</div>

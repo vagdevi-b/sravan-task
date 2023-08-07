@@ -1,0 +1,56 @@
+<div data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+	<div class="wrapper">
+		
+		<div class="main pandl-details2">
+            <app-pandl-nav-bar (refreshEmitter)="refresh($event)"></app-pandl-nav-bar>
+              <main class="content content-master">
+				<div class="container-fluid p-0 content--shrinked flex-1 pl-conntent-dashboard">
+                    <div class="pl-conntent-dashboard-inner">
+                        <div *ngFor="let card of cardsList" class="row">
+                            <ng-container *ngFor="let widget of card.widgets">
+                                <div class="col-md-{{widget.width}}">
+                                    <app-grid-widget #gridWidget [widget]="widget"></app-grid-widget>
+                                </div>
+                            </ng-container>
+                        </div>
+					</div>
+
+				</div>
+                <app-filters  *ngIf="showFilters" (closefilters)="closingFilters($event)" (callPandLData)="getPandLData($event)"></app-filters> 
+			</main>
+
+			<footer class="footer">
+				<div class="container-fluid">
+					<div class="row text-muted">
+						<div class="col-6 text-left">
+							
+						</div>
+						<div class="col-6 text-right">
+							
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div> 
+	</div>
+    <div>
+		<!-- Add / remove [hidden] class vice-versa according inorder to show or hide according to click -->
+	<button [ngClass]="buttonClass" (click)="showfilters()">
+		<span class="btn__content">
+			<i class="fas fa-filter"></i>
+			<span style="font-size: small;">Filters</span>
+		</span>
+	</button>
+	</div>
+    <!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+	<div class="modal-dialog"  style="top: 40%; width: 15%;">
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3 style="color: white;">Loading ...</h3>
+			</div>
+		</div>
+	</div>
+</div>
+</div>

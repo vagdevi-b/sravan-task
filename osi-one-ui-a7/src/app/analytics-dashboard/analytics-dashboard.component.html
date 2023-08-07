@@ -1,0 +1,55 @@
+<div class="v-height">
+
+  <div class="leave-wrapper-section">
+    <div class="leave-status-section">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="pill" href="#hoursByProject"
+            (click)="onNavClick('hoursByProject')">Hours By Project</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="pill" href="#hoursByResources" (click)="onNavClick('hoursByResources')">Hours
+            By Resources</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="pill" href="#analyticalView"
+            (click)="onNavClick('analyticalView')">Invoiced Revenue By Customer</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="pill" href="#analyticalView"
+            (click)="onNavClick('avgBillableWeeklyHrs')">Average Weekly Billable Hours</a>
+        </li>
+      </ul>
+
+    </div>
+    <div *ngIf="navBar == 'hoursByProject'">
+      <app-hours-by-project></app-hours-by-project>
+    </div>
+
+    <div *ngIf="navBar == 'hoursByResources'">
+      <app-hours-by-resource></app-hours-by-resource>
+    </div>
+
+    <div *ngIf="navBar == 'analyticalView'">
+      <app-analytics-view></app-analytics-view>
+    </div>
+
+    <div *ngIf="navBar == 'avgBillableWeeklyHrs'">
+      <app-avg-bill-week-hrs></app-avg-bill-week-hrs>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Modal for showing loading text -->
+<div id="loadingInvoiceDetailsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%; width: 10%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

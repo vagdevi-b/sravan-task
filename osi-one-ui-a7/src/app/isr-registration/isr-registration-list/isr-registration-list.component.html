@@ -1,0 +1,119 @@
+<div>
+    <section>
+      <div class="card" style="width: 100%;">
+        <div class="card-body">
+          <div *ngIf="showAlert" class="row notificationRow">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8 notificationTextDiv" id="successMessage">
+              <div class="alert alert-success alert-dismissible notificationText" id="successMessage">
+                <a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close"></a>
+                <strong>{{successMessage}}</strong>
+              </div>
+            </div>
+            <div class="col-sm-2"></div>
+          </div>
+          <div class="row dashboardBox">
+            <div class="col-sm-3">
+              <h3 class="title-text">
+                <span class="reportHeading">ISR Registrations</span>
+              </h3>
+            </div>
+           <div class="container-fluid pt-2 pb-2">
+				<div class="row" role="form">
+					<div class="col-lg-2">
+						<input class="form-control" [(ngModel)]="employeeId" placeholder="ISR" autocomplete="off"
+						 type="text">
+					</div>
+					<div class="col-lg-2">
+					<select (change)="getStatesbyCountryCode($event.target.value)" name="countryCode" class="form-control" [(ngModel)] ="countryCode" >
+					  <option selected value="">Country</option>
+					  <option *ngFor="let country of countries" [value]=country.countryCode>
+						{{country.countryCode}} - {{country.countryName}}
+					  </option>
+					</select>
+					</div>
+
+					<div class="col-lg-2">
+						<select (change)="getCititesbyStateName($event.target.value)" name="stateName" class="form-control" [(ngModel)] ="stateName" >
+					  <option selected value="">State</option>
+					  <option *ngFor="let state of states" [value]=state.stateName>
+						{{state.stateName}} - {{state.stateLongName}}
+					  </option>
+					</select>
+					</div>
+					<div class="col-lg-2">
+						<select name="cityName" class="form-control" [(ngModel)] ="cityCode" >
+					  <option selected value="">City</option>
+					  <option *ngFor="let city of cities" [value]=city.cityName>
+						{{city.cityCode}} - {{city.cityName}}
+					  </option>
+					</select>
+					</div>
+
+					<div class="col-lg-2">
+						<button class="btn btn-outline-secondary" (click)="searchRegistrations()">Search</button>
+						<button type="button" class="btn btn-outline-primary" (click)="clearSearch()">Clear</button>
+					</div>
+				</div>
+				</div>
+          </div>
+          <div class="row tableBox">
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+              <div class="table-responsive">
+                 <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="15%">ISR</th>
+					  <th scope="col" width="20%">Country</th>
+					  <th scope="col" width="20%">State</th>
+					  <th scope="col" width="20%">City</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+					<tr *ngFor="let item of allIsrRegistrations | paginate: { itemsPerPage:10, currentPage: crntpage,totalItems: total };" (click)="isRowClicked(item)"
+					(dblclick)="onRowSelected(item)" [class.active]='item == isSelectedRow'>
+					  <td scope="row">{{item.employeeId}}</td>
+					  <td scope="row">{{item.countryCode}}</td>
+					  <td scope="row">{{item.stateCode}}</td>
+					  <td scope="row">{{item.cityCode}}</td>
+					</tr>
+				  </tbody>
+                  
+                </table>
+              </div>
+				<div>
+                  <h6 [hidden]="allIsrRegistrations.length!=0" style="text-align: center;">No Records Found</h6>
+                </div>
+			<div class="col-sm-12 row pb-3">
+				<div class="col-sm-10">
+					<!-- pagination -->
+					<div class="paginate" [hidden]=' (total<=10)'>
+						<!-- hide when result is less than 5 -->
+						<pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+					</div>
+					<!-- END OF PAGE CONTROL -->
+				</div>
+				
+				<span class="col-sm-2 adjust-crud-op">
+					<i style="cursor: pointer;" class="glyphicon glyphicon-plus" (click)="createIsrRegistration()"></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" class="glyphicon glyphicon-pencil" (click)="editIsrRegistration()" ></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" class="glyphicon glyphicon-eye-open" (click)="viewIsrRegistration()" ></i>
+				</span>
+			</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- Modal for showing loading text -->
+<div id="eventDefinitionModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>

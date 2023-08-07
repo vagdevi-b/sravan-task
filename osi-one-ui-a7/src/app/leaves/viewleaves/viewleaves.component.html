@@ -1,0 +1,312 @@
+<div class="v-height">
+	<!-- <div class="breadcrumb-holder">
+		<div class="container-fluid">
+			<ul class="breadcrumb">
+				<h1 class="h3 display" style="margin-left: -81px;">{{headerName}}</h1>
+			</ul>
+		</div>
+	</div> -->
+	<!-- <div class="breadcrumb-wrapper">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">{{headerName}}</li>
+			</ol>
+		</nav>
+	</div> -->
+	<div class="snackbar" #AlertSuccess>{{successMessage}}</div>
+	<div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+	<div class="leave-wrapper-section">
+		<div class="sub-header">
+			<h1>{{headerName}}</h1>
+		</div>
+		<div class="leave-status-section">
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="pill" href="#applied" (click)="onNavClick('applied')">Leaves
+						Applied</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="pill" href="#accural" (click)="onNavClick('accural')">Leave
+						Balance</a>
+				</li>
+			</ul>
+
+		</div>
+
+		<div *ngIf="!disableOnAccural">
+
+			<div class=" searchrow">
+				<!-- new code -->
+
+				<!-- content -->
+
+				<section class="forms pt-2 pb-2 pl-3 pr-3" *ngIf="getReportingEmployeeDetail !=null">
+					<div class="adjust-search-box">
+						<div class="row" role="form">
+							<div class="col-md-3 ">
+								<select class="form-control"
+									(change)="onSelect($event.target.value,$event.target.selectedIndex)"
+									[(ngModel)]="user.employeeId" [ngModelOptions]="{standalone: true}">
+									<option *ngFor="let org of getReportingEmployeeDetail;let i=index;"
+										value={{org.employeeId}}>
+										{{org.employeeName | titlecase }}
+									</option>
+								</select>
+							</div>
+							<div class="col-md-7 ">
+							</div>
+							<div class="col-md-2 text-right">
+								<button type="button" (click)="getCurrentStatus()" [disabled]="!isAnyRowSelected"
+									class="btn btn-outline-primary text-right" href="#waitingForApproval"
+									data-toggle="modal">Current Status</button>
+							</div>
+
+							<!-- <div class="col-lg-4">
+									<input class="form-control ng-valid  ng-valid-parse ng-empty ng-untouched" [(ngModel)]="leave" placeholder="" type="text">
+								</div> -->
+							<!-- <div class="col-lg-5">
+									<ng-container>
+										<button class="btn btn-primary" (click)="searchLeave()">Search</button>
+									</ng-container>
+									<button type="button" class="btn btn-defaul btn-width" (click)="clearSearch()">Clear</button>
+								</div> -->
+						</div>
+					</div>
+				</section>
+				<section class="forms pt-2 pb-2 pl-3 pr-3" *ngIf="getReportingEmployeeDetail ==null">
+					<div class="adjust-search-box">
+						<div class="row" role="form">
+							<div class="col-md-3 ">
+							</div>
+							<div class="col-md-7 ">
+							</div>
+							<div class="col-md-2 text-right">
+								<button type="button" (click)="getCurrentStatus()" [disabled]="!isAnyRowSelected"
+									class="btn btn-outline-primary text-right" href="#waitingForApproval"
+									data-toggle="modal">Current Status</button>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- table list -->
+				<section class="content px-3">
+					<div class='card'>
+						<div class="box-body table-responsive table-shadow border-0">
+							<table class="table table-hover table-bordered">
+								<thead class="thead_bg">
+									<tr>
+										<th class="data" (click)="sorting('leaveId')">Leave ID
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('submittedDate')">Date Applied
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.submittedDate'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('fromDate')">From Date
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.fromDate'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('toDate')">To Date
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.toDate'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('noOfHours')">No. of Hours
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.noOfHours'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('leaveTypeName')">Leave Type
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.leaveTypeName'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('leaveReason')">Purpose
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.leaveReason'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+										<th class="data" (click)="sorting('statusCode')">Status
+											<span class="glyphicon sort-icon glyphicon-chevron-down"
+												[hidden]="!sortKey == 'data.statusCode'"
+												[ngClass]="{'glyphicon-chevron-up':flag,'glyphicon-chevron-down':!flag}"></span>
+										</th>
+									</tr>
+								</thead>
+								<!-- end of header -->
+								<tbody>
+									<tr *ngFor='let data of rowData  | paginate: { itemsPerPage:7, currentPage: crntpage,totalItems: total }  ;'
+										(click)="isRowClicked(data)" (dblclick)="onRowSelected(data)"
+										[class.active]='data == isSelectedRow'>
+										<td class="data">LR-{{data.leaveId }}</td>
+										<td class="data">{{data.submittedDate }}</td>
+										<td class="data">{{data.fromDate }}</td>
+										<td class="data">{{data.toDate}}</td>
+										<td class="data">{{data.noOfHours}}</td>
+										<td class="data">{{data.leaveTypeName| titlecase}}</td>
+										<td class="data"
+											style="width: 200px;word-break: break-all;white-space: normal;">
+											{{data.leaveReason}}</td>
+										<td class="data">{{data.statusCode}}</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							<div *ngIf="total===0" class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+								<div class="no-records-found-wrap">
+									<figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records"
+										class="icon-27"></figure>
+									<h5 class="text-center mt-2 m-0">No Records Found!</h5>
+								  </div>
+							</div>
+						</div>
+						<div class="container-fluid">
+							<div class="row pb-3">
+								<div class="col-sm-10">
+									<pagination-controls (pageChange)="crntpage = $event" autoHide="true" maxSize="8"
+										previousLabel="" nextLabel="" (click)="selectedRow()"></pagination-controls>
+								</div>
+								<span class="col-sm-2 adjust-crud-op">
+									<i style="cursor: pointer;" class="glyphicon glyphicon-plus font-18 mr-2"
+										(click)="createLeaveRequest()"
+										*ngIf="userOrgId!== 17 && userOrgId!== 28"></i>&nbsp;&nbsp;
+									<i style="cursor: pointer;" class="glyphicon glyphicon-pencil font-18 mr-2"
+										[hidden]="!editRepoteeLeave" (click)="edit()"></i>&nbsp;&nbsp;
+									<i style="cursor: pointer;" class="glyphicon glyphicon-eye-open font-18"
+										(click)="view()"></i>
+								</span>
+							</div>
+						</div>
+						<!-- footer -->
+						<!-- <div class="col-sm-12 row">
+						<div class="col-sm-10">
+						</div>
+						<div class="col-sm-2 adjust-crud-op">
+							<i style="cursor: pointer;" class="glyphicon glyphicon-plus" (click)="createLeaveRequest()"></i>&nbsp;&nbsp;
+							<i style="cursor: pointer;" class="glyphicon glyphicon-pencil" [hidden]="!editRepoteeLeave" (click)="edit()"></i>&nbsp;&nbsp;
+							<i style="cursor: pointer;" class="glyphicon glyphicon-eye-open" (click)="view()"></i>
+						</div>
+					</div> -->
+					</div>
+				</section>
+
+			</div>
+		</div>
+
+		<!-- Leave Balance -->
+		<div *ngIf="disableOnAccural">
+			<section class="content">
+
+				<div class="table-responsive table-shadow border-0 mb-3">
+					<table class="table table-hover table-bordered">
+						<thead class="thead_bg">
+							<tr>
+								<th class="data">Transaction Date</th>
+								<th class="data">Purpose</th>
+								<th class="data">No. of Hours</th>
+								<th class="data">Type</th>
+								<th class="data">Leave Description</th>
+								<th class="data">Balance Running Total</th>
+
+							</tr>
+						</thead>
+						<!-- end of header -->
+						<tbody>
+							<tr
+								*ngFor='let balance of leaveBalance  |paginate: { itemsPerPage:7, currentPage: balanceCrntpage }  ;'>
+
+								<td class="data">{{balance.transactionDate }}</td>
+								<td class="data">{{balance.notes }}</td>
+								<td class="data">{{balance.hours }}</td>
+								<td class="data">{{balance.accural}}</td>
+								<td class="data">{{balance.ruleName}}</td>
+								<td class="data">{{balance.totalHours }}</td>
+
+							</tr>
+						</tbody>
+					</table>
+					<div>
+						<pagination-controls (pageChange)="balanceCrntpage = $event" autoHide="true" maxSize="8"
+							previousLabel="" nextLabel=""></pagination-controls>
+					</div>
+					<div *ngIf="totalBalance===0">
+						<h6 style="text-align: center; color: black;">No Leaves Left</h6>
+					</div>
+				</div>
+
+			</section>
+			<!-- <div class="row" style=" padding-top: 3%;">
+				<div class="col-md-8"></div>
+				<div class="col-md-4 text-right">
+					<button type="button" class="btn btn-primary btn-cancel" (click)="onCancel()">Back</button>           
+				</div>
+			</div> -->
+		</div>
+	</div>
+</div>
+<!-- Leave Balance -->
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+	<div class="modal-dialog"  style="top: 40%;">
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade custom-modal-padding" id="waitingForApproval" role="dialog" data-backdrop="static"
+	data-keyboard="false">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Current Status</h5>
+				<button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				<div>
+					<table class="table table-hover table-bordered">
+						<thead id="tsApprTds">
+							<tr>
+								<th style="width:30%">Status</th>
+								<th style="width:40%">Employee</th>
+								<th style="width:30%">Action</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td style="width:30%" style="column-span: 3">{{leaveStatus.currentStatus}}</td>
+								<td style="width:40%" style="column-span: 3">{{leaveStatus.employee}}</td>
+								<td style="width:30%" style="column-span: 3">{{leaveStatus.action}}</td>
+							</tr>
+						</tbody>
+							<!-- <tr>
+				  <th style="width:33.33%">Status</th>
+				  <th style="width:33.33%">Employee</th>
+				  <th style="width:33.33%">Action On</th>
+				</tr>
+				<tr *ngFor="let empView of waitingOn">
+				  <td>{{empView.statusCode}}</td>
+				  <td>{{empView.approvedBy}}</td>
+				  <td>{{empView.lastupdatedDate}}</td>
+				</tr> -->
+						
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<div class="pull-right">
+					<button type="button" class="btn btn-primary btn-cancel"
+						data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

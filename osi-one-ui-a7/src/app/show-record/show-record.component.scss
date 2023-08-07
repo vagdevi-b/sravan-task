@@ -1,0 +1,103 @@
+#filter{
+    border: 2px;
+    padding: 7px;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+#filter1{
+    border: 2px;
+    padding: 7px;
+    margin: 0px;
+    background: lightgrey;
+    display: flex;
+    justify-content: space-evenly;
+    font-size: small;
+}
+
+#chartDiv{
+    margin: 0px;
+}
+
+.chartContainer{
+    height: 80vh !important;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.card-header{
+    background: #d6d6d6 !important;
+    color: black;
+}
+
+.card-body{
+    padding: 0;
+}
+
+.highlight{
+    background: #e2e6cf
+}
+
+/* .table{
+    cursor: pointer;
+    font-size: small !important; 
+} */
+
+table.table th{
+    padding: 0px 0px;
+}
+
+.table.table td{
+    padding: 0px 4px;
+}
+
+.table td, .table th{
+    vertical-align: middle !important;
+}
+
+tr:hover {
+    background-color: #e9e9db;
+  }
+
+td{
+    padding: 1px;
+}
+
+.progress {
+    text-align: center;
+  }
+  
+  .CellWithComment{
+    position:relative;
+  }
+  
+  .CellComment{
+    display:none;
+    position:absolute; 
+    z-index:100;
+    border:1px;
+    background-color:black;
+    border-style:solid;
+    border-width:1px;
+    border-color:black;
+    border-radius: 7px;
+    padding:3px;
+    color:white; 
+    top:20px; 
+    left:20px;
+    width: 150px;
+  }
+  
+  .CellWithComment:hover span.CellComment{
+    display:block;
+  }
+
+  .nav.nav-pills.timesheets-type{ height: 30px; float: right; margin-top: 0px; border: 1px solid #1d618a; background-color: #fff; overflow: hidden;
+    border-radius:25px; -webkit-border-radius:25px; -moz-border-radius:25px }
+    .nav.nav-pills.timesheets-type a{ padding: 0 12px; font-size: 12px; line-height: 28px; color: #1d618a; font-weight: 400;  background-color: #fff;
+    border-radius:0; -webkit-border-radius:0; -moz-border-radius:0  }
+    .nav.nav-pills.timesheets-type a.active{ background-color:#1d618a; color: #fff }
+    .nav.nav-pills.timesheets-type a:hover{ background-color:#3381b0; color: #fff }
+    #dashboardContainer .tab-content{ background-color: #fff }
+    .nav.nav-pills.timesheets-type li:last-child a{ padding-right:12px }

@@ -1,0 +1,837 @@
+<div class="v-height row-offcanvas row-offcanvas-left">
+  <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+    <div class="inner-wrapper">
+
+      <div class="sub-header border-bottom">
+        <h1>Project Estimations</h1>
+      </div>
+      <section class="forms" style="margin-left: 20px !important;padding:12px 19px !important">
+        <div style="width: 97%;">
+          <br>
+          <div class="row">
+            <div class="col-md-6">
+              <!-- first row -->
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label for="prjName">
+                    <strong>Project Name</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+					<select (change)="getSows(projectId)" name="projectId" class="form-control" [(ngModel)] ="projectId" >
+						<option value="">Select</option>
+					   <option *ngFor="let project of projectsList | orderBy: 'projectName' " value="{{project.projectId}}">
+                          {{project.projectName}}
+						</option>
+					</select>
+                </div>
+              </div>    
+			   <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>SOW Number</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                   <select (change)="getSowDetails($event)" name="sowId" class="form-control" [(ngModel)] ="sowId" >
+				   <option value="">Select</option>
+					  <option *ngFor="let sow of sowList" [value]=sow.sowId>
+						{{sow.sowNumber}}
+					  </option>
+					</select>
+                  </div>
+                </div>
+            </div>
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Estimated Hours</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                     <input type="number" class="form-control rounded-0 form-control-sm form-field-border" disabled name="sowHours" [(ngModel)]="osiEstimates.hours">
+                  </div>
+                </div>
+              </div>
+			  <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Estimated Revenue:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                     <input type="number" class="form-control rounded-0 form-control-sm form-field-border" disabled name="sowAmount" [(ngModel)]="osiEstimates.revenue">
+                  </div>
+                </div>
+              </div>
+			  <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                  <button class="btn btn-outline-primary" (click)="uploadExcel()" [disabled]="disableUpload">Upload Estimation Sheet</button>
+                  </label>
+                </div>
+              </div>
+            </div>
+				  
+            <!-- second row -->
+            <div class="col-md-6">
+				  <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Estimated Cost:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                     <input type="number" class="form-control rounded-0 form-control-sm form-field-border" disabled name="budgetCost" [(ngModel)]="osiEstimates.cost">
+                  </div>
+                </div>
+              </div>  
+			  			  <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Estimated Margin:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                      <input type="number" class="form-control rounded-0 form-control-sm form-field-border" disabled name="sowMargin" [(ngModel)]="osiEstimates.margin">
+                  </div>
+                </div>
+              </div>
+			  <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>SOW Start Date:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                     <input type="text" class="form-control rounded-0 form-control-sm form-field-border" disabled name="sowStartDate" [(ngModel)]="sowDetails.sowStartDate">
+                  </div>
+                </div>
+              </div>
+			  
+			   <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>SOW End Date:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                     <input type="text" class="form-control rounded-0 form-control-sm form-field-border" disabled name="sowEndDate" [(ngModel)]="sowDetails.sowEndDate">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+	<div class="leave-status-section">
+			<ul class="nav nav-pills">
+				<li class="nav-item" *ngFor="let item of sowYears; let i=index;">
+					<a class="nav-link" id="{{i}}" data-toggle="pill" href="{{'#'+i}}" (click)="getProjectEstimationDetails(i)">{{item.year}}</a>
+				</li>
+				<!-- <li class="nav-item">
+					<a class="nav-link" id="year2" data-toggle="pill" href="#1" (click)="getProjectEstimationDetails('1')">Year 2</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="year3" data-toggle="pill" href="#2" (click)="getProjectEstimationDetails('2')">Year 3</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="year4" data-toggle="pill" href="#3" (click)="getProjectEstimationDetails('3')">Year 4</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="year5" data-toggle="pill" href="#4" (click)="getProjectEstimationDetails('4')">Year 5</a>
+				</li> -->
+			</ul>
+		</div> 
+			<div class="row" *ngIf="disableYearOne" style="margin-right: 0px;margin-left: 0px;">
+            <div class="table-scroll" id="table-scroll">
+              <div class="table-responsive table-wrap">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+					<th scope="col" style="width: 60px;" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteAllEstimationDetails(0)"></i></th>
+					<!-- <input class="checkbox-alignment" type="checkbox" [checked]="checkAllEstimationDetails0" name="checkAllEstimationDetails0" (change)="allEstimationDetails($event, 0)"></th>-->
+                      <th scope="col" width="20%" class="fixed-side fixed-side1">Role</th>
+					  <th scope="col" width="5%" class="fixed-col-2nd">No Of Resources</th>
+					  <th scope="col" width="15%" class="estimate-location fixed-col-3rd">Location</th>
+					  <!-- <th scope="col" width="10%" class="fixed-col-4th">Practice</th>
+					  <th scope="col" width="10%" class="fixed-col-5th">Sub Practice</th> -->
+					  <th scope="col" width="20%" class="fixed-col-6th">Job Code</th>
+					  <th scope="col" width="10%">Hourly Rate</th>
+					  <th scope="col" width="10%">Hourly Cost</th>
+					  <th scope="col" class="header-padding">Jan</th>
+					  <th scope="col" class="header-padding">Feb</th>
+					  <th scope="col" class="header-padding">Mar</th>
+					  <th scope="col" class="header-padding">Apr</th>
+					  <th scope="col" class="header-padding">May</th>
+					  <th scope="col" class="header-padding">Jun</th>
+					  <th scope="col" class="header-padding">Jul</th>
+					  <th scope="col" class="header-padding">Aug</th>
+					  <th scope="col" class="header-padding">Sep</th>
+					  <th scope="col" class="header-padding">Oct</th>
+					  <th scope="col" class="header-padding">Nov</th>
+					  <th scope="col" class="header-padding">Dec</th>
+					  <th scope="col" class="header-padding">Total Days</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+                  <tr *ngFor="let item of osiEstimatesDetailsYearOne; let i=index; ">
+				  <td scope="row" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteEstimationRow(0, i)"></i></td>
+                    <th scope="row" class="fixed-side">
+						<input type="text" name="{{'role'+i}}" class="sm-180 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.role">
+					</th>
+					<td scope="row" class="fixed-col-2nd">
+						<input type="number" name="{{'noOfResources'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.noOfResources"  min="1" (change)="setValueAsOne($event)" >
+					</td>
+					<td scope="row" class="fixed-col-3rd">
+					<select name="{{'location'+i}}" class="form-control" [(ngModel)] ="item.empOrgId">
+					  <option selected value="0">Select</option>
+					  <option *ngFor="let org of organizations" [value]=org.orgId> 
+						{{org.orgShortName}}
+					  </option>
+					</select>
+					</td>
+				<!--	<td scope="row" class="fixed-col-4th">
+					<select name="{{'practice'+i}}" class="form-control" [(ngModel)] ="item.practiceId" (change)="getSubPractices(item.practiceId, i)">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of practices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row" class="fixed-col-5th">
+											<select name="{{'subPractice'+i}}" class="form-control" [(ngModel)] ="item.subPracticeId" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of subPractices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td> -->
+					<td scope="row" class="fixed-col-6th">
+					<select name="{{'empLevel'+i}}" class="form-control sm-180" [(ngModel)] ="item.empLevel">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let title of employeeTitles" [value]=title.titleLongName>
+						{{title.titleLongName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'billRate'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.billRate">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'cost'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.cost">
+					</td>	
+					<td scope="row">
+						<input type="number" name="{{'jan'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jan">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'feb'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.feb">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'mar'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.mar">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'apr'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.apr">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'may'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.may">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'jun'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jun">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'jul'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jul">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'aut'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.aug">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'sep'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.sep">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'oct'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.oct">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'nov'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.nov">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'dec'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.dec">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'total'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" disabled value="{{item.noOfResources*(item.jan+item.feb+item.mar+item.apr+item.may+item.jun+item.jul+item.aug+item.sep+item.oct+item.nov+item.dec)}}">
+					</td>					
+                  </tr>
+				  </tbody>
+                </table>
+              </div>
+            </div>
+			<div class="col-md-12 div-space">
+				<button class="btn btn-outline-primary float-right" (click)="addEstimationRow(0)" >Add Row</button>
+				<button class="btn btn-outline-primary float-right" [disabled]="disableUpload" (click)="saveEstimationDetails()" >Save</button>
+			</div>
+		</div>
+		<div class="row" *ngIf="disableYearTwo" style="margin-right: 0px;margin-left: 0px;">
+            <div class="table-scroll" id="table-scroll">
+              <div class="table-responsive table-wrap">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+					<th scope="col" style="width: 60px;" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteAllEstimationDetails(1)"></i></th>
+                     <th scope="col" width="20%" class="fixed-side fixed-side1">Role</th>
+					  <th scope="col" width="5%" class="fixed-col-2nd">No Of Resources</th>
+					  <th scope="col" width="15%" class="estimate-location fixed-col-3rd">Location</th>
+					  <!-- <th scope="col" width="10%" class="fixed-col-4th">Practice</th>
+					  <th scope="col" width="10%" class="fixed-col-5th">Sub Practice</th> -->
+					  <th scope="col" width="20%" class="fixed-col-6th">Job Code</th>
+					  <th scope="col" width="10%">Hourly Rate</th>
+					  <th scope="col" width="10%">Hourly Cost</th>
+					  <th scope="col" class="header-padding">Jan</th>
+					  <th scope="col" class="header-padding">Feb</th>
+					  <th scope="col" class="header-padding">Mar</th>
+					  <th scope="col" class="header-padding">Apr</th>
+					  <th scope="col" class="header-padding">May</th>
+					  <th scope="col" class="header-padding">Jun</th>
+					  <th scope="col" class="header-padding">Jul</th>
+					  <th scope="col" class="header-padding">Aug</th>
+					  <th scope="col" class="header-padding">Sep</th>
+					  <th scope="col" class="header-padding">Oct</th>
+					  <th scope="col" class="header-padding">Nov</th>
+					  <th scope="col" class="header-padding">Dec</th>
+					  <th scope="col" class="header-padding">Total Days</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+                  <tr *ngFor="let item of osiEstimatesDetailsYearTwo; let i=index; ">
+                    <td scope="row" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteEstimationRow(1, i)"></i></td>
+                   <th scope="row" class="fixed-side">
+						<input type="text" name="{{'role'+i}}" class="sm-180 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.role">
+					</th>
+					<td scope="row" class="fixed-col-2nd">
+						<input type="number" name="{{'noOfResources'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.noOfResources"  min="1" (change)="setValueAsOne($event)" >
+					</td>
+					<td scope="row" class="fixed-col-3rd">
+					<select name="{{'location'+i}}" class="form-control" [(ngModel)] ="item.empOrgId">
+					  <option selected value="0">Select</option>
+					  <option *ngFor="let org of organizations" [value]=org.orgId> 
+						{{org.orgShortName}}
+					  </option>
+					</select>
+					</td>
+				<!--	<td scope="row" class="fixed-col-4th">
+					<select name="{{'practice'+i}}" class="form-control" [(ngModel)] ="item.practiceId" (change)="getSubPractices(item.practiceId, i)">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of practices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row" class="fixed-col-5th">
+											<select name="{{'subPractice'+i}}" class="form-control" [(ngModel)] ="item.subPracticeId" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of subPractices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td> -->
+					<td scope="row" class="fixed-col-6th">
+					<select name="{{'empLevel'+i}}" class="form-control sm-180" [(ngModel)] ="item.empLevel">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let title of employeeTitles" [value]=title.titleLongName>
+						{{title.titleLongName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'billRate'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.billRate">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'cost'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.cost">
+					</td>	
+					<td scope="row">
+						<input type="number" name="{{'jan'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jan">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'feb'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.feb">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'mar'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.mar">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'apr'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.apr">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'may'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.may">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'jun'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jun">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'jul'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jul">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'aut'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.aug">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'sep'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.sep">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'oct'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.oct">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'nov'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.nov">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'dec'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.dec">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'total'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" disabled value="{{item.noOfResources*(item.jan+item.feb+item.mar+item.apr+item.may+item.jun+item.jul+item.aug+item.sep+item.oct+item.nov+item.dec)}}">
+					</td>					
+				  </tbody>
+                </table>
+              </div>
+            </div>
+			<div  class="col-md-12 div-space">
+				<button class="btn btn-outline-primary float-right" (click)="addEstimationRow(1)" >Add Row</button>
+				<button class="btn btn-outline-primary float-right" [disabled]="disableUpload" (click)="saveEstimationDetails()" >Save</button>
+			</div>
+		</div>
+		<div class="row" *ngIf="disableYearThree" style="margin-right: 0px;margin-left: 0px;">
+            <div class="table-scroll" id="table-scroll">
+              <div class="table-responsive table-wrap">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+						<th scope="col" style="width: 60px;" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteAllEstimationDetails(2)"></i></th>
+                      <th scope="col" width="20%" class="fixed-side fixed-side1">Role</th>
+					  <th scope="col" width="5%" class="fixed-col-2nd">No Of Resources</th>
+					  <th scope="col" width="15%" class="estimate-location fixed-col-3rd">Location</th>
+					  <!-- <th scope="col" width="10%" class="fixed-col-4th">Practice</th>
+					  <th scope="col" width="10%" class="fixed-col-5th">Sub Practice</th> -->
+					  <th scope="col" width="20%" class="fixed-col-6th">Job Code</th>
+					  <th scope="col" width="10%">Hourly Rate</th>
+					  <th scope="col" width="10%">Hourly Cost</th>
+					  <th scope="col" class="header-padding">Jan</th>
+					  <th scope="col" class="header-padding">Feb</th>
+					  <th scope="col" class="header-padding">Mar</th>
+					  <th scope="col" class="header-padding">Apr</th>
+					  <th scope="col" class="header-padding">May</th>
+					  <th scope="col" class="header-padding">Jun</th>
+					  <th scope="col" class="header-padding">Jul</th>
+					  <th scope="col" class="header-padding">Aug</th>
+					  <th scope="col" class="header-padding">Sep</th>
+					  <th scope="col" class="header-padding">Oct</th>
+					  <th scope="col" class="header-padding">Nov</th>
+					  <th scope="col" class="header-padding">Dec</th>
+					  <th scope="col" class="header-padding">Total Days</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+                  <tr *ngFor="let item of osiEstimatesDetailsYearThree; let i=index; ">
+					<td scope="row" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteEstimationRow(2, i)"></i></td>
+                    <th scope="row" class="fixed-side">
+						<input type="text" name="{{'role'+i}}" class="sm-180 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.role">
+					</th>
+					<td scope="row" class="fixed-col-2nd">
+						<input type="number" name="{{'noOfResources'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.noOfResources"  min="1" (change)="setValueAsOne($event)" >
+					</td>
+					<td scope="row" class="fixed-col-3rd">
+					<select name="{{'location'+i}}" class="form-control" [(ngModel)] ="item.empOrgId">
+					  <option selected value="0">Select</option>
+					  <option *ngFor="let org of organizations" [value]=org.orgId> 
+						{{org.orgShortName}}
+					  </option>
+					</select>
+					</td>
+				<!--	<td scope="row" class="fixed-col-4th">
+					<select name="{{'practice'+i}}" class="form-control" [(ngModel)] ="item.practiceId" (change)="getSubPractices(item.practiceId, i)">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of practices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row" class="fixed-col-5th">
+											<select name="{{'subPractice'+i}}" class="form-control" [(ngModel)] ="item.subPracticeId" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of subPractices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td> -->
+					<td scope="row" class="fixed-col-6th">
+					<select name="{{'empLevel'+i}}" class="form-control sm-180" [(ngModel)] ="item.empLevel">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let title of employeeTitles" [value]=title.titleLongName>
+						{{title.titleLongName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'billRate'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.billRate">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'cost'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.cost">
+					</td>	
+					<td scope="row">
+						<input type="number" name="{{'jan'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jan">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'feb'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.feb">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'mar'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.mar">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'apr'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.apr">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'may'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.may">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'jun'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jun">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'jul'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jul">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'aut'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.aug">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'sep'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.sep">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'oct'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.oct">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'nov'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.nov">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'dec'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.dec">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'total'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" disabled value="{{item.noOfResources*(item.jan+item.feb+item.mar+item.apr+item.may+item.jun+item.jul+item.aug+item.sep+item.oct+item.nov+item.dec)}}">
+					</td>					
+                  </tr>
+				  </tbody>
+                </table>
+              </div>
+            </div>
+			<div  class="col-md-12 div-space">
+				<button class="btn btn-outline-primary float-right" (click)="addEstimationRow(2)" >Add Row</button>
+				<button class="btn btn-outline-primary float-right" [disabled]="disableUpload" (click)="saveEstimationDetails()" >Save</button>
+			</div>
+		</div>
+		<div class="row" *ngIf="disableYearFour" style="margin-right: 0px;margin-left: 0px;">
+            <div class="table-scroll" id="table-scroll">
+              <div class="table-responsive table-wrap">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+					<th scope="col" style="width: 60px;" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteAllEstimationDetails(3)"></i></th>
+                      <th scope="col" width="20%" class="fixed-side fixed-side1">Role</th>
+					  <th scope="col" width="5%" class="fixed-col-2nd">No Of Resources</th>
+					  <th scope="col" width="15%" class="estimate-location fixed-col-3rd">Location</th>
+					  <!-- <th scope="col" width="10%" class="fixed-col-4th">Practice</th>
+					  <th scope="col" width="10%" class="fixed-col-5th">Sub Practice</th> -->
+					  <th scope="col" width="20%" class="fixed-col-6th">Job Code</th>
+					  <th scope="col" width="10%">Hourly Rate</th>
+					  <th scope="col" width="10%">Hourly Cost</th>
+					  <th scope="col" class="header-padding">Jan</th>
+					  <th scope="col" class="header-padding">Feb</th>
+					  <th scope="col" class="header-padding">Mar</th>
+					  <th scope="col" class="header-padding">Apr</th>
+					  <th scope="col" class="header-padding">May</th>
+					  <th scope="col" class="header-padding">Jun</th>
+					  <th scope="col" class="header-padding">Jul</th>
+					  <th scope="col" class="header-padding">Aug</th>
+					  <th scope="col" class="header-padding">Sep</th>
+					  <th scope="col" class="header-padding">Oct</th>
+					  <th scope="col" class="header-padding">Nov</th>
+					  <th scope="col" class="header-padding">Dec</th>
+					  <th scope="col" class="header-padding">Total Days</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+                  <tr *ngFor="let item of osiEstimatesDetailsYearFour; let i=index; ">
+                    <td scope="row" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteEstimationRow(3, i)"></i></td>
+                    <th scope="row" class="fixed-side">
+						<input type="text" name="{{'role'+i}}" class="sm-180 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.role">
+					</th>
+					<td scope="row" class="fixed-col-2nd">
+						<input type="number" name="{{'noOfResources'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.noOfResources"  min="1" (change)="setValueAsOne($event)" >
+					</td>
+					<td scope="row" class="fixed-col-3rd">
+					<select name="{{'location'+i}}" class="form-control" [(ngModel)] ="item.empOrgId">
+					  <option selected value="0">Select</option>
+					  <option *ngFor="let org of organizations" [value]=org.orgId> 
+						{{org.orgShortName}}
+					  </option>
+					</select>
+					</td>
+				<!--	<td scope="row" class="fixed-col-4th">
+					<select name="{{'practice'+i}}" class="form-control" [(ngModel)] ="item.practiceId" (change)="getSubPractices(item.practiceId, i)">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of practices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row" class="fixed-col-5th">
+											<select name="{{'subPractice'+i}}" class="form-control" [(ngModel)] ="item.subPracticeId" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of subPractices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td> -->
+					<td scope="row" class="fixed-col-6th">
+					<select name="{{'empLevel'+i}}" class="form-control sm-180" [(ngModel)] ="item.empLevel">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let title of employeeTitles" [value]=title.titleLongName>
+						{{title.titleLongName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'billRate'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.billRate">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'cost'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.cost">
+					</td>	
+					<td scope="row">
+						<input type="number" name="{{'jan'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jan">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'feb'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.feb">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'mar'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.mar">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'apr'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.apr">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'may'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.may">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'jun'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jun">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'jul'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jul">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'aut'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.aug">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'sep'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.sep">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'oct'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.oct">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'nov'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.nov">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'dec'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.dec">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'total'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" disabled value="{{item.noOfResources*(item.jan+item.feb+item.mar+item.apr+item.may+item.jun+item.jul+item.aug+item.sep+item.oct+item.nov+item.dec)}}">
+					</td>					
+                  </tr>
+				  </tbody>
+                </table>
+              </div>
+            </div>
+			<div  class="col-md-12 div-space">
+				<button class="btn btn-outline-primary float-right" (click)="addEstimationRow(3)" >Add Row</button>
+				<button class="btn btn-outline-primary float-right" [disabled]="disableUpload" (click)="saveEstimationDetails()" >Save</button>
+			</div>
+		</div>
+		<div class="row" *ngIf="disableYearFive" style="margin-right: 0px;margin-left: 0px;">
+            <div class="table-scroll" id="table-scroll">
+              <div class="table-responsive table-wrap">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+					<th scope="col" style="width: 60px;" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteAllEstimationDetails(4)"></i></th>
+                     <th scope="col" width="20%" class="fixed-side fixed-side1">Role</th>
+					  <th scope="col" width="5%" class="fixed-col-2nd">No Of Resources</th>
+					  <th scope="col" width="15%" class="estimate-location fixed-col-3rd">Location</th>
+					  <!-- <th scope="col" width="10%" class="fixed-col-4th">Practice</th>
+					  <th scope="col" width="10%" class="fixed-col-5th">Sub Practice</th> -->
+					  <th scope="col" width="20%" class="fixed-col-6th">Job Code</th>
+					  <th scope="col" width="10%">Hourly Rate</th>
+					  <th scope="col" width="10%">Hourly Cost</th>
+					  <th scope="col" class="header-padding">Jan</th>
+					  <th scope="col" class="header-padding">Feb</th>
+					  <th scope="col" class="header-padding">Mar</th>
+					  <th scope="col" class="header-padding">Apr</th>
+					  <th scope="col" class="header-padding">May</th>
+					  <th scope="col" class="header-padding">Jun</th>
+					  <th scope="col" class="header-padding">Jul</th>
+					  <th scope="col" class="header-padding">Aug</th>
+					  <th scope="col" class="header-padding">Sep</th>
+					  <th scope="col" class="header-padding">Oct</th>
+					  <th scope="col" class="header-padding">Nov</th>
+					  <th scope="col" class="header-padding">Dec</th>
+					  <th scope="col" class="header-padding">Total Days</th>
+                    </tr>
+                  </thead>
+				  <tbody>
+                  <tr *ngFor="let item of osiEstimatesDetailsYearFive; let i=index; ">
+                    <td scope="row" class="fixed-checkbox"><i style="cursor: pointer;" class="checkbox-alignment" class="glyphicon glyphicon-trash" (click)="deleteEstimationRow(4, i)"></i></td>
+                    <th scope="row" class="fixed-side">
+						<input type="text" name="{{'role'+i}}" class="sm-180 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.role">
+					</th>
+					<td scope="row" class="fixed-col-2nd">
+						<input type="number" name="{{'noOfResources'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="item.noOfResources"  min="1" (change)="setValueAsOne($event)" >
+					</td>
+					<td scope="row" class="fixed-col-3rd">
+					<select name="{{'location'+i}}" class="form-control" [(ngModel)] ="item.empOrgId">
+					  <option selected value="0">Select</option>
+					  <option *ngFor="let org of organizations" [value]=org.orgId> 
+						{{org.orgShortName}}
+					  </option>
+					</select>
+					</td>
+				<!--	<td scope="row" class="fixed-col-4th">
+					<select name="{{'practice'+i}}" class="form-control" [(ngModel)] ="item.practiceId" (change)="getSubPractices(item.practiceId, i)">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of practices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row" class="fixed-col-5th">
+											<select name="{{'subPractice'+i}}" class="form-control" [(ngModel)] ="item.subPracticeId" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let practice of subPractices[i]" [value]=practice.practiceId>
+						{{practice.practiceShortName}}
+					  </option>
+					</select>
+					</td> -->
+					<td scope="row" class="fixed-col-6th">
+					<select name="{{'empLevel'+i}}" class="form-control sm-180" [(ngModel)] ="item.empLevel">
+					  <option selected value="">Select</option>
+					  <option *ngFor="let title of employeeTitles" [value]=title.titleLongName>
+						{{title.titleLongName}}
+					  </option>
+					</select>
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'billRate'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.billRate">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'cost'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.cost">
+					</td>	
+					<td scope="row">
+						<input type="number" name="{{'jan'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border"  min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jan">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'feb'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.feb">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'mar'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.mar">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'apr'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.apr">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'may'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.may">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'jun'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jun">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'jul'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.jul">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'aut'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.aug">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'sep'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.sep">
+					</td>					
+					<td scope="row">
+						<input type="number" name="{{'oct'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.oct">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'nov'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.nov">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'dec'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" min="0" (change)="setValueAsZero($event)" [(ngModel)]="item.dec">
+					</td>
+					<td scope="row">
+						<input type="number" name="{{'total'+i}}" class="sm-75 form-control rounded-0 form-control-sm form-field-border" disabled value="{{item.noOfResources*(item.jan+item.feb+item.mar+item.apr+item.may+item.jun+item.jul+item.aug+item.sep+item.oct+item.nov+item.dec)}}">
+					</td>					
+                  </tr>
+				  </tbody>
+                </table>
+              </div>
+            </div>
+			<div  class="col-md-12 div-space">
+				<button class="btn btn-outline-primary float-right" (click)="addEstimationRow(4)" >Add Row</button>
+				<button class="btn btn-outline-primary float-right" [disabled]="disableUpload" (click)="saveEstimationDetails()" >Save</button>
+			</div>
+		</div>
+        </div>
+      </section>
+    </div>
+  </form>
+</div>
+
+<div class="team-goal-settings-section team-goal-section" id="uploadEstimationsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-content" style="margin-top: 5%;margin-left: 28%;width:50%">
+    <div class="modal-header">
+      <h5 class="modal-title">Upload Estimation Sheet</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeUploadWindow()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+			 <div class="row tableBox">
+           <div class="col-sm-12 col-md-12">
+				<div class="form-group">
+					<label>Attachment:</label>
+					<input type="file" (change)="selectFile($event)" style="display:block" (ngModel) = "file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+				</div>
+				<pre>(<u style="color: black">Note</u>:Sheet Names should be <strong>Year 1/Year 2/Year 3/Year 4/Year 5</strong> and allowed format are xls/xlsx <br>and maximum file size should be less than 5MB)
+				</pre>
+			</div>
+			<div class="col-sm-12 col-md-12" *ngIf="errorList.length>0">
+				<div class="form-group" style="color:red">
+					<div>
+						<label><strong>Error List</strong></label>
+					</div>
+					<ul *ngFor="let error of errorList">
+						<li>{{error}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div class="modal-footer">
+		<button type="button" class="btn btn-outline-primary" [disabled]="file===''" (click)="uploadFile()">Upload</button>
+      <button type="button" class="btn btn-outline-primary" (click)="closeUploadWindow()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="eventDefinitionModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  

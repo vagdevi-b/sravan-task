@@ -1,0 +1,179 @@
+#filter{
+    border: 2px;
+    padding: 7px;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+#filter1{
+    border: 2px;
+    padding: 7px;
+    margin: 0px;
+    background: lightgrey;
+    display: flex;
+    justify-content: space-evenly;
+    font-size: small;
+}
+
+#chartDiv{
+    margin: 0px;
+}
+
+.lastRefresh {
+    float: right;
+    /* margin-top: 0.9%; */
+  }
+
+.chartContainer{
+    height: 80vh !important;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+/* .card-header{
+    background: #d6d6d6 !important;
+    color: black;
+} */
+
+.card-body{
+    padding: 0;
+}
+
+.highlight{
+    background: #e2e6cf
+}
+
+/* .table{
+    cursor: pointer;
+    font-size: small !important; 
+} */
+
+.table.table td, table.table th{
+    padding: 5px 5px;
+}
+
+.table td, .table th{
+    vertical-align: middle !important;
+}
+
+tr:hover {
+    background-color: #e9e9db;
+  }
+
+td{
+    padding: 1px;
+}
+
+.progress {
+    text-align: center;
+  }
+  
+  .CellWithComment{
+    position:relative;
+  }
+  
+  .CellComment{
+    display:none;
+    position:absolute; 
+    z-index:100;
+    border:1px;
+    background-color:black;
+    border-style:solid;
+    border-width:1px;
+    border-color:black;
+    border-radius: 7px;
+    padding:3px;
+    color:white; 
+    top:20px; 
+    left:20px;
+    width: 150px;
+  }
+  
+  .CellWithComment:hover span.CellComment{
+    display:block;
+  }
+
+  .nav.nav-pills.timesheets-type{ height: 30px; float: right; margin-top: 0px; border: 1px solid #1d618a; background-color: #fff; overflow: hidden;
+    border-radius:25px; -webkit-border-radius:25px; -moz-border-radius:25px }
+    .nav.nav-pills.timesheets-type a{ padding: 0 12px; font-size: 12px; line-height: 28px; color: #1d618a; font-weight: 400;  background-color: #fff;
+    border-radius:0; -webkit-border-radius:0; -moz-border-radius:0  }
+    .nav.nav-pills.timesheets-type a.active{ background-color:#1d618a; color: #fff }
+    .nav.nav-pills.timesheets-type a:hover{ background-color:#3381b0; color: #fff }
+    #dashboardContainer .tab-content{ background-color: #fff }
+    .nav.nav-pills.timesheets-type li:last-child a{ padding-right:12px }
+
+
+
+    .badge{
+        font-size : 94% !important;
+        border-radius: 10rem !important;
+    }
+    .badge-info{
+        margin-left : 20px;
+    }
+    h5{
+        font-size : 0.9rem !important;
+    }
+    .intent{
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+    .glyphicon{
+        margin-right: 10px;
+    }
+    .highlight {
+        background: #e2e6cf;
+    }
+
+
+    #filter .card-header{ background: #126086 !important; color: #fff; }
+    #filter .card-header h6{ font-size: 18px; padding-top: 3px !important; margin-bottom: 0px; }
+    #filter .card-header label{ line-height: 25px !important; }
+    #filter .card-header  .form-control{ height: 25px !important; line-height: 25px !important; }
+    #filter .card-header .btn-toggle, #filter .card-header .btn-toggle_{height: 25px !important;  }
+    #filter .card-header .btn-toggle .handle, #filter .card-header .btn-toggle_ .handle{ top: 3px !important; }
+    #filter .card-header .btn-toggle:after{ letter-spacing: 1px; right: -4.2rem; line-height: 25px !important; padding: 0; color: #fff; opacity: 0.8 !important; }
+    .btn-toggle_:before { content: url(../../../assets/images/chart-white.png); }
+    .btn-toggle_:after { bottom:-2px; content: url(../../../assets/images/grid-white.png); opacity: .5;}
+    .h-25{ height: 25px !important; }
+
+    
+
+.accordion .card-header {
+	background: #126086 !important; 
+    color: #fff; 
+    cursor: pointer;
+}
+
+.accordion .card-header:after {
+    font-family: 'FontAwesome';  
+    content: "\f068";
+	float: right; 
+}
+.accordion .card-header.collapsed:after {
+    /* symbol for "collapsed" panels */
+    content: "\f067"; 
+}
+
+.accTitle {
+	margin-top: 2%;
+    font-size: 0.9rem;
+}
+
+.container {
+    max-width: 99% !important;
+    max-height: 65vh !important;
+    height: 60vh !important;
+}
+
+.cursor {
+	cursor: pointer;
+}
+
+.card-body{ padding: 1.25rem; }
+.list-group-item.heading{ border-radius: 0px; background:#51849c !important; color: #fff; padding:5px; }
+.sub-table .sub-head{ padding:5px 10px }
+.sub-table .list-group-item{ font-size: 12px; padding: 5px 10px; }
+.sub-table .sub-head .row > div{ font-weight: 500; padding-top:6px; padding-bottom: 6px; }
+.container{ max-height: inherit !important; height: inherit !important; }

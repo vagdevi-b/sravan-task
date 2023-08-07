@@ -1,0 +1,41 @@
+
+<div class="v-height">
+<section class="team-goal-section">
+    <!-- Team Goals Top Section Start -->
+    <app-appraisal-info
+    [yearsList]="yearsList"
+    [reviewCycleList] = "reviewCycleList"
+    [year]="year"
+    [selfGoalInfo]="selfGoalInfo"
+    [selectedYear]="selectedYear"
+    (yearchange)="onYearChange($event)"
+    [epmsHdrId]="epmsHdrId"
+    (reviewCyclechange) = "onChangeCycleInfo($event)"
+    ></app-appraisal-info>
+    <!-- Team Goals Top Section End -->
+    <!-- Team Goals Bottom Section Start -->
+    <app-team-goals-list 
+    [teamGoalsList]="teamGoalsList"
+    [selfGoalInfo]="selfGoalInfo"
+    [selectedYear]="selectedYear"
+    [myTeamLength]="myTeamLength"
+    [year]="year"
+    [projectTeamLength]="projectTeamLength"
+    [epmsHdrId]="epmsHdrId"
+    ></app-team-goals-list>
+    <!-- Team Goals Bottom Section End -->
+  </section>
+<!-- Modal for showing loading text -->
+<div id="loadModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false"
+	
+>
+  <div class="modal-dialog"  style="top: 40%;">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

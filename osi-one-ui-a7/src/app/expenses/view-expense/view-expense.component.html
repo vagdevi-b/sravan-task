@@ -1,0 +1,229 @@
+<div class="v-height">
+
+
+
+	<!-- <div class="breadcrumb-wrapper">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">View Expenses</li>
+			</ol>
+		</nav>
+	</div> --> 
+
+	<div class="view-expense-section">
+
+		<div class="sub-header clearfix">
+			<div class="row">
+				<div class="col-md-8">
+					<h1 class="pull-left">View Expenses</h1>
+				</div>
+				<div class="col-md-4 d-flex justify-content-end align-items-center">
+					<button class="btn btn-outline-primary mr-4" (click)="createExpense()">Create Expense</button>
+					<div class="dropdown">
+						<span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+						<div class="dropdown-content">
+							<ul>
+								<li>Items To Search</li>
+								<li [class.active]="currentPageItemCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+								<li [class.active]="currentPageItemCount==0" (click)="chengePageSize(0)">All</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="expense-date-section">
+			<div class="row ">
+				<div class="col-sm-12 col-md-3">
+					<div id="dateselectiondiv">
+						<label>Select Range</label>
+						<select class="form-control" (change)="onSelect($event.target.value)" [(ngModel)]="selectedDates.id">
+							<option *ngFor="let dates of listdates" value={{dates.id}}>
+								{{dates.name}}
+							</option>
+						</select>
+					</div>
+				</div>
+
+
+				<div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+					<!-- <label for="name">Start Date</label>
+			<input type="date" class="form-control" id="startdate" name="startDate" [ngModel]="startDate | date:'yyyy-MM-dd'" (ngModelChange)="startDate = $event"> -->
+					<div class="form-group">
+						<label for="name">Start Date</label>
+						<div class="input-group" #DatePickContainer1>
+							<input id="startdate" [maxDate]="endDateSelectedDate" name="startdate" class="form-control form-control-sm form-field-border"
+							 placeholder="yyyy-mm-dd" [(ngModel)]="startDateSelectedDate" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="checkStartDate()"
+							 (change)="checkStartDate()" (focusout)="checkStartDate()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary date-pick" (click)="d1.toggle()" type="button" (document:click)="closeFix1($event, d1)">
+									<span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+										<i class="fa fa-lg fa-calendar"></i>
+									</span>
+								</button>
+							</div>
+							<!-- <div class="alert alert-danger validationAlert">Invalid Start Date</div> -->
+						</div>
+					</div>
+				</div>
+				<div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+					<!-- <label for="name">End Date</label>
+			<input type="date" class="form-control" id="enddate" [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="endDate = $event"
+			 name="endDate" (blur)="myMethod()"> -->
+					<div class="form-group">
+						<label for="name">End Date</label>
+						<div class="input-group" #DatePickContainer2>
+							<input id="enddate" [minDate]="endDateMinVal" name="enddate" class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd"
+							 [(ngModel)]="endDateSelectedDate" ngbDatepicker #d2="ngbDatepicker" (dateSelect)="endDateSelected()" (change)="endDateSelected()"
+							 (focusout)="endDateSelected()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary date-pick" (click)="d2.toggle()" type="button" (document:click)="closeFix2($event, d2)">
+									<span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+										<i class="fa fa-lg fa-calendar"></i>
+									</span>
+								</button>
+							</div>
+							<!-- <div class="alert alert-danger validationAlert">Invalid End Date</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12  ">
+				<div class="row">
+
+					<div class="col-md-12 col-sm-12">
+						<div class="expenses-list">
+						 <button (click)="statusBasedExpenses($event,'N')" id="btn-open" class="btn-list"
+			              [ngClass]="{'active':selectedStatusExpense=='N'}">Open</button>
+			              <button (click)="statusBasedExpenses($event,'S')" id="btn-sub" class="btn-list"
+			                [ngClass]="{'active':selectedStatusExpense=='S'}">Submitted</button>
+			              <button (click)="statusBasedExpenses($event,'O')" id="btn-apprv" class="btn-list"
+			                [ngClass]="{'active':selectedStatusExpense=='O'}">Approved</button>
+			              <button (click)="statusBasedExpenses($event,'R')" id="btn-rej" class="btn-list"
+			                [ngClass]="{'active':selectedStatusExpense=='R'}">Rejected</button>
+			              <button (click)="statusBasedExpenses($event,'P')" id="btn-reimb" class="btn-list"
+			                [ngClass]="{'active':selectedStatusExpense=='P'}">Reimbursed</button>
+			              <button (click)="statusBasedExpenses($event,'A')" id="btn-all" class="btn-list"
+			                [ngClass]="{'active':selectedStatusExpense=='A'}">All</button>
+			            </div>
+					</div>
+					<!-- <div class="col-md-2 col-sm-2 text-right">
+					<span>
+						<button class="btn btn-primary" (click)="createExpense()">Create Expense</button>
+					</span>
+				</div> -->
+
+				</div>
+
+				<ag-grid-angular #agGrid style="width: 100%; height: 340px;" id="myGrid" class="ag-theme-balham" [columnDefs]="columnDefs"
+				 [rowData]="rowData" [rowSelection]="rowSelection" (rowSelected)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)"
+				 enableColResize enableSorting enableFilter groupHeaders [paginationPageSize]="paginationPageSize" suppressMovableColumns="true"
+				 pagination="true" (gridReady)="onGridReady($event)"></ag-grid-angular>
+				<!--</div>
+	  
+		
+	  </div>-->
+
+
+				<!-- </div>
+</div> -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #template>
+
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col col-xs-6">
+				<h3 class="panel-title">&nbsp;</h3>
+			</div>
+			<div class="col col-xs-6 text-right">
+				<div class="form-container">
+					<h4 class="modal-title pull-left">Edit Expense</h4>
+					<button type="button" class="btn btn-info" aria-label="Close" (click)="modalRef.hide()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="modal-body">
+			<table class="table table-hover table-bordered">
+				<thead>
+					<tr>
+						<th>
+							<b>Report ID</b>
+						</th>
+						<th>
+							<b>Created Date</b>
+						</th>
+						<th>
+							<b>Project</b>
+						</th>
+						<th>
+							<b>Location</b>
+						</th>
+						<th>
+							<b>Total</b>
+						</th>
+						<!-- <th>
+							<b>Department</b>
+						</th> -->
+						<th>
+							<b>Status</b>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of allExpenses">
+						<td>
+							<input type="text" [(ngModel)]="item.reportid" readonly="true" />
+						</td>
+						<td>
+							<input type="text" [(ngModel)]="item.expenses" />
+						</td>
+						<td>
+							<input type="text" [(ngModel)]="item.project" />
+						</td>
+						<td>
+							<input type="text" [(ngModel)]="item.location" />
+						</td>
+						<td>
+							<input type="text" [(ngModel)]="item.total" />
+						</td>
+						<!-- <td>
+							<input type="text" [(ngModel)]="item.department" />
+						</td> -->
+						<td>
+							<input type="text" [(ngModel)]="item.status" readonly="true" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+
+		</div>
+	</div>
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col col-xs-6">
+				<h3 class="panel-title">&nbsp;</h3>
+			</div>
+			<div class="col col-xs-6 text-right">
+				<div class="form-container">
+					<!--<span routerLinkActive="active"><a routerLink="/create-expense" class="btn btn-info" role="button">Create Expense Report</a></span>-->
+					<button class="btn btn-info" (click)="modalRef.hide()">Cancel</button>
+					<button class="btn btn-info" (click)="modalRef.hide()">Update</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>

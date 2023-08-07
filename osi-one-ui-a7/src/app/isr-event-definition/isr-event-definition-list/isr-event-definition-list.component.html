@@ -1,0 +1,105 @@
+<div>
+    <section>
+      <div class="card" style="width: 100%;">
+        <div class="card-body">
+          <div *ngIf="showAlert" class="row notificationRow">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8 notificationTextDiv" id="successMessage">
+              <div class="alert alert-success alert-dismissible notificationText" id="successMessage">
+                <a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close"></a>
+                <strong>{{successMessage}}</strong>
+              </div>
+            </div>
+            <div class="col-sm-2"></div>
+          </div>
+          <div class="row dashboardBox">
+            <div class="col-sm-3">
+              <h3 class="title-text">
+                <span class="reportHeading">Event Definitions</span>
+              </h3>
+            </div>
+           <div class="container-fluid pt-2 pb-2">
+				<div class="row" role="form">
+					<div class="col-lg-2">
+						<input class="form-control" [(ngModel)]="webinarName" placeholder="Webinar" autocomplete="off"
+						 type="text">
+					</div>
+					<div class="col-lg-2">
+						<select  name="status" class="form-control" [(ngModel)] ="status" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let stat of statusList" [value]=stat.status>
+						{{stat.desc}}
+					  </option>
+					</select>
+					</div>
+					<div class="col-lg-2">
+						<button class="btn btn-outline-secondary" (click)="searchEventDefinitions()">Search</button>
+						<button type="button" class="btn btn-outline-primary" (click)="clearSearch()">Clear</button>
+					</div>
+				</div>
+				</div>
+          </div>
+          <div class="row tableBox">
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+					<th scope="col" width="5%"><input type="checkbox" [checked]="checkAllEntries" name="checkAllEntries" (change)="allEventEntries($event)">ALL</th>
+                      <th scope="col" width="25%" >Webinar</th>
+					  <th scope="col" width="15%">Schedule Time(PST)</th>
+					  <th scope="col" width="10%">Duration</th>
+					  <th scope="col" width="30%">Created By</th>
+					  <th scope="col" width="20%">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of allIsrEventDefinitions | paginate: { itemsPerPage:10, currentPage: crntpage,totalItems: total };" (click)="isRowClicked(item)"
+				  (dblclick)="onRowSelected(item)" [class.active]='item == isSelectedRow'>
+				    <td scope="row"><input type="checkbox" name='item.delete' [checked]="item.delete" (change)="toggleChecked(item, $event)"></td>
+                    <td scope="row">{{item.webinarName}}</td>
+					<td scope="row">{{item.webinarDate}} {{item.webinarTime}}</td>
+					<td scope="row">{{item.duration}}</td>
+					<td scope="row">{{item.webinarTopics}}</td>
+					<td scope="row">{{item.status==='PUBLISHED'?'Published':'Saved'}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+				<div>
+                  <h6 [hidden]="allIsrEventDefinitions.length!=0" style="text-align: center;">No Records Found</h6>
+                </div>
+			<div class="col-sm-12 row pb-3">
+				<div class="col-sm-10">
+					<!-- pagination -->
+					<div class="paginate" [hidden]=' (total<=10)'>
+						<!-- hide when result is less than 5 -->
+						<pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+					</div>
+					<!-- END OF PAGE CONTROL  -->
+				</div>
+				<span class="col-sm-2 adjust-crud-op">
+					<i style="cursor: pointer;" class="glyphicon glyphicon-plus" (click)="createIsrEventDefinition()"></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" [hidden]="!enableDeleteOption" class="glyphicon glyphicon-remove" (click)="deleteEventDefinitions()"></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" class="glyphicon glyphicon-pencil" (click)="editIsrEventDefinition()" ></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" class="glyphicon glyphicon-eye-open" (click)="viewIsrEventDefinition()" ></i>
+				</span>
+			</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- Modal for showing loading text -->
+<div id="eventDefinitionModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  

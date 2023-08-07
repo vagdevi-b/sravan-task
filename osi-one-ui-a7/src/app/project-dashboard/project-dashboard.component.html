@@ -1,0 +1,38 @@
+<div class="v-height">
+
+	<div class="leave-wrapper-section">
+		<div class="leave-status-section">
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="pill" href="#myprojects" (click)="onNavClick('myprojects')">My Projects</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="pill" href="#projectspandl" (click)="onNavClick('projectspandl')">P & L</a>
+				</li>
+			</ul>
+
+		</div>
+
+		<div *ngIf="navBar == 'myprojects'">
+			<app-my-projects-dashboard></app-my-projects-dashboard>
+		</div>
+
+		<div *ngIf="navBar == 'projectspandl'">
+			<app-projects-pandl-dashboard></app-projects-pandl-dashboard>
+		</div>
+
+	</div>
+</div>
+
+
+<!-- Modal for showing loading text -->
+<div id="loadingInvoiceDetailsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+	<div class="modal-dialog"  style="top: 40%; width: 10%;">
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,80 @@
+<div class="v-height">
+	<!-- <div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+	<div class="snackbar danger" #AlertError>{{errorMessage}}</div> -->
+	<form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+	
+		<div class="view-undelivered-invoices">
+			<!-- start -->
+			<div class="row">
+				<div class="col-md-6 sub-header clearfix">
+					<h1 class="pull-left">Missing Timesheet Approvers</h1>
+				</div>
+				<!-- <div class="col-md-6" id="paddingbuttons">
+					<div class="pull-right">
+						<button type="button" class="btn btn-outline-primary mr-2 mt-2" [disabled]="disableSync"
+							data-toggle="modal" data-target="#run_exchange">Update</button>
+					</div>
+				</div> -->
+				
+			</div>
+			<!-- End -->
+
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div>
+						<h3 class="panel-title">&nbsp;</h3>
+					</div>
+					<div class="box1">
+						<!-- <div class="col-md-12"> -->
+						<div class="box-body table-responsive">
+							<table class="table table-hover table-bordered">
+								<tr>
+									<thead>
+										<!-- <th>
+										<input type="checkbox" class="onoffswitch-checkbox" [checked]="isAllChecked()" (change)="checkAll($event)">
+									</th> -->
+									<th class="project-size">
+										<b>Username</b>
+                  </th>
+                  <th class="project-size">
+										<b>Week start date</b>
+                  </th>
+                  <th class="project-size">
+										<b>Week end date</b>
+                  </th>
+                  <th class="project-size">
+										<b>Action</b>
+                  </th>
+									</thead>
+                 
+								</tr>
+								<tbody>
+									<tr *ngFor="let sheet of timeSheets | paginate: { itemsPerPage: 10, currentPage: crntPage, id:'id1' }; let i = index">
+										<!-- <td>
+											<input type="checkbox" value="{{field.id}}" class="onoffswitch-checkbox" name="{{field.id}}" class="onoffswitch-checkbox"
+												[(ngModel)]="field.state" (change)="onEditChecked($event)">
+										</td> -->
+					  <td> {{sheet.employeeName}} </td>
+					  <td> {{sheet.weekStartDate}} </td>
+					  <td> {{sheet.weekEndDate}} </td>
+					  <td>
+						<button type="button" class="btn btn-outline-primary mr-2 mt-2" (click)="generateApprover(sheet)">Generate Approvers</button>
+					  </td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<pagination-controls (pageChange)="crntPage = $event" id="id1" maxSize="5" previousLabel="" nextLabel="" autoHide="true"></pagination-controls>
+				</div>
+			</div>
+		</div>
+
+	</form>
+</div>

@@ -1,0 +1,170 @@
+<div class="v-height row-offcanvas row-offcanvas-left">
+  <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+    <div class="inner-wrapper">
+
+      <div class="sub-header border-bottom">
+        <h1>{{header}} ISR Registration</h1>
+      </div>
+      <section class="forms" style="margin-left: 20px !important;padding:12px 19px !important">
+        <div style="width:97%">
+          <br>
+          <div class="row">
+            <div class="col-md-6">
+              <!-- first row -->
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label for="orgName">
+                    <strong>ISR</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+					<input type="text" class="form-control rounded-0 form-control-sm form-field-border"
+                        name="employeeId" (blur)="getEmployeeDetails($event)" (keyup.enter)="getEmployeeDetails($event)"
+                         [(ngModel)]="isrRegistration.employeeId" placeholder="Enter employee name" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Country</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <select (change)="getStatesbyCountryCode($event.target.value)" name="countryCode" [disabled]="isUpdatable==='view'" class="form-control" [(ngModel)] ="isrRegistration.countryCode" required>
+					  <option selected value="">Select</option>
+					  <option *ngFor="let country of countries" [value]=country.countryCode>
+						{{country.countryCode}} - {{country.countryName}}
+					  </option>
+					</select>
+                  </div>
+                </div>
+              </div>
+
+<div class="row">
+
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong> Active:</strong>
+                  </label>
+                </div>
+                <div class="col-sm-4">
+                  <input type="checkbox" name='active' [value]="isrRegistration.isActive" [(ngModel)]="isrRegistration.isActive" [disabled]="isUpdatable==='view'" checked>
+                </div>
+                <div class="col-sm-4"></div>
+
+              </div>
+              
+              
+            </div>
+
+            <!-- second row -->
+            <div class="col-md-6">
+<div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>State:</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <select (change)="getCititesbyStateName($event.target.value)" name="stateCode" class="form-control" [disabled]="isUpdatable==='view'" [(ngModel)] ="isrRegistration.stateCode" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let state of states" [value]=state.stateName>
+						{{state.stateName}} - {{state.stateLongName}}
+					  </option>
+					</select>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-md-4  respKey">
+                  <label>
+                    <strong>City</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <select  name="cityCode" class="form-control" [disabled]="isUpdatable==='view'" [(ngModel)] ="isrRegistration.cityCode" >
+					  <option selected value="">Select</option>
+					  <option *ngFor="let city of cities" [value]=city.cityName>
+						{{city.cityCode}} - {{city.cityName}}
+					  </option>
+					</select>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-right">
+                  <button class="btn btn-outline-secondary" type="button" data-dismiss="modal" (click)="onCancel()"> Cancel</button>
+                  <button [disabled]="!f.form.valid" class="btn btn-outline-primary" type="button" (click)="saveIsrRegistration()">
+                    Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </form>
+</div>
+<!-- Employee List Modal -->
+<div class="modal fade" id="employeeList" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Employee List</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText"
+              placeholder="Enter Employee Name" maxlength="50" type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;"
+              (click)="getActiveEmployees(searchedText)">Search</button>
+          </div>
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of employeeList ;let i=index"
+            (click)="selectedEmployee(users.fullName, users.employeeNumber)">
+            <li class="list-group-item">{{users.employeeNumber}} - {{users.fullName}}</li>
+          </ul>
+		  <div class="form-group row">
+          <div class="col-lg-4 text-align-right" *ngIf="employeeList.length===0">
+		  <span style="color: red;text-align:center">No records found</span></div>
+		  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal for showing loading text -->
+<div id="eventDefinitionModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%; width: 10%;">
+      <!-- Modal content-->
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>

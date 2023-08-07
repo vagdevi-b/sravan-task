@@ -1,0 +1,405 @@
+<div class="wrapper">
+  <!-- Preloader -->
+
+  <!-- Navbar -->
+
+  <!-- /.navbar -->
+  <!-- Main Sidebar Container -->
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" style="margin-bottom:50px;">
+    <!-- Main content -->
+    <!-- <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="custom-crumb breadcrumb-item active" aria-current="page">Resignation Management</li>
+
+      </ol>
+    </nav> -->
+    <div class="card custom-margin custom-card">
+
+      <div class="card-header custom-header d-flex justify-content-between">
+        Resignation Request
+        <div class="action-badge-with-value-sec d-flex align-items-center">
+          <div class="action-badge-value-wrap">
+            <ul class="">
+              <!-- <li>HR SLA <span class="action-badge-value danger-action-badge-value"></span></li>
+                <li>BU SLA <span class="action-badge-value primary-action-badge-value"></span></li> -->
+            </ul>
+          </div>
+          <div class="action-badge-wrap accepted-badge">
+            Accepted Resignation
+          </div>
+
+        </div>
+      </div>
+
+      <div class="card-body d-none">
+
+      </div>
+
+      <div class="w-100">
+        <app-emp-resignation-basic-view-details [basicDetails]="rowdata"></app-emp-resignation-basic-view-details>
+      </div>
+
+
+      <div class="card-body">
+        <div class="accordion custom-accordion px-3 pb-0 custom-accordion-structure mb-0" id="accordionExample2">
+          <div class="card">
+            <div class="card-head" id="headingOne">
+              <h2 class="mb-0" data-toggle="collapse" data-target="#collapseOne2" aria-expanded="true"
+                aria-controls="collapseOne2">
+                View Details
+              </h2>
+            </div>
+            <div id="collapseOne2" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample2">
+              <div class="card-body">
+                <!-- Start 1 -->
+                <div class="employee-details-data">
+                  <h4>Employee Details</h4>
+                  <div class="row">
+                    <div class="col-lg-4 col-md-4 employee-details-data-item ">
+                      <div class="table-responsive employee-details-data-item-border">
+                        <table class="table">
+                          <tbody>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">Emp Number</span> :
+                                {{employeeDto?.employeeNumber}}</td>
+                            </tr>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">RM</span> : {{employeeDto?.rmEmpName}}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="last-child-no-padd"><span class="employee-details-data-item-label">Practice
+                                  Head</span> : {{employeeDto?.practiceDirector}}</td>
+                            </tr>
+
+
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 employee-details-data-item ">
+                      <div class="table-responsive custom-table employee-details-data-item-border">
+                        <table class="table">
+                          <tbody>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">DOJ</span> :
+                                {{employeeDto?.dateOfJoining}}</td>
+                            </tr>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">On Probation</span> :
+                                {{employeeDto?.onProbation}}</td>
+                            </tr>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">Tenure</span> :
+                                {{employeeDto?.osiExperience}} Years
+                              </td>
+                            </tr>
+
+                            <!-- <tr>
+                                <td><span class="employee-details-data-item-label">Sub Practice</span> :
+                                  {{employeeDto.subPractice}}</td>
+                              </tr> -->
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 employee-details-data-item">
+                      <div class="table-responsive">
+                        <table class="table">
+                          <tbody>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">Designation</span> :
+                                {{newArr}}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">Location</span> :
+                                {{employeeDto?.location}}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><span class="employee-details-data-item-label">Dept</span> :
+                                {{employeeDto?.businessUnit}}/{{employeeDto?.practice}}/{{employeeDto?.subPractice}}
+                              </td>
+                            </tr>
+
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End 1 -->
+
+                <!-- Start 2 -->
+                <div class="discussion-with-employee-data">
+                  <h4>Discussion with Employee</h4>
+                  <div class="row" *ngIf="spinner == false">
+                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                      <div *ngIf="pdDiscussionData.length > 0" class="discussion-with-employee-data-item">
+                        <h4>PD Discussion with Employee</h4>
+                        <p class="mb-2">Reasons for Resignation</p>
+                        <ul class="rm-discussion-item-list" *ngFor="let item of pdDiscussionData">
+                          <li>{{item}}</li>
+                        </ul>
+                      </div>
+                      <div *ngIf="pdDiscussionData.length == 0" class="discussion-with-employee-data-item">
+                        <h4>PD Discussion with Employee</h4>
+                        <p>No Reason Selected</p>
+                      </div>
+                    </div>
+
+                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                      <div *ngIf="hrDiscussionData.length > 0" class="discussion-with-employee-data-item">
+                        <h4>HR Discussion with Employee</h4>
+                        <p class="mb-2">Reasons for Resignation</p>
+                        <ul class="rm-discussion-item-list" *ngFor="let item of hrDiscussionData">
+                          <li>{{item}}</li>
+                        </ul>
+                      </div>
+                      <div *ngIf="hrDiscussionData.length == 0" class="discussion-with-employee-data-item">
+                        <h4>HR Discussion with Employee</h4>
+                        <p>No Reason Selected</p>
+                      </div>
+                    </div>
+
+                    <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                      <div *ngIf="rmDiscussionData.length > 0" class="discussion-with-employee-data-item">
+                        <h4>RM Discussion with Employee</h4>
+                        <p class="mb-2">Reasons for Resignation</p>
+                        <ul class="rm-discussion-item-list" *ngFor="let item of rmDiscussionData">
+                          <li>{{item}}</li>
+                        </ul>
+                      </div>
+                      <div *ngIf="rmDiscussionData.length == 0" class="discussion-with-employee-data-item">
+                        <h4>RM Discussion with Employee</h4>
+                        <p>No Reason Selected</p>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- End 2 -->
+
+                <!-- Start 3 -->
+                <div class="notes-attached-doc-data">
+                  <div class="row">
+                    <div class="col-lg-7 col-md-7 notes-section notes-list-wrap">
+                        <div class="note-component-wrap">
+                          <h4>Notes</h4>
+                        </div>
+                        <div class="note-scroll-height-350">
+                        <div class="d-flex flex-column mt-4 pd-5 notes-list-inner-wrap  note-info-data-body">
+                          <div class="category-item d-flex notes-list-item" *ngFor="let item of notesdata">
+                            <span
+                              class="sub-name right badge badge-danger sub-name-blue mr-2">{{item.osiEmployeesCurrentDto.userName.substring(0,
+                              2).toUpperCase()}}</span>
+                            <div class="summary flex-grow-1">
+                              <div class="title font-16 fw-600 notes-title">
+                                {{item.osiEmployeesCurrentDto.userName}}
+                                <h3 class="title font-14 fw-500 float-right notes-title-sub">
+                                  <span class="sub-title right badge badge-danger">{{item.role}}</span>
+                                  | <span class="text-muted discussion-text">Discussion : {{item.createdDate |
+                                    date}}</span>
+                                </h3>
+                              </div>
+                              <p class="font-14 text-muted">
+                                {{item.notes}}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    <div class="col-lg-5 col-md-5 notes-section-col-2 notes-attached-wrap">
+
+                      <div class=" px-3">
+                        <div class="attached-header-title">
+                          <h1 class="doc-title">Attached Documents</h1>
+                        </div>
+                        <div class="attached-info-body mb-2 note-scroll-height-350">
+                          <div *ngFor="let item of filteredAttachments">
+                            <h4 class="doc-sub-title pl-3">
+                              <div *ngIf="getFileType(item.fileType)">
+                                <i [ngClass]="getClassNameByFileType(item.fileType)" class="mr-1"></i>
+                                <a [href]="downloadFileUrl+item.filePath" target="_blank" title={{item.displayName}}>
+                                  {{item.displayName.slice(0,15)+'...'}}</a>
+                                <div class="float-right">
+                                  <span class="">By {{item.osiEmployeesCurrentDto.userName}}</span>|
+                                  <span class="font-12"> On : {{item.createdDate | date}}</span>
+                                </div>
+                              </div>
+
+                            </h4>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End 3 -->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- <div class="relieving-process-wrap">
+          <div class="accordion custom-accordion p-3 accordion-new-stucture" id="accordionExample"> -->
+        <div class="card m-4" style="min-height: auto;">
+          <div class="card-head py-2 px-3" id="headingOne" style="background-color: #e1e3e7;">
+            <h4 class="mb-0" data-toggle="collapse" class="font-weight-medium mb-0" data-target="#collapseOne"
+              aria-expanded="true" aria-controls="collapseOne">
+              Relieving Process
+            </h4>
+          </div>
+          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body form-design-wrap" style="min-height: auto; border: 12px solid #E1E3E7;">
+              <form class="" [formGroup]="acceptForm">
+                <div class="row">
+                  <div class="col-12 col-md-5 col-lg-5 col-xl-5">
+
+
+                    <div class="form-group row d-flex position-relative align-items-start">
+                      <label class="col-sm-5 col-form-label">Date of Relieving</label>
+                      <div class="col-sm-7 input-group date custom-date datepicker-wrap" id="reservationdate2"
+                        data-target-input="nearest" class="input-group col-md-7" #DatePickContainer1>
+                        <input id="relievingDate" class="col-md-12 form-control datetimepicker-input custom-border-right"
+                          [(ngModel)]="relievingDate" formControlName="empRelievingDate" name="resgdate"
+                          (ngModelChange)="getRelievingDate($event)" placeholder="YYYY-MM-DD" ngbDatepicker
+                          #d1="ngbDatepicker">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary date-pick right-22" name="NGB-DATEPICKER"
+                            (click)="d1.toggle()" type="button">
+                            <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                              <i class="fa fa-lg fa-calendar date-pick"></i>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-5 col-lg-5 col-xl-7">
+                    <div class="form-group row position-relative align-items-start">
+                      <label class="col-sm-5 col-form-label">Employee Expected Relieving</label>
+                      <div class="col-sm-5 input-group date custom-date datepicker-wrap" id="reservationdate2"
+                        data-target-input="nearest" #DatePickContainer2>
+                        <input id="resignationRangeDate" class="form-control datetimepicker-input custom-border-right"
+                          [(ngModel)]="expectedRelievingDate" formControlName="empExpectedRelievingDate"
+                          (ngModelChange)="getExpectedRelievingDate($event)" placeholder="YYYY-MM-DD" ngbDatepicker
+                          #d2="ngbDatepicker">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER"
+                            (click)="d2.toggle()" type="button" (document:click)="closeFix($event, d2)">
+                            <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                              <i class="fa fa-lg fa-calendar date-pick"></i>
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row mt-3">
+                  <div class="col-12 col-md-2 col-lg-2 col-xl-2 checkbox-wrap">
+                    <div class="form-check form-check-inline">
+                      <input formControlName="selectall" (change)="fieldsChange($event)" class="form-check-input"
+                        type="checkbox">
+                      <label class="form-check-label">Select All</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-2 col-lg-2 col-xl-2 checkbox-wrap">
+                    <div class="form-check form-check-inline">
+                      <input formControlName="knowledgeTransfer" class="form-check-input" type="checkbox">
+                      <label class="form-check-label">knowledge transfer</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-2 col-lg-2 col-xl-2 checkbox-wrap">
+                    <div class="form-check form-check-inline">
+                      <input formControlName="removalOfAccess" class="form-check-input" type="checkbox">
+                      <label class="form-check-label">Removal of Access</label>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-2 col-lg-2 col-xl-2 checkbox-wrap">
+                    <div class="form-check form-check-inline">
+                      <input formControlName="exitInterview" class="form-check-input" type="checkbox">
+                      <label class="form-check-label">Exit Interview</label>
+                    </div>
+                  </div>
+
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- </div>
+        </div> -->
+
+
+      </div>
+
+
+
+      <div class="row m-0">
+        <div class="col-12  d-flex pt-3 align-items-center justify-content-between px-4">
+          <div><button type="button" class="backbutton" class="btn btn-block btn-secondary btn-initiate mr-3 ml-0"
+              (click)="navigateToInitiate()">Back</button></div>
+          <div class="ml-auto mr-2" *ngIf="rowdata.loggedInEmployeeRole == 'HR'">
+            <input type="button" value="LWD Confirmation" (click)="informEmployee()"
+              class="btn btn-outline-secondary btn-style-1">
+          </div>
+         
+          <div *ngIf="rowdata.loggedInEmployeeRole == 'PD'" class="float-right ml-auto mr-3">
+            <input type="button" (click)="retainEmployee()" value="Retain Employee" class="btn btn-outline-primary btn-style-1">
+          </div>
+          <div *ngIf="disableSubmit === false" class="float-right">
+            <input type="button" (click)="acceptResignation()" value="Submit" class="btn btn-primary btn-style-1">
+          </div>
+          <div *ngIf="disableSubmit === true" class="float-right">
+            <input type="button" (click)="acceptResignation()" value="Save" class="btn btn-primary btn-style-1">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- /.content-wrapper -->
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
+<!-- ./wrapper -->
+<div class="modal fade bs-example-modal-new" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <!-- Modal Content: begins -->
+    <app-attachmentpopup></app-attachmentpopup>
+  </div>
+</div>
+<!-- Modal Content: ends -->
+<!-- Modal Content: Notes -->
+<div class="modal fade bs-example-modal-notes" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+
+    <app-notepopup></app-notepopup>
+  </div>
+</div>
+<!-- Modal Content: ends -->

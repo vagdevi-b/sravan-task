@@ -1,0 +1,241 @@
+<div class="v-height row-offcanvas row-offcanvas-left">
+  <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+
+
+
+
+    <div class="inner-wrapper">
+
+      <div class="sub-header border-bottom">
+        <h1>New Accrual Rule</h1>
+      </div>
+      <section class="forms mt-2">
+        <div class="card">
+          <div class="row">
+            <div class="col-md-6">
+              <!-- first row -->
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label for="orgName">
+                    <strong>Organization Name:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <!-- <label for="orgName">{{orgName?.organisationName}}</label> -->
+                  <select id="orgName" name="orgName" [(ngModel)]="user.orgId" required class="form-control select-v4 form-control-)sm form-field-border">
+                    <option selected [value]='null'>-- Select --</option>
+                    <option *ngFor="let org of allOrg" [value]="org.orgId">
+                      {{org.orgName}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+
+              <!--  <div class="row" style="margin-top: 12px;">
+                <div class="col-md-4 respKey">
+                  <label for="locationId">
+                    <strong>Location:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+
+                  <div id="dateselectiondiv">
+                    <select id="locationId" name="locationId" (change)='converter("locationId")' [(ngModel)]="user.locationId" required class="form-control select-v4 form-control-)sm form-field-border"
+                      [disabled]="user.orgId==null">
+                      <option selected [value]='null'>-- Select --</option>
+                      <option *ngFor="let locations of allLocationByOrgId" [value]="locations.locationId">
+                        {{locations.locationName}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div> -->
+
+
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Accrual Name:</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <input type="text" class="form-control select-v4 form-control-sm form-field-border" maxlength="100" name="accrualName" [(ngModel)]="user.ruleName"
+                      required>
+                    <span class='months'>(maximum length is 100 character)</span>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Accrual Description:</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <textarea type="text" class="form-control select-v4 form-control-sm form-field-border" name="accrualDesp" [(ngModel)]="user.typeDesc"
+                      required></textarea>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="col-md-4  respKey">
+                  <label>
+                    <strong>Employee Status:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <select id="empTitleId" name="empTitleId" (change)='converter("empTitleId")' [(ngModel)]="user.empTitleId" required class="form-control select-v4 form-control-sm form-field-border">
+                      <option selected value=null>-- Select --</option>
+                      <option *ngFor="let employeeStatus of employeeStatusList" [value]="employeeStatus?.lookUpId">
+                        {{employeeStatus?.lookUpDesc}}
+                      </option>
+                    </select>
+                    <!-- <div *ngIf="validationError.type" class="alert alert-danger validationAlert">Status is required.</div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Leave Type:</strong>
+                  </label>
+                </div>
+
+
+                <div class="col-md-6">
+
+                  <div id="dateselectiondiv">
+                    <select id="leaveTypeId" name="leaveTypeId" (change)='converter1("leaveTypeId",$event)' [(ngModel)]="user.leaveTypeId" required
+                      class="form-control select-v4 form-control-sm form-field-border">
+                      <option selected value=null>-- Select --</option>
+                      <option *ngFor="let leaveType of leaveTypesList" [value]="leaveType.leaveTypeId">
+                        {{leaveType.leaveTypeName}}
+                      </option>
+                    </select>
+                    <div *ngIf="validationError.type" class="alert alert-danger validationAlert">Type is required.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- second row -->
+            <div class="col-md-6">
+
+
+              <div class="row">
+                <div class="col-md-4  respKey">
+                  <label>
+                    <strong>Accrual Cap:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6" *ngIf="isPto">
+                  <input type="text" class="form-control select-v4 form-control-sm form-field-border" name="carryleaves" #carryleaves="ngModel"
+                    [(ngModel)]="user.carryForwardDays" required>
+                  <span class="months">(hours per year)</span>
+                </div>
+                <div class="col-md-6" *ngIf="!isPto">
+                  <input type="text" class="form-control select-v4 form-control-sm " disabled [value]=0>
+                  <span class="months">(hours per year)</span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong>Leave Hours:</strong>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" required name="leavedays" #leavedays="ngModel" class="form-control form-control-sm form-field-border"
+                    [(ngModel)]="user.leaveDays">
+                  <span class="months"></span>
+                  <div *ngIf="validationError.leavedays" class="alert alert-danger validationAlert">Leave days are required.</div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong> Interval:</strong>
+                  </label>
+                </div>
+
+                <div class="col-md-6">
+                  <div id="dateselectiondiv">
+                    <select id="startPeriod" name="accuralInterval" (change)='converter("accrualIntervalId")' required [(ngModel)]="user.accrualIntervalId"
+                      class="form-control select-v4 form-control-sm form-field-border">
+                      <option selected value=null>-- Select --</option>
+                      <option *ngFor="let accuralInterval of accuralInterval" [value]="accuralInterval.id">
+                        {{accuralInterval.lookupValue}}
+                      </option>
+                    </select>
+                    <!-- <div *ngIf="validationError.empstatus" class="alert alert-danger validationAlert">Accrual Interval is required.</div> -->
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 respKey ">
+
+                </div>
+                <div class="col-md-4">
+                  <input type="radio" name="accural" [value]="true" [(ngModel)]="user.advanceAccrual" class="offswitch-checkbox" checked>
+                  <label>
+                    <b>Advance</b>
+                  </label>
+                </div>
+                <div class="col-md-4">
+                  <input type="radio" name="accural" [value]="false" [(ngModel)]="user.advanceAccrual" class="offswitch-checkbox">
+                  <label>
+                    <b>Later</b>
+                  </label>
+
+                </div>
+
+              </div>
+
+              <div class="row">
+
+                <div class="col-md-4 respKey">
+                  <label>
+                    <strong> Active:</strong>
+                  </label>
+                </div>
+                <div class="col-sm-4">
+                  <input type="checkbox" name='active' [value]="user.active" [(ngModel)]="user.active" checked>
+                </div>
+                <div class="col-sm-4"></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="pull-right">
+                  <button class="btn btn-outline-secondary" type="button" data-dismiss="modal" (click)="onCancel()"> Cancel</button>
+                  <button [disabled]="!f.form.valid" class="btn btn-primary" type="button" (click)="saveLeaveAccurals()">
+                    Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </form>
+</div>

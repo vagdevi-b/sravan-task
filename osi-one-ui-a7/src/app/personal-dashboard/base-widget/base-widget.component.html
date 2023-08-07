@@ -1,0 +1,36 @@
+<div class="card widget card-h-341">
+  <div class="card-header wTitle">
+    <div class="title-text">
+      <span class="name">{{widgetData?.widget.name | titlecase}}</span>
+      <div class="weekRange" *ngIf="widgetData?.widget?.name === 'Weekly Project Status'">
+        <label for="weeklyStatusDate">({{currentWeekRange}})</label>
+        <input type="text" class="form-control" bsDatepicker id="weeklyStatusDate"
+          name="plannedStartDate" [(ngModel)]="selectedDate" placeholder="Select Month range"
+          (ngModelChange)="onDateChange()" autocomplete="false" readonly>
+      </div>
+      <ul class="nav nav-pills timesheets-type" id="pills-tab" role="tablist"
+        *ngIf="widgetData?.widget?.name === 'Timesheets To Approve'">
+        <li class="nav-item">
+          <a class="nav-link" id="pills-project-tab" data-toggle="pill" role="tab" aria-controls="pills-project"
+            aria-selected="true" (click)="timeSheetApproveClick('project')">Project</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" id="pills-resource-tab" data-toggle="pill" role="tab"
+            aria-controls="pills-resource" aria-selected="false"
+            (click)="timeSheetApproveClick('resource')">Resource</a>
+        </li>
+      </ul>
+    </div>
+    <button type="button"
+      *ngIf="widgetData?.widget?.name === 'My Timesheets' || widgetData?.widget?.name === 'My Leaves'"
+      (click)="onNewBtnClick(widgetData.widget.name)" class="btn btn-outline-primary pull-right add-new-btn">
+      <span class="icon icon-plus">+</span> New</button>
+    <div class="action-icon">
+      <span class="glyphicon glyphicon-move"></span>
+      <span class="glyphicon glyphicon-remove ml-1" (click)="removeWidget()"></span>
+    </div>
+  </div>
+  <div class="card-body ">
+    <ng-template #widgetBody></ng-template>
+  </div>
+</div>

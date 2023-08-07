@@ -1,0 +1,269 @@
+#pro {
+    justify-content: space-between;
+}
+
+#filter{
+    border: 2px;
+    padding: 7px;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+.chartContainer{
+    height: 300px;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.card-header{
+    background: #d6d6d6 !important;
+    color: black;
+}
+
+.card-body{
+    height: 300px;
+    padding: 0;
+}
+
+.highlight{
+    background: #e2e6cf
+}
+
+.chartWrapper {
+    position: relative;
+  }
+  
+  .chartWrapper > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+  }
+  
+  .chartAreaWrapper {
+    height: auto;
+    overflow-y: auto;
+  }
+
+  #invoicedRevenueByCustomer {
+      height: 500px;
+      overflow-y: auto;
+  }
+
+
+
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+   
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .overlay {
+    background: #ffffff;
+    color: #666666;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 5000;
+    top: 0;
+    left: 0;
+    float: left;
+    text-align: center;
+    padding-top: 25%;
+    opacity: .80;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+  }
+  .error-msg{
+    display: inline-block;
+      width: 100%;
+      text-align: center;
+      color: red;
+  }
+  .topspace{
+    margin-top:15px;
+  }
+    
+  
+.btn .btn-default {
+  /* height: 80%; */
+  background-color: #ffffff !important;
+  color: black !important;
+}
+
+.card {
+  font-family: 'Poppins', sans-serif;
+}
+
+#headingOne {
+  background: #ffffff !important;
+  font-size: 18pt !important;
+  color: black;
+}
+
+.btn-toggle {
+    margin: 0 4rem;
+    padding: 0;
+    position: relative;
+    border: none;
+    height: 1.5rem;
+    width: 3rem;
+    border-radius: 1.5rem;
+    color: #6b7381;
+    background: #bdc1c8;
+}
+.btn-toggle:focus, .btn-toggle:focus.active, .btn-toggle.focus, .btn-toggle.focus.active {
+    outline: none;
+}
+.btn-toggle:before, .btn-toggle:after {
+    line-height: 1.5rem;
+    width: 4rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: absolute;
+    bottom: 0;
+    transition: opacity .25s;
+}
+.btn-toggle:before {
+    left: -6rem;
+}
+
+.btn-toggle:after {
+    content: 'Compare';
+    right: -5rem;
+    opacity: .5;
+    padding-bottom : 4px;
+}
+
+.btn-toggle > .handle {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 1.125rem;
+    background: #fff;
+    transition: left .25s;
+}
+.btn-toggle.active {
+    transition: background-color .25s;
+}
+.btn-toggle.active {
+    background-color: #29b5a8;
+}
+.btn-toggle.active > .handle {
+    left: 1.6875rem;
+    transition: left .25s;
+}
+.btn-toggle.active:before {
+    opacity: .5;
+}
+.btn-toggle.active:after {
+    opacity: 1;
+}
+
+.chart-toggle {
+    margin: 0 10rem;
+    padding: 0;
+    position: relative;
+    border: none;
+    height: 1.5rem;
+    width: 3rem;
+    border-radius: 1.5rem;
+    color: #6b7381;
+    background: #bdc1c8;
+}
+.chart-toggle:focus, .chart-toggle:focus.active, .chart-toggle.focus, .chart-toggle.focus.active {
+    outline: none;
+}
+.chart-toggle:before, .chart-toggle:after {
+    line-height: 1.5rem;
+    width: 4rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: absolute;
+    bottom: 0;
+    transition: opacity .25s;
+}
+.chart-toggle:before {
+    content: 'Bar';
+    left: -4rem;
+}
+
+.chart-toggle:after {
+    content: 'Line';
+    right: -4rem;
+    opacity: .5;
+}
+
+.chart-toggle > .handle {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 1.125rem;
+    background: #fff;
+    transition: left .25s;
+}
+.chart-toggle.active {
+    transition: background-color .25s;
+}
+.chart-toggle.active {
+    background-color: #29b5a8;
+}
+.chart-toggle.active > .handle {
+    left: 1.6875rem;
+    transition: left .25s;
+}
+.chart-toggle.active:before {
+    opacity: .5;
+}
+.chart-toggle.active:after {
+    opacity: 1;
+}
+
+.wrapper{
+    width:100%;
+    display:block;
+    overflow:hidden;
+    margin:0 auto;
+    padding: 60px 50px;
+    background:#fff;
+    border-radius:4px;
+  }
+  
+  canvas{
+    background:#fff;
+    height:300px;
+  }
+
+  .chartdd {    
+        font-family: 'Poppins', sans-serif;
+  }
+  

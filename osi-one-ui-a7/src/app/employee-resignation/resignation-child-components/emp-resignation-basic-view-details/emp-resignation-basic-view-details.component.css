@@ -1,0 +1,66 @@
+/* New Reg Employee Details Start */
+.reg-emp-details {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.reg-emp-details .reg-emp-details-head {
+    background-color: #2B3A4E;
+    color: #fff;
+    padding: 20px 20px 20px 20px;
+}
+
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table {
+    width: 100%;
+    margin: 0;
+}
+
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table tr{ border-bottom: none; }
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table tr td {
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 400;
+    border: none;
+    height: auto;
+    background-color: inherit;
+}
+
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table tr td .reg-emp-details-label {
+    margin: 0 15px 0 0;
+}
+
+.reg-emp-details .reg-emp-details-content {
+    background-color: #EDEDED;
+    color: #141414;
+    padding: 15px 20px 0 20px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 0 0 3px 3px;
+}
+
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table {
+    width: 100%;
+    margin: 0;
+}
+
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table tr{ border-bottom: none; }
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table tr td {
+    padding: 0 0 26px 0;
+    font-family: 'Roboto', sans-serif;
+    color: #141414;
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 400;
+    border: none;
+    height: auto;
+    background-color: inherit;
+}
+
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table tr td .reg-emp-details-date-label {
+    margin: 0 10px 0 0;
+    display: inline-block;
+    width: 198px;
+}

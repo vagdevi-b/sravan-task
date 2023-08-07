@@ -1,0 +1,104 @@
+<!-- HEADER LIST -->
+<div class="sub-header border-bottom">
+	<h1>Accrual Rules</h1>
+</div>
+<!-- End of HeaderList -->
+
+
+<!-- Input Bar -->
+<div class="inner-wrapper ">
+	<!-- <section class="forms adjust-search-box">
+
+		<div class="col-sm-12 no-padding">
+			<div class="card">
+				<div class="card-body cardBody">
+
+					<div class="row">
+						<div class="col-md-4">
+							<label for="orgName">
+								<strong>Organization Name</strong>
+							</label>
+
+							<label for="orgName">{{organaizationName}}</label>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section> -->
+
+	<!-- End of Input Bar -->
+
+
+
+	<!-- Content Header (Page header) -->
+	<!-- Main content -->
+	<section class="content">
+		<!--MAIN BODY START-->
+	 
+			<div class="table-responsive">
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>Organization
+								<span class="glyphicon sort-icon"></span>
+							</th>
+							<th>Accrual Name
+								<span class="glyphicon sort-icon"></span>
+							</th>
+							<th>Leave Type
+								<span class="glyphicon sort-icon"></span>
+							</th>
+							<th>Leave Hours
+								<span class="glyphicon sort-icon"></span>
+							</th>
+							<th>Carry Forward Hours
+								<span class="glyphicon sort-icon"></span>
+							</th>
+							<th>Employee Status
+								<span class="glyphicon sort-icon"></span>
+							</th>
+							<th>Status
+								<span class="glyphicon sort-icon"></span>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of allAccruals| paginate: { itemsPerPage: 7,currentPage: crntpage,totalItems: total } " (click)="setClickedRow(item)"
+						 [class.active]="item.ruleId == selectedRow">
+
+							<td>{{item.orgName }}</td>
+							<td>{{item.ruleName |uppercase}}</td>
+							<td>{{item.leaveTypeName }}</td>
+							<td>{{item.leaveDays }}</td>
+							<td>{{item.carryForwardDays }}</td>
+							<td>{{item.empStatus }}</td>
+							<td>{{item.active===true?'ACTIVE':'INACTIVE'}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<div>
+					<!-- if no record -->
+					<h6 [hidden]=" total!=0 " style="text-align: center;">No Records Found</h6>
+				</div>
+			</div>
+			<div class="col-sm-12 row pb-3">
+				<div class="col-sm-10">
+					<!-- pagination -->
+					<div class="paginate" [hidden]=' (total<=5)'>
+						<!-- hide when result is less than 5 -->
+						<pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+					</div>
+					<!-- END OF PAGE CONTROL -->
+				</div>
+				<span class="col-sm-2 adjust-crud-op">
+					<i style="cursor: pointer;" class="glyphicon glyphicon-plus" (click)="createAccurals()"></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" class="glyphicon glyphicon-pencil" (click)="editLeaveAccrual()"></i>&nbsp;&nbsp;
+					<i style="cursor: pointer;" class="glyphicon glyphicon-eye-open" (click)="viewLeaveAccrual()"></i>
+				</span>
+			</div>
+		 
+	 
+	</section>
+</div>

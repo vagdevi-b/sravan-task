@@ -1,0 +1,41 @@
+.mainpanel {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+.userlist {
+    max-height: 60px;
+    overflow-y: scroll;
+    text-align: left !important;
+}
+.table tr.active td {
+    background-color:#90b2d4a2 !important;
+    color: rgb(66, 66, 66);
+}
+.tableColumnCenterAlign {
+    text-align: center;
+    vertical-align: middle;
+}
+.tabcontent{
+    border: 1px solid lightgray;
+}
+.centeralign{
+    text-align: center;
+}
+.username{
+    width:100%;
+}
+.error-msg{
+    display: inline-block;
+      width: 100%;
+      text-align: center;
+      color: red;
+}
+.star{
+    color: red;
+    font-size: 13px;
+    font-weight: 600;
+}
+.enable-scroller{
+    height: 340px;
+    overflow-y: auto;
+}

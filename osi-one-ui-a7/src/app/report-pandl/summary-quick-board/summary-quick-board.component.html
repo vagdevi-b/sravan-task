@@ -1,0 +1,16 @@
+<div class="row pl-top-section">
+  <div *ngFor="let card of cardDetailsList" class="col-sm-3">
+    <div class="card flex-fill">
+      <div class="card-body py-4 graph-primary">
+        <div class="media">
+          <div class="media-body">
+            <h3 class="cardstitle">{{card?.value}}</h3>
+            <p class="mb-2">{{card?.title}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

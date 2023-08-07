@@ -1,0 +1,91 @@
+<!-- Modal content-->
+<div class="modal-content h-auto modal-animation">
+  <div class="modal-header">
+    <h5 class="modal-title">Payment History</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()"
+      [disabled]="showLoader">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h5 class="modal-title">Total Payment due - {{totalAmount}} {{invoiceDetails?.projectCurrencyCode}} for
+      Invoice Number - {{invoiceDetails?.invoiceNumber}}</h5>
+    <br>
+    <div id="tsWeeklyEntryContainer" class="tabcontent">
+      <div class="card" style="height: auto; max-height: 50vh; overflow-y: auto;">
+        <table class="table table-hover table-bordered">
+          <thead>
+            <tr>
+              <th>Payment Date
+                <span class="glyphicon sort-icon"></span>
+              </th>
+              <th>Amount
+                <span class="glyphicon sort-icon"></span>
+              </th>
+              <th>Currency
+                <span class="glyphicon sort-icon"></span>
+              </th>
+              <th>Invoice Reference Type
+                <span class="glyphicon sort-icon"></span>
+              </th>
+              <th>Payment Description
+                <span class="glyphicon sort-icon"></span>
+              </th>
+              <th>FIRC Number
+                <span class="glyphicon sort-icon"></span>
+              </th>
+              <th>Bank Charges
+                <span class="glyphicon sort-icon"></span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let invoice of invoicePaymentList">
+              <td>
+                <input type="text" class="form-control" bsDatepicker id="amountReceivedDate" name="amountReceivedDate"
+                  [(ngModel)]="invoice.amountReceivedDate" placeholder="Select Month range"
+                  [bsConfig]="datePickerConfig" disabled>
+              </td>
+              <td>
+                <input id="amountReceived" type="number" class="form-control form-control-sm"
+                  [(ngModel)]="invoice.amountReceived" disabled>
+              </td>
+              <td>
+                {{invoice.currencyCode}}
+              </td>
+              <td>
+                <input id="externalRefType" type="text" class="form-control form-control-sm"
+                  [(ngModel)]="invoice.externalRefType" disabled>
+              </td>
+              <td>
+                <input id="paymentNotes" type="text" class="form-control form-control-sm"
+                  [(ngModel)]="invoice.paymentNotes" disabled>
+                <!-- {{invoice.paymentNotes}} -->
+              </td>
+              <td>
+                <input id="fircNumber" type="text" class="form-control form-control-sm"
+                  [(ngModel)]="invoice.fircNumber">
+              </td>
+              <td>
+                <input appDecimal id="bankCharges" type="number" step=".01" class="form-control form-control-sm"
+                  [(ngModel)]="invoice.bankCharges">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="invoicePaymentList.length === 0" class="text-center">
+          <h6 class="text-danger">No Records Found</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary tsm-primary-btn" *ngIf="invoicePaymentStatus=='O'|| invoicePaymentStatus=='Z'|| 
+        invoicePaymentStatus=='T' || invoicePaymentStatus=='P' || 
+        invoicePaymentStatus=='Y'" (click)="savePayment()">Save</button>
+
+    <button type="button" class="btn btn-primary tsm-primary-btn" data-dismiss="modal" (click)="close()">Cancel</button>
+  </div>
+</div>
+
+<app-loading *ngIf="showLoader"></app-loading>

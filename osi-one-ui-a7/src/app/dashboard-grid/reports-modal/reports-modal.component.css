@@ -1,0 +1,59 @@
+.CustomModalClass .modal-lg {
+    max-width: 99% !important;
+    margin: 5px !important;
+}
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+}
+.modal-full {
+    min-width: 100%;
+    margin-left: 80;
+}
+
+.modal-full .modal-content {
+    min-height: 100vh;
+}
+
+.html2canvas-container { width: 3000px !important; height: 3000px !important; }
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+   
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .overlay {
+    background: #ffffff;
+    color: #666666;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 5000;
+    top: 0;
+    left: 0;
+    float: left;
+    text-align: center;
+    opacity: .80;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+  }

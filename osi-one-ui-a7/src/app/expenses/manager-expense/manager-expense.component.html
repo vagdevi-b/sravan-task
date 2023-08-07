@@ -1,0 +1,264 @@
+<div class="v-height">
+	<div class="snackbar" #AlertSuccess>{{flashMessage}}</div>
+	<div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+	<!-- <div class="breadcrumb-wrapper">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb"> 
+				<li class="breadcrumb-item active" aria-current="page">Approve Expense Reports</li>
+			</ol>
+		</nav>
+	</div> -->
+	<div class="view-expense-section">
+		<div class="sub-header clearfix">
+			<h1 class="pull-left">Approve Expense Reports</h1>
+			<div class="sub-header-right d-flex align-items-center justify-content-end">
+				<button type="button" class="btn btn-outline-primary mr-3" aria-label="ShowHistory" (click)="showApprovalHistory();">
+					Show History
+				</button>
+				<button type="button" class="btn btn-outline-primary mr-3" aria-label="ExportToExcel" (click)="getLineItemsForExcel('excel');">
+					Export To Excel
+				</button>
+				<button type="button" class="btn btn-outline-primary mr-3" aria-label="ExportToPDF" (click)="getLineItemsForExcel('pdf');">
+					Export To PDF
+				</button>
+				<div class="dropdown">
+					<span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+					<div class="dropdown-content">
+						<ul>
+							<li>Items Per Page</li>
+							<li [class.active]="currentPageItemCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+							<li [class.active]="currentPageItemCount==0" (click)="chengePageSize(0)">All</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+		<div class="expense-date-section">
+
+
+
+			<div class="row">
+				<div class="col-sm-12 col-md-3">
+					<div id="dateselectiondiv">
+						<label>Select Range</label>
+						<select class="form-control" (change)="onSelect($event.target.value)" [(ngModel)]="selectedDates.id">
+							<option *ngFor="let dates of listdates" value={{dates.id}}>
+								{{dates.name}}
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-3">
+					<label for="employeeNameFilterText">Filter Employee Name</label>
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm form-field-border" [(ngModel)]="employeeNameFilterText" (keyup)="filterByEmployeeName($event.target.value)" name="employeeNameFilterText" id="employeeNameFilterText" placeholder="Employee Name"/>
+					</div>
+				</div>
+				<div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+					<!-- <label for="name">Start Date</label>
+					<input type="date" class="form-control" id="startdate" name="startDate" [ngModel]="startDate | date:'yyyy-MM-dd'" (ngModelChange)="startDate = $event"> -->
+					<div class="form-group">
+						<label for="name">Start Date</label>
+						<div class="input-group" #DatePickContainer1>
+							<input id="startdate" [maxDate]="endDateSelectedDate" name="startdate" class="form-control form-control-sm form-field-border"
+							 placeholder="yyyy-mm-dd" [(ngModel)]="startDateSelectedDate" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="checkStartDate()"
+							 (change)="checkStartDate()" (focusout)="checkStartDate()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary date-pick" (click)="d1.toggle()" type="button" (document:click)="closeFix1($event, d1)">
+									<span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+										<i class="fa fa-lg fa-calendar"></i>
+									</span>
+								</button>
+							</div>
+							<!-- <div class="alert alert-danger validationAlert">Invalid Start Date</div> -->
+						</div>
+					</div>
+				</div>
+				<div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+					<!-- <label for="name">End Date</label>
+					<input type="date" class="form-control" id="enddate" [ngModel]="endDate | date:'yyyy-MM-dd'" (ngModelChange)="endDate = $event"
+					 name="endDate" (blur)="myMethod()"> -->
+					<div class="form-group">
+						<label for="name">End Date</label>
+						<div class="input-group" #DatePickContainer2>
+							<input id="enddate" [minDate]="endDateMinVal" name="enddate" class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd"
+							 [(ngModel)]="endDateSelectedDate" ngbDatepicker #d2="ngbDatepicker" (dateSelect)="endDateSelected()" (change)="endDateSelected()"
+							 (focusout)="endDateSelected()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary date-pick" (click)="d2.toggle()" type="button" (document:click)="closeFix2($event, d2)">
+									<span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+										<i class="fa fa-lg fa-calendar"></i>
+									</span>
+								</button>
+							</div>
+							<!-- <div class="alert alert-danger validationAlert">Invalid End Date</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 col-md-offset-1">
+
+				<!-- <div _ngcontent-c6="" class="panel-heading" style="background-color: #f4f7fa;">
+
+
+				</div> -->
+
+				<!-- <div class="panel panel-default panel-table">
+	
+					<div class="panel-body"> -->
+				<div style="display: flex; flex-direction: row">
+					<div style=" overflow: hidden; flex-grow: 1">
+						<ag-grid-angular #agGrid style="width: 100%; height: 340px;" id="myGrid" class="ag-theme-balham" [columnDefs]="columnDefs"
+						 [rowData]="rowData" [rowSelection]="rowSelection" (rowDoubleClicked)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)"
+						 enableColResize="true" enableSorting enableFilter groupHeaders [paginationPageSize]="paginationPageSize" suppressMovableColumns="true"
+						 pagination="true" (gridReady)="onGridReady($event)"></ag-grid-angular>
+					</div>
+				</div>
+				<div class="row mt-3 mb-3">
+					<div class="col text-right">
+						<button type="button" class="btn btn-primary pull-right mr-3" aria-label="Approve Expenses" (click)="getSelectedApprovalRows();">
+							Approve
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #template>
+
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col col-xs-6">
+				<h3 class="panel-title">&nbsp;</h3>
+			</div>
+			<div class="col col-xs-6 text-right">
+				<div class="form-container">
+					<h4 class="modal-title pull-left">Edit Expense</h4>
+					<button type="button" class="btn btn-info" aria-label="Close" (click)="modalRef.hide()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="modal-body">
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>
+							<b>Report ID</b>
+						</th>
+						<th>
+							<b>Expense Date</b>
+						</th>
+						<th>
+							<b>Project</b>
+						</th>
+						<th>
+							<b>Location</b>
+						</th>
+						<th>
+							<b>Total</b>
+						</th>
+						<!-- <th>
+							<b>Department</b>
+						</th> -->
+						<th>
+							<b>Status</b>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr *ngFor="let item of allExpenses">
+					<td>
+						<input type="text" [(ngModel)]="item.reportid" readonly="true" />
+					</td>
+					<td>
+						<input type="text" [(ngModel)]="item.expenses" />
+					</td>
+					<td>
+						<input type="text" [(ngModel)]="item.project" />
+					</td>
+					<td>
+						<input type="text" [(ngModel)]="item.location" />
+					</td>
+					<td>
+						<input type="text" [(ngModel)]="item.total" />
+					</td>
+					<!-- <td>
+						<input type="text" [(ngModel)]="item.department" />
+					</td> -->
+					<td>
+						<input type="text" [(ngModel)]="item.status" readonly="true" />
+					</td>
+				</tr>
+			</tbody>
+			</table>
+
+
+		</div>
+	</div>
+	<div class="panel-heading">
+		<div class="row">
+			<div class="col col-xs-6">
+				<h3 class="panel-title">&nbsp;</h3>
+			</div>
+			<div class="col col-xs-6 text-right">
+				<div class="form-container">
+					<!--<span routerLinkActive="active"><a routerLink="/create-expense" class="btn btn-info" role="button">Create Expense Report</a></span>-->
+					<button class="btn btn-info" (click)="modalRef.hide()">Cancel</button>
+					<button class="btn btn-info" (click)="modalRef.hide()">Update</button>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-template>
+
+<div class="modal fade custom-modal-padding" id="approve_expense_conf" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+			<div class="modal-header">
+                <h5 class="modal-title">Approve Expense Report</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button> -->
+				<p>Do you want to Approve the Expense Reports?</p>
+				<p>Alternatively you can double-click on a row to view the line items associated with the expense report and then approve them.</p>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-outline-primary mr-2" data-dismiss="modal">No</button>
+					<button type="button" class="btn btn-primary" (click)="approveRows()"
+                        data-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loaderDisplayModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog" style="top: 40%;">
+
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+
+	</div>
+</div>

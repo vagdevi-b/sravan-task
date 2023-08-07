@@ -1,0 +1,188 @@
+$sidebar-bg: #2b3a4e;
+
+.megaMenu {
+    width: 100%;
+    background-color: $sidebar-bg;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    z-index: 9999;
+    visibility: hidden;
+    opacity: 0;
+    height: 100%;
+    transition: all .3s ease-in-out 0s;
+}
+    
+.megaMenu.active {
+    visibility: visible;
+    opacity: 1;
+    left: 0
+}
+.magamenu-scroll {
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.magamenu-scroll .menu-lists{
+    color: #fff;
+    padding: 58px 53px;
+}
+
+.magamenu-scroll .menu-lists ul>li.menu_headers {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 500
+}
+
+.menu-lists ul>li>ul {
+    padding: 10px 0 20px;
+    margin: 5px 0 0;
+    border-top: 1px solid rgba(214, 214, 214, 0.5)
+}
+
+.menu-lists ul>li>ul>li {
+    margin: 3px 0;
+    list-style: none;
+    position: relative;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400
+}
+
+.megamenu-wrapper {
+    padding: 58px 53px
+}
+
+.megamenu-wrapper ul {
+    padding: 0;
+    margin: 0
+}
+
+.megamenu-wrapper ul>li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-size: 15px;
+    color: #fff;
+    font-weight: 400;
+}
+
+.megamenu-wrapper ul>li>a {
+    padding: 7px 20px;
+    display: block;
+    background-image: inherit;
+    color: rgba(255, 255, 255, 0.8)
+}
+
+.megamenu-wrapper ul>li>a:hover,
+.megamenu-wrapper ul>li.active>a {
+    color: #999
+}
+
+.megamenu-wrapper ul>li>ul {
+    padding: 10px 0 20px;
+    margin: 5px 0 0;
+    border-top: 1px solid rgba(214, 214, 214, 0.5)
+}
+
+.megamenu-wrapper ul>li>ul>li {
+    padding: 0;
+    margin: 3px 0;
+    list-style: none;
+    position: relative;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 400
+}
+
+.megamenu-wrapper ul>li>ul>li>a {
+    padding: 6px 38px 6px 30px;
+    color: rgba(255, 255, 255, 0.8);
+    background-color: inherit;
+    cursor: pointer;
+}
+
+.megamenu-wrapper ul>li>ul>li>a,
+.megamenu-wrapper ul>li>ul>li>a:not([href]):not([tabindex]) {
+    color: rgba(255, 255, 255, 0.8);
+    background-color: inherit;
+    font-size: 13px;
+}
+
+.megamenu-wrapper ul>li>ul>li>a:hover,
+.megamenu-wrapper ul>li>ul>li.active>a,
+.megamenu-wrapper ul>li>ul>li>a:not([href]):not([tabindex]):hover {
+    color: rgba(255, 255, 255, 1) !important;
+    text-decoration: none;
+}
+/* For IE8 and earlier */
+
+.icon-megamenu {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 6px;
+    left: 0;
+    background: url(assets/images/megamenu-sprite-icons.svg);
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+/* For IE8 and earlier */
+
+.icon-megamenu:hover {
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+}
+
+.icon-announcements {
+    background-position: -10px -10px
+}
+
+.hamburger-menu {
+    width: 53px;
+    height: 53px;
+    cursor: pointer;
+    margin: 0;
+    padding-top: 17px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    background-color: $sidebar-bg;
+
+    span {
+        width: 24px;
+        color: inherit;
+        background-color: #fff!important;
+        display: block;
+        height: 2px;
+        margin: 0 auto 5px;
+        -webkit-transition: all .3s ease-in-out 0;
+        -moz-transition: all .3s ease-in-out 0;
+        -ms-transition: all .3s ease-in-out 0;
+        -o-transition: all .3s ease-in-out 0;
+        transition: all .3s ease-in-out 0;
+        &:first-child{ 
+            margin: 7px 0 0 14px; -ms-transform: rotate(50deg); /* IE 9 */
+            -webkit-transform: rotate(50deg); /* Safari */
+            transform: rotate(50deg) 
+        }
+        &:nth-child(2){ 
+            display:none 
+        }
+        &:last-child { 
+            margin:-2px 0 0 14px; -ms-transform: rotate(-50deg); /* IE 9 */
+            -webkit-transform: rotate(-50deg); /* Safari */
+            transform: rotate(-50deg)                                                                                           
+        }
+    }
+}
+
+@media(max-width:767px) {
+    .megamenu-wrapper {
+        padding: 58px 0 58px 24px
+    }
+}

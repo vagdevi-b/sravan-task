@@ -1,0 +1,118 @@
+<div class="row m-0">
+  <div class="col-md-12">
+    <div class="card-custom card-report-emp flex-fill w-100 pl-conntent-dashboard">
+      <div class="card-header">
+        <div class="card-actions float-right">
+          <div class="dropdown show">
+            <a href="#" data-toggle="dropdown" data-display="static">
+              <i class="align-middle" data-feather="more-horizontal"></i>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right">
+              <!-- <a class="dropdown-item"><i class="far fa-copy"></i>
+                Copy</a> -->
+              <a class="dropdown-item" (click)="downloadData();"><i class="fas fa-file-export"></i> Export</a>
+              <!-- <a class="dropdown-item"><i class="fas fa-expand"></i>
+                Full Screen</a> -->
+            </div>
+          </div>
+        </div>
+        <div class="pl-conntent-search-field float-right" >
+          <div class="input-group-append btn-search-icon"><button class="btn btn-navbar" type="submit"
+              style="margin-top: -3%;"><i class="fa fa-search"></i></button></div>
+          <input type="text" [(ngModel)]="searchValue" (ngModelChange)="searchValueChanges($event)" class="form-control"
+            placeholder="Search" style="padding-right: 20%;" />
+        </div>
+        <h5 class="card-title mb-0">{{ title }}</h5>
+      </div>
+      <div class="card-body d-flex w-100">
+        <div class="align-self-center chart">
+          <div class="table-responsive table-shadow border-0 mb-3 show-row-3" (scroll)="onScroll($event)">
+            <table class="table table-hover table-bordered">
+              <thead>
+                <tr>
+                  <ng-container *ngFor="let data of summaryTableHeaderColumns">
+                    <th [class]="getClass(data)" (click)="sort(data)" [style.text-align]="listOfLeftAlignedHeaders.includes(data) ? 'left' : 'right'"
+                      *ngIf="data != 'Inovoice_details'">{{data }}</th>
+                  </ng-container>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="displayList?.length==0">
+                  <td colspan="4" class="border-0">
+                  <div class="text-center">No Records Found</div>
+                </td></tr>
+                <ng-container *ngFor="let data of displayList; let i = index">
+                  <tr>
+                    <ng-container *ngFor="let column of summaryTableHeaderColumns">
+                      <td *ngIf="column === 'Project'" [style.text-align]="listOfLeftAlignedHeaders.includes(column) ? 'left' : 'right'"
+                      title="{{ data[column] }}" >
+                        <button class="table-drilldown-btn"
+                          [ngClass]="data['isCollapse'] ? 'fas fa-chevron-down' : 'fas fa-chevron-up'"
+                          (click)="data['isCollapse']=!data['isCollapse']">
+                        </button>
+                        {{data['Project'] ? (data['Project'].length > 30 ? (data['Project'] |
+                          slice:0:30) + '...' : data['Project'] )
+                          : '' }}
+                      </td>
+                      <td *ngIf="column !== 'YearMonthDetails' && column !== 'Project'" [style.text-align]="listOfLeftAlignedHeaders.includes(column) ? 'left' : 'right'"
+                      title="{{ data[column] }}">
+                        <!-- {{data[column] ? (isValueTypeString(data[column]) ? (data[column].length > 30 ? (data[column] |
+                          slice:0:30) + '...' : data[column] ) : data[column] | localstring:2)
+                          : '' }} -->
+                          <span>
+                            {{data[column] | localstring:2}}
+                          </span>
+                        
+                      </td>
+                    </ng-container>
+                  </tr>
+                  <ng-container *ngIf="!data['isCollapse']">
+                    <ng-container *ngFor="let monthlyData of data?.YearMonthDetails">
+                      <tr>
+                        <ng-container *ngFor="let monthlyAttribute of monthLevelAttributes">
+                          <td [style.text-align]=" listOfLeftAlignedHeaders.includes(monthlyAttribute) ? 'left' : 'right'">
+                            <ng-container *ngIf="monthlyAttribute === 'Year Month'; else nonYearMonthAttributes">
+                              <button class="table-drilldown-btn"
+                              [ngClass]="monthlyData['isCollapse'] ? 'fas fa-chevron-down' : 'fas fa-chevron-up'"
+                              (click)="monthlyData['isCollapse']=!monthlyData['isCollapse']">
+                            </button>
+                              {{monthlyData['Year Month']}}
+                            </ng-container>
+                            <ng-template #nonYearMonthAttributes>
+                              {{ monthlyData[monthlyAttribute] | localstring:2}}
+                            </ng-template>
+                          </td>
+                        </ng-container>
+                      </tr>
+                      <ng-container *ngIf="!monthlyData['isCollapse']">
+                        <td [attr.colspan]="summaryTableHeaderColumns?.length - 1" class="border">
+                          <pre [ngClass]="!monthlyData['invoiceData'] ? 'dd-ml-20' : ''" style="font-size: 14px;">
+                            {{monthlyData['invoiceData'] && monthlyData['invoiceData'] !='null' ? monthlyData['invoiceData']: 'No Data Available'}}</pre>
+                        </td>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </tbody>
+              <tfoot *ngIf="summaryTableHeaderColumns && summaryTableHeaderColumns.length > 0" class="gridfooter">
+                
+                <tr *ngIf="displayList?.length!=0">
+                  <td>Total</td>
+                 
+                  <td class="gridbody" *ngFor="let data of hoursEmpMonthGridTotalObjArray">
+                    <span>
+                    {{data | localstring:2}}
+                  </span>
+                  </td>
+                 
+                </tr>
+              
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

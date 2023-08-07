@@ -1,0 +1,48 @@
+<div class="modal-content h-auto modal-animation">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{reportsToDisplay | titlecase}}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()" [disabled]="spinner"> <span
+        aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <div *ngIf="spinner" class="overlay" >
+        <div class="loader"></div>
+      </div>
+      <app-hours-by-project *ngIf="reportsToDisplay === 'Hours By Project'" (isPageLoaded)="CaptureImage($event)"></app-hours-by-project>
+      <app-hours-by-resource *ngIf="reportsToDisplay === 'Hours By Resources'" (isPageLoaded)="CaptureImage($event)"></app-hours-by-resource>
+      <app-analytics-view *ngIf="reportsToDisplay === 'Invoice Revenue By Customer'" (isPageLoaded)="CaptureImage($event)"></app-analytics-view>
+      <app-avg-bill-week-hrs *ngIf="reportsToDisplay === 'Average Weekly Billable Hours'" (isPageLoaded)="CaptureImage($event)"></app-avg-bill-week-hrs>
+      <app-my-resources *ngIf="reportsToDisplay === 'My Resources'" (isPageLoaded)="CaptureImage($event)"></app-my-resources>
+      <app-my-resources-dashboard *ngIf="reportsToDisplay === 'My Current Resources'" (isPageLoaded)="CaptureImage($event)"></app-my-resources-dashboard>
+      <app-rm-dashboard *ngIf="reportsToDisplay === 'Utilization'"  (isPageLoaded)="CaptureImage($event)"></app-rm-dashboard>
+      <app-rm-dashboard-pnl *ngIf="reportsToDisplay === 'Employee - P & L'"  (isPageLoaded)="CaptureImage($event)"></app-rm-dashboard-pnl>
+      <app-my-projects-dashboard *ngIf="reportsToDisplay === 'My Current Projects'"  (isPageLoaded)="CaptureImage($event)"></app-my-projects-dashboard>
+      <app-projects-pandl-dashboard *ngIf="reportsToDisplay === 'Project - P & L'"  (isPageLoaded)="CaptureImage($event)"></app-projects-pandl-dashboard>
+      <app-sales-report *ngIf="reportsToDisplay === 'Sales Report'"  (isPageLoaded)="CaptureImage($event)"></app-sales-report>
+      <app-aging-report *ngIf="reportsToDisplay === 'Aging Report'"  (isPageLoaded)="CaptureImage($event)"></app-aging-report>
+      <!-- <app-project-revenue *ngIf="reportsToDisplay === 'Project Revenue'"></app-project-revenue> -->
+      <app-my-team-revenue *ngIf="reportsToDisplay === 'My Revenue'"  (isPageLoaded)="CaptureImage($event)"></app-my-team-revenue>
+      <app-my-team-utilization *ngIf="reportsToDisplay === 'My Resource Utilization'" (isPageLoaded)="CaptureImage($event)"></app-my-team-utilization>
+      <!-- <app-project-pandl *ngIf="reportsToDisplay === 'Organization Project P&L'"></app-project-pandl> -->
+      <!-- <app-project-pnl-filtertest *ngIf="reportsToDisplay === 'My Resource Revenue'" (isPageLoaded)="CaptureImage($event)"></app-project-pnl-filtertest>
+      <app-org-proj-revenue *ngIf="reportsToDisplay === 'Projects Revenue'" (isPageLoaded)="CaptureImage($event)"></app-org-proj-revenue> -->
+      <app-my-invoices *ngIf="reportsToDisplay ==='Project Invoices'" (isPageLoaded)="CaptureImage($event)"></app-my-invoices>
+      <app-my-resource-revenue-source *ngIf="reportsToDisplay ==='My Resource Revenue Source'" (isPageLoaded)="CaptureImage($event)"></app-my-resource-revenue-source>
+      <app-my-resource-revenue *ngIf="reportsToDisplay ==='My Resource Revenue'" (isPageLoaded)="CaptureImage($event)"></app-my-resource-revenue>
+      <app-project-revenue-sql *ngIf="reportsToDisplay ==='Projects Revenue'" (isPageLoaded)="CaptureImage($event)"></app-project-revenue-sql>
+      <app-my-future-revenue *ngIf="reportsToDisplay ==='My Future Revenue'" (isPageLoaded)="CaptureImage($event)"></app-my-future-revenue>
+      <app-project-revenue-distribution *ngIf="reportsToDisplay ==='Project Revenue Distribution'" (isPageLoaded)="CaptureImage($event)"></app-project-revenue-distribution>
+      <app-my-resource-expenses *ngIf="reportsToDisplay ==='My Resource Expenses'" (isPageLoaded)="CaptureImage($event)"></app-my-resource-expenses>
+      <app-project-expenses *ngIf="reportsToDisplay ==='Project Expenses'" (isPageLoaded)="CaptureImage($event)"></app-project-expenses>
+      <app-project-estimated-vs-actual
+          *ngIf="reportsToDisplay === 'Project: Estimated vs. Actual'"
+          (isPageLoaded)="CaptureImage($event)">
+      </app-project-estimated-vs-actual>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="closeModal()">OK</button>
+  </div>
+</div>

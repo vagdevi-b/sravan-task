@@ -1,0 +1,133 @@
+<div class="team-goal-bottom-section" id="#team-goals">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-3">
+          <h2 *ngIf="myTeamLength?.length || projectTeamLength?.length">Team Goals</h2>
+        </div>
+        <div
+            class="col-md-4 mb-3 employee-dropdown"
+            *ngIf="myTeamLength?.length">
+          <ng-multiselect-dropdown
+              [placeholder]="'Select Employee To View Goals'"
+              [data]="indirectReportersGoalsList"
+              [settings]="EMPLOYEE_SELECT_DROPDOWN_SETTINGS"
+              [(ngModel)]="selectedReportingEmployeeList"
+              id="reportingEmployee"
+              name="reportingEmployee"
+              (click)="getIndirectReportersGoalsSummary()"
+              (onSelect)="navigateToViewGoalsPage()">
+          </ng-multiselect-dropdown>
+        </div>
+      </div>
+      <h5 *ngIf="myTeamLength?.length">My Team ({{myTeamLength?.length}}) :</h5>
+      <div class="form-row mb-2">
+        <ng-container *ngFor='let teamGoal of teamGoalsList'>
+        <div class="col-12 col-md-4 col-lg-3 mb-2" 
+        *ngIf="!(teamGoal?.isProjectResource==='Yes')"
+        >
+          <div class="card team-goals">
+            <div class="card-header">
+              <!-- src="{{imageUrl}}{{teamGoal.employeeId}}.JPG" -->
+              <div 
+              *ngIf="teamGoal['photo']==='Yes'"
+              class="emp-img" [style.background]="'url('+imageUrl+(teamGoal.employeeNumber)+'.JPG)'"></div>
+              <div 
+              *ngIf="teamGoal['photo']==='No'"
+              class="emp-img" 
+              style="background: url(/assets/images/emp-img.png);"
+              ></div>
+              <div class="emp-details">
+                <h5>{{teamGoal?.employeeName}}<span *ngIf="(teamGoal?.isProjectResource==='Yes')">(Project Resource)</span></h5>
+                <p>{{teamGoal?.designation}}</p>
+              </div>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <input class="btn btn-light btn-rating" type="button" value="{{teamGoal?.overallRating}}">
+                  <input *ngIf="(teamGoal?.isSetGoals==='Yes')" class="btn btn-outline-primary float-right" type="button" value="Set Goals" (click)="onClickSetGoals(teamGoal)">
+                  <input *ngIf="(teamGoal?.isSetGoals==='Close')" class="btn btn-outline-primary float-right" type="button" value="View Goals" (click)="onClickSetGoals(teamGoal)">
+                  <input *ngIf="(teamGoal?.isSetGoals==='No')" class="btn btn-outline-primary float-right" type="button" value="Review Goals" (click)="onClickSetGoals(teamGoal)">
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Projects</h5>
+              <ul>
+                <li>Project Assigned - {{teamGoal?.projectCount}}</li>
+                <li>Goals Set - {{teamGoal?.delGoalCount}}</li>
+              </ul>
+              <h5 class="card-title">Career Development</h5>
+              <ul>
+                <li>Goals Set - {{teamGoal?.carGoalCount}}</li>
+              </ul>
+              <h5 class="card-title">Organization</h5>
+              <ul>
+                <li>Goals Set - {{teamGoal?.orgGoalCount}}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        </ng-container>
+      </div>
+
+      <h5 *ngIf="projectTeamLength?.length">Project Team ({{projectTeamLength?.length}}):</h5>
+      <div class="form-row mb-2">
+          <ng-container *ngFor='let teamGoal of teamGoalsList'>
+          <div class="col-12 col-md-4 col-lg-3 mb-2" 
+          *ngIf="(teamGoal?.isProjectResource==='Yes')"
+          >
+            <div class="card team-goals">
+              <div class="card-header">
+                <!-- src="{{imageUrl}}{{teamGoal.employeeId}}.JPG" -->
+                <div 
+                *ngIf="teamGoal['photo']==='Yes'"
+                class="emp-img" [style.background]="'url('+imageUrl+(teamGoal.employeeNumber)+'.JPG)'"></div>
+                <div 
+                *ngIf="teamGoal['photo']==='No'"
+                class="emp-img" 
+                style="background: url(/assets/images/emp-img.png);"
+                ></div>
+                <div class="emp-details">
+                  <h5>{{teamGoal?.employeeName}}<span *ngIf="(teamGoal?.isProjectResource==='Yes')">(Project Resource)</span></h5>
+                  <p>{{teamGoal?.designation}}</p>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-12">
+                    <input class="btn btn-light btn-rating" type="button" value="{{teamGoal?.overallRating}}">
+                    <input *ngIf="(teamGoal?.isSetGoals==='Yes')" class="btn btn-outline-primary float-right" type="button" value="Set Goals" (click)="onClickSetGoals(teamGoal)">
+                    <input *ngIf="(teamGoal?.isSetGoals==='Close')" class="btn btn-outline-primary float-right" type="button" value="View Goals" (click)="onClickSetGoals(teamGoal)">
+                    <input *ngIf="(teamGoal?.isSetGoals==='No')" class="btn btn-outline-primary float-right" type="button" value="Review Goals" (click)="onClickSetGoals(teamGoal)">
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Projects</h5>
+                <ul>
+                  <li>Project Assigned - {{teamGoal?.projectCount}}</li>
+                  <li>Goals Set - {{teamGoal?.delGoalCount}}</li>
+                </ul>
+                <h5 class="card-title">Career Development</h5>
+                <ul>
+                  <li>Goals Set - {{teamGoal?.carGoalCount}}</li>
+                </ul>
+                <h5 class="card-title">Organization</h5>
+                <ul>
+                  <li>Goals Set - {{teamGoal?.orgGoalCount}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          </ng-container>
+        </div>
+
+    </div>
+
+  <div id="loadModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="top: 40%;">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading...</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

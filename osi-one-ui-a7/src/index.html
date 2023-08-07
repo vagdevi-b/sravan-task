@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>OsiOne</title>
+  <base href=".">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+		<!-- <link href="assets/ag-grid.css" rel="stylesheet" /> -->
+		<link href="assets/theme-fresh.css" rel="stylesheet" />
+		<link href="assets/theme-material.css" rel="stylesheet" />
+		<!-- <link href="assets/ag-theme-material.css" rel="stylesheet" /> -->
+		<!-- <link href="assets/styles.css" rel="stylesheet" /> -->
+		 <link type="text/css" href="assets/css/font-awesome.min.css" rel="stylesheet" />
+	     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.0.4/popper.js"></script>
+		 <script src="assets/ckeditor/ckeditor.js"></script>
+		<!--<script>
+			var appLocation = ''; 
+			var boilerplatePath = '';
+			var systemJsMap = {"ag-grid":"https:\/\/unpkg.com\/ag-grid@17.1.1\/dist\/ag-grid.js","ag-grid\/main":"https:\/\/unpkg.com\/ag-grid@17.1.1\/dist\/ag-grid.js","ag-grid-enterprise":"https:\/\/unpkg.com\/ag-grid-enterprise@17.1.1\/","ag-grid-react":"npm:ag-grid-react@17.1.0\/","ag-grid-angular":"npm:ag-grid-angular@17.1.0\/","ag-grid-vue":"npm:ag-grid-vue@17.1.0\/"};
+	</script>
+	<script>
+   // System.import('main.ts').catch(function(err){ console.error(err); });
+		</script> -->
+
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<!-- <link rel="stylesheet" href="assets/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css">
+	<script src="assets/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"></script> -->
+	<!-- GOOGLE FONTS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>
+<script>
+	$(document).ready(function() {
+			function disableBack() { window.history.forward() }
+			window.onload = disableBack();
+			window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+	});
+</script>

@@ -1,0 +1,758 @@
+<div class="tab-content" style="overflow: auto">
+  <!-- <div class="breadcrumb-wrapper">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#/reviewcycle/teamgoals">Team Goals</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Career Development</li>
+        </ol>
+    </nav>
+</div>   -->
+  <div class="tab-content">
+    <ng-container>
+      <!-- <p>Weightage: <span>{{weightage}}</span></p> -->
+      <ul class="project-info">
+        <li>
+          Status:
+          <span>{{ appraisalService?.getStatusDescription(empStatus) }}</span>
+        </li>
+        <li *ngIf="empStatus == 'CLOSED'">
+          Reviewed By: <span>{{ reviewedByName }}</span>
+        </li>
+        <li *ngIf="commentsInfo">
+          Declined Reason :<span>{{ commentsInfo }}</span>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-container>
+      <div class="row d-flex justify-content-end">
+        <!-- <div class="mr-3" *ngIf="osiEpmsEmpDetails?.isGoalEnabled">
+          <input
+            type="button"
+            class="btn btn-outline-primary float-right"
+            value="Define Goals"
+            (click)="onClickmyGoals()"
+          />
+        </div> -->
+        <div class="mr-3" *ngIf="
+            empStatus === STATUS_CODE_INFO['EMP_ACCEPTED'] &&
+            showHideInitiateRating
+          ">
+          <input type="button" class="btn btn-outline-primary float-right" value="Initiate Rating"
+            (click)="onClickInitiateRating()"
+            *ngIf="!isReadOnly"/>
+        </div>
+      </div>
+      <ng-template #tipContent>
+        <div class="text-left" *ngFor="let ratingObj of ratingList">
+          {{ ratingObj?.rating }}-{{ ratingObj?.name }}
+        </div>
+      </ng-template>
+      <form>
+        <div>
+          <div class="develpment">
+            <b>{{ sectionHeader_dev }}</b>
+          </div>
+          <div class="card performanceAreas">
+            <div class="card-body" [formGroup]="empsdevelopment">
+              <div class="row mb-2 flex_resp">
+                <div style="text-align: center;"><b>S.NO</b></div>
+                <div  style="text-align: left;"><b>Objective</b></div>
+                <div><b>Target Date</b></div>
+                <div>
+                  <b>Training Required</b>
+                </div>
+                <ng-container>
+                  <div style="text-align: center;"><b>Remarks</b></div>
+                </ng-container>
+                <div *ngIf="
+                    osiEpmsEmpDetails?.isSelfRatingShow ||
+                    osiEpmsEmpDetails?.isManagerRatingShow
+                  ">
+                  <b>Self Rating</b>
+                  <button type="button" class="btn-link ml-2" [ngbTooltip]="tipContent">
+                    <img src="assets/images/help_epms.png" alt="Help" />
+                  </button>
+                </div>
+                <div *ngIf="
+                    osiEpmsEmpDetails?.isSelfRatingShow ||
+                    osiEpmsEmpDetails?.isManagerRatingShow
+                  ">
+                  <b>Manager Rating</b>
+                  <button type="button" class="btn-link ml-2" [ngbTooltip]="tipContent">
+                    <img src="assets/images/help_epms.png" alt="Help" />
+                  </button>
+                </div>
+                <div *ngIf="!osiEpmsEmpDetails?.isGoalEnabled"></div>
+                <!--<div *ngIf="
+                        osiEpmsEmpDetails?.isGoalEnabled
+                        && empKparatingInfoforImp.value
+                        && empKparatingInfoforImp.value.length > 0
+                        && !(empKparatingInfoforImp?.value)[0]?.isEmployeeAccepted
+                      "></div>-->
+                <div *ngIf="osiEpmsEmpDetails?.isGoalEnabled"></div>
+              </div>
+              <ng-container formArrayName="osiEpmsEmpKpaDetails">
+                <div class="row mb-2 flex_resp" *ngFor="
+                    let item of empKparatingInfo.controls;
+                    let empKparatingInfoIndex = index
+                  " [formGroupName]="empKparatingInfoIndex">
+                  <ng-container *ngIf="
+                      (empKparatingInfo?.value)[empKparatingInfoIndex]
+                        ?.isEditable
+                    ">
+                    <div style="text-align: center;"><b>{{empKparatingInfoIndex + 1}}</b>
+                    </div>
+                    <div >
+                      <ng-container>
+                        <input type="text" formControlName="kpa" class="form-control" />
+                      </ng-container>
+                    </div>
+                    <div>
+                      <ng-container>
+                        <div class="input-group">
+                          <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                            #d="ngbDatepicker" readonly formControlName="targetDate" />
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                              <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                                <i class="fa fa-lg fa-calendar"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+                    <div>
+                      <ng-container>
+                        <select class="form-control border rounded input-100" formControlName="trainingRequired"
+                          [attr.disabled]="
+                            (empKparatingInfo?.value)[empKparatingInfoIndex]
+                              ?.isEditable
+                              ? null
+                              : ''
+                          ">
+                          <option select>Select</option>
+                          <option *ngFor="let data of trainingRequired" [ngValue]="data.value">{{ data.name }}</option>
+                        </select>
+                      </ng-container>
+                    </div>
+                    <div>
+                      <ng-container>
+                        <input type="text" formControlName="remarks" class="form-control" />
+                      </ng-container>
+                    </div>
+                    <div style="text-align: center;" *ngIf="
+                        osiEpmsEmpDetails?.isGoalEnabled &&
+                        !(empKparatingInfo?.value)[empKparatingInfoIndex]
+                          ?.isEmployeeAccepted
+                      ">
+                      <i class="fa fa-check check-icon-size" aria-hidden="true" [attr.disabled]="
+                          empKparatingInfo?.at(empKparatingInfoIndex)?.invalid
+                            ? ''
+                            : null
+                        " (click)="updatePerfomanceFields(empKparatingInfoIndex)"></i>
+                      <i class="fa fa-times delete-icon-size" aria-hidden="true"
+                        (click)="deletePerfomanceFields(empKparatingInfoIndex)"></i>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="
+                      !(
+                        (empKparatingInfo?.value)[empKparatingInfoIndex]
+                          ?.isEditable &&
+                        !(empKparatingInfo?.value)[empKparatingInfoIndex]
+                          ?.isEmployeeAccepted
+                      )
+                    ">
+                    <div  style="text-align: center;"><b>{{empKparatingInfoIndex + 1}}</b></div>
+                    <div style="text-align: left;">
+                      {{
+                        (empKparatingInfo?.value)[empKparatingInfoIndex]?.kpa
+                      }}
+                    </div>
+                    <div >
+                      {{
+                        (empKparatingInfo?.value)[empKparatingInfoIndex]
+                          ?.targetDate | ngbDateFormat
+                      }}
+                    </div>
+                    <div >
+                      <ng-container>
+                        <select class="form-control border rounded input-100" formControlName="trainingRequired"
+                          [attr.disabled]="
+                            (empKparatingInfo?.value)[empKparatingInfoIndex]
+                              ?.isEditable
+                              ? null
+                              : ''
+                          ">
+                          <option select>Select</option>
+                          <option *ngFor="let data of trainingRequired" [ngValue]="data.value">{{ data.name }}</option>
+                        </select>
+                      </ng-container>
+                    </div>
+                    <div style="text-align: left;" class="break-word">
+                      <ng-container>
+                        {{
+                          (empKparatingInfo?.value)[empKparatingInfoIndex]
+                            ?.remarks
+                        }}
+                      </ng-container>
+                    </div>
+                    <div style="text-align: center;" *ngIf="osiEpmsEmpDetails?.isGoalEnabled">
+                      <i class="fa fa-pencil check-icon-size" aria-hidden="true" [attr.disabled]="
+                          empKparatingInfo.at(empKparatingInfoIndex)?.invalid
+                            ? ''
+                            : null
+                        " (click)="
+                          updatePerformanceAreasEditMode(empKparatingInfoIndex)
+                        "></i>
+                      <i class="fa fa-times delete-icon-size" aria-hidden="true"
+                        (click)="deletePerfomanceFields(empKparatingInfoIndex)"></i>
+                    </div>
+                  </ng-container>
+                  <div class="position-relative d-flex" *ngIf="
+                      osiEpmsEmpDetails?.isSelfRatingShow ||
+                      osiEpmsEmpDetails?.isManagerRatingShow
+                    ">
+                    <ng-container *ngIf="!checkYearInfo">
+                      <select class="form-control border rounded input-100" formControlName="empSelfRating"
+                        [attr.disabled]="
+                          osiEpmsEmpDetails?.isSelfRatingEnabled ? null : ''
+                        " (change)="
+                          displayEmpComments(empKparatingInfoIndex, 'show')
+                        ">
+                        <option value=0>N/A</option>
+                        <option *ngFor="let ratingInfo of ratingList" [ngValue]="ratingInfo.rating">
+                          {{ ratingInfo?.rating }}
+                        </option>
+                      </select>
+                      <!-- Self Comment Info Box Start -->
+                      <div class="self-comment-info-box">
+                        <div class="dropdown">
+                          <button class="btn-link" type="button" (click)="
+                              displayEmpComments(empKparatingInfoIndex, 'show')
+                            ">
+                            <img src="assets/images/info_epms.png" alt="Info" />
+                          </button>
+                          <ng-container *ngIf="
+                              (empKparatingInfo?.value)[empKparatingInfoIndex]
+                                ?.displayEmployeeComments &&
+                              osiEpmsEmpDetails?.isSelfRatingShow &&
+                              empStatus !== STATUS_CODE_INFO['CLOSED']
+                            ">
+                            <div id="manager-comments" class="manager-rating-box comment-box">
+                              <textarea class="form-control mb-2" formControlName="empComments"
+                                placeholder="Please enter comments" [attr.readonly]="
+                                  osiEpmsEmpDetails?.isSelfRatingEnabled
+                                    ? null
+                                    : ''
+                                " maxlength="1000"></textarea>
+                              <div class="ml-0">
+                                <input class="btn btn-link btn-msg-close" type="button" (click)="
+                                    displayEmpComments(
+                                      empKparatingInfoIndex,
+                                      'close'
+                                    )
+                                  " value="Close" />
+                              </div>
+                            </div>
+                          </ng-container>
+                        </div>
+                      </div>
+                      <!-- Self Comment Info Box End -->
+                    </ng-container>
+
+                    <ng-container *ngIf="checkYearInfo">
+                      <input type="text" formControlName="empSelfRating" readonly class="form-control" />
+                    </ng-container>
+                  </div>
+                  <div class="position-relative d-flex" *ngIf="
+                      osiEpmsEmpDetails?.isSelfRatingShow ||
+                      osiEpmsEmpDetails?.isManagerRatingShow
+                    ">
+                    <ng-container *ngIf="!checkYearInfo">
+                      <select class="form-control border rounded input-100" formControlName="empPmRmRating"
+                        [attr.disabled]="
+                          osiEpmsEmpDetails?.isManagerRatingEnabled ? null : ''
+                        " (change)="
+                          displayEmpPMComments(empKparatingInfoIndex, 'show')
+                        ">
+                        <option value=0>N/A</option>
+                        <option *ngFor="let ratingInfo of ratingList" [ngValue]="ratingInfo.rating">
+                          {{ ratingInfo?.rating }}
+                        </option>
+                      </select>
+                      <!-- Manager Appraisal Rating Comment Box Start -->
+                      <div class="self-comment-info-box">
+                        <div class="dropdown">
+                          <button class="btn-link" type="button" (click)="
+                              displayEmpPMComments(
+                                empKparatingInfoIndex,
+                                'show'
+                              )
+                            ">
+                            <img src="assets/images/info_epms.png" alt="Info" />
+                          </button>
+                          <div id="manager-comments" class="manager-rating-box comment-box" *ngIf="
+                              (empKparatingInfo?.value)[empKparatingInfoIndex]
+                                ?.displayManagerComments &&
+                              osiEpmsEmpDetails?.isManagerRatingShow &&
+                              (empStatus === STATUS_CODE_INFO['EMP_REVIEWED'] ||
+                                empStatus === STATUS_CODE_INFO['RM_REVIEWED'])
+                            ">
+                            <textarea class="form-control mb-2" formControlName="rmPmComments"
+                              placeholder="Please enter comments" maxlength="1000" [attr.readonly]="
+                                osiEpmsEmpDetails?.isManagerRatingEnabled
+                                  ? null
+                                  : ''
+                              "></textarea>
+                            <div class="ml-0">
+                              <input class="btn btn-link btn-msg-close" type="button" (click)="
+                                  displayEmpPMComments(
+                                    empKparatingInfoIndex,
+                                    'close'
+                                  )
+                                " value="Close" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Manager Appraisal Rating Comment Box End -->
+                    </ng-container>
+                    <ng-container *ngIf="checkYearInfo">
+                      <input type="text" formControlName="empPmRmRating" readonly class="form-control" />
+                    </ng-container>
+                  </div>
+                  <div class="position-relative d-flex" style="justify-content: center;" *ngIf="!osiEpmsEmpDetails?.isGoalEnabled">
+                    <i class="glyphicon glyphicon-comment" (click)="updateDevKpaInfo(empKparatingInfoIndex)"></i>
+                  </div>
+                  <div class="connents-view col-md-12" *ngIf="empStatus === STATUS_CODE_INFO['CLOSED']">
+                    <div class="row row-eq-height mx-2 my-4">
+                      <div class="col-12 col-md-6">
+                        <div class="view-comment-box">
+                          <p><strong>Self Appraisal</strong></p>
+                          <p>
+                            {{
+                              (empKparatingInfo?.value)[empKparatingInfoIndex]
+                                ?.empComments
+                            }}
+                          </p>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6 view-comment-box manager">
+                        <div>
+                          <p><strong>Manager Appraisal</strong></p>
+                          <p>
+                            {{
+                              (empKparatingInfo?.value)[empKparatingInfoIndex]
+                                ?.rmPmComments
+                            }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="row mb-2 padding-top" *ngIf="osiEpmsEmpDetails?.isGoalEnabled">
+                <div class="col-12">
+                  <input type="button" class="btn btn-outline-secondary mr-2"
+                    (click)="onClickAddPreformanceAreas()" value="Add Performance Areas"
+                    *ngIf="!isReadOnly" />
+                  <input type="button" class="btn btn-outline-secondary"
+                    (click)="onCloneGoals('dev')"
+                    value="Clone Goals"
+                    *ngIf="!isReadOnly" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Improvements -->
+        <div class="padding-top">
+          <div class="develpment">
+            <b>{{ sectionHeader_imp }}</b>
+          </div>
+          <div class="card performanceAreas">
+            <div class="card-body" [formGroup]="empsimprovement">
+              <div class="row mb-2 flex_resp">
+                <div style="text-align: center;"><b>S.NO</b></div>
+                <div style="text-align: left;"><b>Objective</b></div>
+                <div><b>Target Date</b></div>
+                <div class="d-flex">
+                  <b>Training Required</b>
+                </div>
+                <ng-container>
+                  <div style="text-align: center;"><b>Remarks</b></div>
+                </ng-container>
+                <div *ngIf="
+                    osiEpmsEmpDetails?.isSelfRatingShow ||
+                    osiEpmsEmpDetails?.isManagerRatingShow
+                  ">
+                  <b>Self Rating</b>
+                  <button type="button" class="btn-link ml-2" [ngbTooltip]="tipContent">
+                    <img src="assets/images/help_epms.png" alt="Help" />
+                  </button>
+                </div>
+                <div *ngIf="
+                    osiEpmsEmpDetails?.isSelfRatingShow ||
+                    osiEpmsEmpDetails?.isManagerRatingShow
+                  ">
+                  <b>Manager Rating</b>
+                  <button type="button" class="btn-link ml-2" [ngbTooltip]="tipContent">
+                    <img src="assets/images/help_epms.png" alt="Help" />
+                  </button>
+                </div>
+                <div *ngIf="!osiEpmsEmpDetails?.isGoalEnabled"></div>
+                <!--<div *ngIf="
+                        osiEpmsEmpDetails?.isGoalEnabled
+                        && empKparatingInfoforImp.value
+                        && empKparatingInfoforImp.value.length > 0
+                        && !(empKparatingInfoforImp?.value)[0]?.isEmployeeAccepted
+                      "></div>-->
+                <div *ngIf="osiEpmsEmpDetails?.isGoalEnabled"></div>
+              </div>
+              <ng-container formArrayName="osiEpmsEmpImpKpaDetails">
+                <div class="row mb-2 flex_resp" *ngFor="
+                    let item of empKparatingInfoforImp.controls;
+                    let empKparatingInfoImpIndex = index
+                  " [formGroupName]="empKparatingInfoImpIndex">
+                  <ng-container *ngIf="
+                      (empKparatingInfoforImp?.value)[empKparatingInfoImpIndex]
+                        ?.isEditable
+                    ">
+                    <div style="text-align: center;"><b>{{empKparatingInfoImpIndex + 1}}</b>
+                    </div>
+
+                    <div>
+                      <ng-container>
+                        <input type="text" formControlName="kpa" class="form-control" />
+                      </ng-container>
+                    </div>
+                    <div>
+                      <ng-container>
+                        <div class="input-group">
+                          <input class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                            #d="ngbDatepicker" readonly formControlName="targetDate" />
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                              <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                                <i class="fa fa-lg fa-calendar"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </div>
+                    <div>
+                      <ng-container>
+                        <select class="form-control border rounded input-100" formControlName="trainingRequired"
+                          [attr.disabled]="
+                            (empKparatingInfoforImp?.value)[
+                              empKparatingInfoImpIndex
+                            ]?.isEditable
+                              ? null
+                              : ''
+                          ">
+                          <option select>Select</option>
+                          <option *ngFor="let data of trainingRequired" [ngValue]="data.value">{{ data.name }}</option>
+                        </select>
+                      </ng-container>
+                    </div>
+                    <div *ngIf="osiEpmsEmpDetails?.isGoalEnabled">
+                      <ng-container>
+                        <input type="text" formControlName="remarks" class="form-control" />
+                      </ng-container>
+                    </div>
+                    <div style="text-align: center;" *ngIf="
+                        osiEpmsEmpDetails?.isGoalEnabled &&
+                        !(empKparatingInfoforImp?.value)[
+                          empKparatingInfoImpIndex
+                        ]?.isEmployeeAccepted
+                      ">
+                      <i class="fa fa-check check-icon-size" aria-hidden="true" [attr.disabled]="
+                          empKparatingInfoforImp?.at(empKparatingInfoImpIndex)
+                            ?.invalid
+                            ? ''
+                            : null
+                        " (click)="
+                          updatePerfomanceFields_imp(empKparatingInfoImpIndex)
+                        "></i>
+                      <i class="fa fa-times delete-icon-size" aria-hidden="true" (click)="
+                          deletePerfomanceFields_imp(empKparatingInfoImpIndex)
+                        "></i>
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="
+                      !(empKparatingInfoforImp?.value)[empKparatingInfoImpIndex]
+                        ?.isEditable
+                    ">
+                    <div style="text-align: center;"><b>{{empKparatingInfoImpIndex + 1}}</b>
+                    </div>
+                    <div style="text-align: left;">
+                      {{
+                        (empKparatingInfoforImp?.value)[
+                          empKparatingInfoImpIndex
+                        ]?.kpa
+                      }}
+                    </div>
+                    <div>
+                      {{
+                        (empKparatingInfoforImp?.value)[
+                          empKparatingInfoImpIndex
+                        ]?.targetDate | ngbDateFormat
+                      }}
+                    </div>
+                    <div>
+                      <ng-container>
+                        <select class="form-control border rounded input-100" formControlName="trainingRequired"
+                          [attr.disabled]="
+                            (empKparatingInfoforImp?.value)[
+                              empKparatingInfoImpIndex
+                            ]?.isEditable
+                              ? null
+                              : ''
+                          ">
+                          <option select>Select</option>
+                          <option *ngFor="let data of trainingRequired" [ngValue]="data.value">{{ data.name }}</option>
+                        </select>
+                      </ng-container>
+                    </div>
+                    <div style="text-align: left;" class="break-word">
+                      <ng-container>
+                        {{
+                          (empKparatingInfoforImp?.value)[
+                            empKparatingInfoImpIndex
+                          ]?.remarks
+                        }}
+                      </ng-container>
+                    </div>
+                    <div style="text-align: center;" *ngIf="osiEpmsEmpDetails?.isGoalEnabled">
+                      <i class="fa fa-pencil check-icon-size" aria-hidden="true" [attr.disabled]="
+                          empKparatingInfoforImp?.at(empKparatingInfoImpIndex)
+                            ?.invalid
+                            ? ''
+                            : null
+                        " (click)="
+                          updatePerformanceAreasEditMode_imp(
+                            empKparatingInfoImpIndex
+                          )
+                        "></i>
+                      <i class="fa fa-times delete-icon-size" aria-hidden="true" (click)="
+                          deletePerfomanceFields_imp(empKparatingInfoImpIndex)
+                        "></i>
+                    </div>
+                  </ng-container>
+                  <div class="position-relative d-flex" *ngIf="
+                      osiEpmsEmpDetails?.isSelfRatingShow ||
+                      osiEpmsEmpDetails?.isManagerRatingShow
+                    ">
+                    <ng-container *ngIf="!checkYearInfo">
+                      <select class="form-control border rounded input-100" formControlName="empSelfRating"
+                        [attr.disabled]="
+                          osiEpmsEmpDetails?.isSelfRatingEnabled ? null : ''
+                        " (change)="
+                          displayEmpComments_imp(
+                            empKparatingInfoImpIndex,
+                            'show'
+                          )
+                        ">
+                        <option value=0>N/A</option>
+                        <option *ngFor="let ratingInfo of ratingList" [ngValue]="ratingInfo.rating">
+                          {{ ratingInfo?.rating }}
+                        </option>
+                      </select>
+                      <!-- Self Comment Info Box Start -->
+                      <div class="self-comment-info-box">
+                        <div class="dropdown">
+                          <button class="btn-link" type="button" (click)="
+                              displayEmpComments_imp(
+                                empKparatingInfoImpIndex,
+                                'show'
+                              )
+                            ">
+                            <img src="assets/images/info_epms.png" alt="Info" />
+                          </button>
+                          <div id="manager-comments" class="manager-rating-box comment-box" *ngIf="
+                              (empKparatingInfoforImp?.value)[
+                                empKparatingInfoImpIndex
+                              ]?.displayEmployeeComments &&
+                              osiEpmsEmpDetails?.isSelfRatingShow &&
+                              empStatus !== STATUS_CODE_INFO['CLOSED']
+                            ">
+                            <ng-container>
+                              <textarea class="form-control mb-2" formControlName="empComments"
+                                placeholder="Please enter comments" [attr.readonly]="
+                                  osiEpmsEmpDetails?.isSelfRatingEnabled
+                                    ? null
+                                    : ''
+                                " maxlength="1000"></textarea>
+                            </ng-container>
+                            <div class="ml-0">
+                              <input class="btn btn-link btn-msg-close" type="button" (click)="
+                                  displayEmpComments_imp(
+                                    empKparatingInfoImpIndex,
+                                    'close'
+                                  )
+                                " value="Close" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Self Comment Info Box End -->
+                    </ng-container>
+                    <ng-container *ngIf="checkYearInfo">
+                      <input type="text" formControlName="empSelfRating" readonly class="form-control" />
+                    </ng-container>
+                  </div>
+                  <div class="position-relative d-flex" *ngIf="
+                      osiEpmsEmpDetails?.isSelfRatingShow ||
+                      osiEpmsEmpDetails?.isManagerRatingShow
+                    ">
+                    <ng-container *ngIf="!checkYearInfo">
+                      <select class="form-control border rounded input-100" formControlName="empPmRmRating"
+                        [attr.disabled]="
+                          osiEpmsEmpDetails?.isManagerRatingEnabled ? null : ''
+                        " (change)="
+                          displayEmpPMComments_imp(
+                            empKparatingInfoImpIndex,
+                            'show'
+                          )
+                        ">
+                        <option value=0>N/A</option>
+                        <option *ngFor="let ratingInfo of ratingList" [ngValue]="ratingInfo.rating">
+                          {{ ratingInfo?.rating }}
+                        </option>
+                      </select>
+                      <!-- Manager Appraisal Rating Comment Box Start -->
+                      <div class="self-comment-info-box">
+                        <div class="dropdown">
+                          <button class="btn-link" type="button" (click)="
+                              displayEmpPMComments_imp(
+                                empKparatingInfoImpIndex,
+                                'show'
+                              )
+                            ">
+                            <img src="assets/images/info_epms.png" alt="Info" />
+                          </button>
+                          <div id="manager-comments" class="manager-rating-box comment-box" *ngIf="
+                              (empKparatingInfoforImp?.value)[
+                                empKparatingInfoImpIndex
+                              ]?.displayManagerComments &&
+                              osiEpmsEmpDetails?.isManagerRatingShow &&
+                              (empStatus === STATUS_CODE_INFO['EMP_REVIEWED'] ||
+                                empStatus === STATUS_CODE_INFO['RM_REVIEWED'])
+                            ">
+                            <textarea class="form-control mb-2" formControlName="rmPmComments"
+                              placeholder="Please enter comments" maxlength="1000" [attr.readonly]="
+                              osiEpmsEmpDetails?.isManagerRatingEnabled
+                                ? null
+                                : ''
+                            "></textarea>
+                            <div class="ml-0">
+                              <input class="btn btn-link btn-msg-close" type="button" (click)="
+                                  displayEmpPMComments_imp(
+                                    empKparatingInfoImpIndex,
+                                    'close'
+                                  )
+                                " value="Close" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Manager Appraisal Rating Comment Box End -->
+                    </ng-container>
+
+                    <ng-container *ngIf="checkYearInfo">
+                      <input type="text" formControlName="empPmRmRating" readonly class="form-control" />
+                    </ng-container>
+                  </div>
+                  <div class="position-relative d-flex" style="justify-content: center;" *ngIf="!osiEpmsEmpDetails?.isGoalEnabled">
+                    <i class="glyphicon glyphicon-comment" (click)="updateImpKpaInfo(empKparatingInfoImpIndex)"></i>
+                  </div>
+                  <div class="connents-view col-md-12" *ngIf="empStatus === STATUS_CODE_INFO['CLOSED']">
+                    <div class="row row-eq-height mx-2 my-4">
+                      <div class="col-12 col-md-6">
+                        <div class="view-comment-box">
+                          <p><strong>Self Appraisal</strong></p>
+                          <p>
+                            {{
+                              (empKparatingInfoforImp?.value)[
+                                empKparatingInfoImpIndex
+                              ]?.empComments
+                            }}
+                          </p>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6 view-comment-box manager">
+                        <div>
+                          <p><strong>Manager Appraisal</strong></p>
+                          <p>
+                            {{
+                              (empKparatingInfoforImp?.value)[
+                                empKparatingInfoImpIndex
+                              ]?.rmPmComments
+                            }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="row mb-2 padding-top" *ngIf="osiEpmsEmpDetails?.isGoalEnabled">
+                <div class="col-12">
+                  <input type="button" class="btn btn-outline-secondary mr-2"
+                    (click)="onClickAddPreformanceAreasforImp()" value="Add Performance Areas"
+                    *ngIf="!isReadOnly" />
+                  <input type="button" class="btn btn-outline-secondary" (click)="onCloneGoals('improve')"
+                    value="Clone Goals"
+                    *ngIf="!isReadOnly" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-container>
+    <div class="row float-right mt-4 form-footer-margin mr-1" *ngIf="osiEpmsEmpDetails?.isSaveButtonEnabled">
+      <input type="button" value="Save" class="btn btn-outline-primary" (click)="onClickFinalBtn('SAVED')" [attr.disabled]="
+          empsdevelopment?.invalid || empsimprovement?.invalid ? '' : null
+        " *ngIf="!isReadOnly" />
+      <input type="button" value="Submit" class="btn btn-primary" (click)="onClickFinalBtn('SUBMITTED')"
+        [attr.disabled]="
+          empsdevelopment?.invalid || empsimprovement?.invalid ? '' : null
+        " *ngIf="!isReadOnly" />
+    </div>
+    <div class="row float-right mt-4 form-footer-margin mr-1" *ngIf="osiEpmsEmpDetails?.isResubmitShow">
+      <input type="button" value="Resubmit" class="btn btn-primary" (click)="onClickFinalBtn('SUBMITTED')"
+        [attr.disabled]="
+          empsdevelopment?.invalid || empsimprovement?.invalid ? '' : null
+        " *ngIf="!isReadOnly" />
+    </div>
+    <div class="row float-left mt-4 form-footer-margin ml-1">
+      <input type="button" value="Show History" class="btn btn-outline-primary" (click)="onClickShowHistory()" />
+    </div>
+
+    <div class="row float-right mt-4 form-footer-margin mr-1" *ngIf="osiEpmsEmpDetails?.isAcceptButtonEnabled">
+      <input type="button" value="Decline" class="btn btn-light" (click)="saveempDevelopementAreas('DECLINED')"
+        [attr.disabled]="
+          empsdevelopment?.invalid || empsimprovement?.invalid ? '' : null
+        " *ngIf="!isReadOnly" />
+      <input type="button" value="Accept" class="btn btn-primary" (click)="onClickFinalBtn('EMP ACCEPTED')"
+        [attr.disabled]="
+          empsdevelopment?.invalid || empsimprovement?.invalid ? '' : null
+        " *ngIf="!isReadOnly" />
+    </div>
+  </div>
+  <div id="loadModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="top: 40%;">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-body">
+          <h3>Loading..</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

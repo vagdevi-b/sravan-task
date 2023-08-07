@@ -1,0 +1,103 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card-custom card-report-emp flex-fill w-100">
+      <div class="card-header">
+        <div class="card-actions float-right">
+          <div class="dropdown show">
+            <a href="#" data-toggle="dropdown" data-display="static">
+              <i class="align-middle" data-feather="more-horizontal"></i>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right">
+              <!-- <a class="dropdown-item"><i class="far fa-copy"></i>
+                Copy</a> -->
+              <a class="dropdown-item" (click)="downloadData();"><i class="fas fa-file-export"></i> Export</a>
+              <!-- <a class="dropdown-item"><i class="fas fa-expand"></i>
+                Full Screen</a> -->
+            </div>
+          </div>
+        </div>
+        <div class="pl-conntent-search-field float-right">
+          <div class="input-group-append btn-search-icon"><button class="btn btn-navbar" type="submit"
+              style="margin-top: -3%;"><i class="fa fa-search"></i></button></div>
+          <input type="text" [(ngModel)]="searchValue" (ngModelChange)="searchValueChanges($event)" class="form-control"
+            placeholder="Search" style="padding-right: 20%;" />
+
+        </div>
+
+        <h5 class="card-title mb-0">{{ title }}</h5>
+      </div>
+      <div class="pandl-details2">
+        <div class="card-body d-flex w-100">
+          <div class="align-self-center chart">
+            <div class="table-responsive table-shadow border-0 mb-3 show-row-3" (scroll)="onScroll($event)">
+              <table class="table table-hover table-bordered table-sorting">
+                <thead>
+                  <tr>
+                    <ng-container *ngFor="let data of hoursEmpMonthGridColumns">
+                      <!-- <th *ngIf="data === 'Employee'"> Employee</th>
+                    <th *ngIf="data !== 'Employee'" class="gridbody">
+                      {{data}}</th> -->
+                      <th [class]="getClass(data)" (click)="sort(data)"
+                        [style.text-align]="data !== 'Employee' ? 'right' : 'left'">{{data}}</th>
+                    </ng-container>
+
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="displayList?.length==0">
+                    <td colspan="4" class="border-0">
+                      <div class="text-center">No Records Found</div>
+                    </td>
+                  </tr>
+                  <ng-container *ngFor="let data of displayList; let i = index">
+                    <tr>
+                      <ng-container *ngFor="let column of hoursEmpMonthGridColumns">
+                        <td *ngIf="column === 'Employee'">
+                          <button class="table-drilldown-btn"
+                            [ngClass]="data['isCollapse'] ? 'fas fa-chevron-down' : 'fas fa-chevron-up'"
+                            (click)="data['isCollapse']=!data['isCollapse']">
+                            <!-- <i *ngIf="!data['isCollapse']" class="fas fa-chevron-up"></i>
+                          <i *ngIf="data['isCollapse']" class="fas fa-chevron-down"></i> -->
+                          </button>
+                          {{data['Employee']}}
+                        </td>
+                        <td class="gridbody" *ngIf="column !== 'Employee'">
+                          {{data[column] | localstring:2}}</td>
+                      </ng-container>
+                    </tr>
+                    <ng-container *ngIf="!data['isCollapse']">
+                      <ng-container *ngFor="let data of getProjectDetails(data.Employee)">
+                        <tr id="projectWiseHours{{i}}">
+                          <ng-container *ngFor="let column of hoursEmpMonthGridColumns">
+                            <td *ngIf="column === 'Employee'">
+                              {{data['Employee']}}</td>
+                            <td *ngIf="column !== 'Employee'" class="gridbody">
+                              {{data[column] | localstring:2}}</td>
+                          </ng-container>
+                        </tr>
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </tbody>
+                <tfoot *ngIf="hoursEmpMonthGridColumns && hoursEmpMonthGridColumns.length > 0 && displayList.length > 0"
+                  class="gridfooter">
+                  <tr>
+                    <td>Total</td>
+                    <td class="gridbody" *ngFor="let data of hoursEmpMonthGridTotalObjArray">
+                      {{data | localstring:2}}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- <div class="mt-4" *ngIf="isDataReady && hoursEmpMonthGridData.length">
+            <app-pagination [list]="hoursEmpMonthGridData" (emiter)="changePagedItems($event)">
+            </app-pagination>
+          </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,776 @@
+<div class="v-height">
+  <app-expense-attachment (uploadEvent)="getUploadEvent($event)"></app-expense-attachment>
+  <div class="inner-wrapper">
+    <div class="container-fluid">
+      <div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+      <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+      <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+        <div class="sub-header bb-color">
+          <div class="row">
+            <div class="col-md-7">
+              <h1>Manage User Expenses</h1>
+            </div>
+            <div class="col-md-2 text-right">
+              <button *ngIf="isModificationAllowed" type="button" class="btn btn-outline-primary" [disabled]="fieldArray.length==0" (click)="uploadReceiptCalled()">Upload Receipts</button>
+            </div>
+            <div class="col-md-2 text-right">
+              <button type="button" class="btn btn-outline-primary" (click)="previewCalled()">Preview Receipts</button>
+            </div>
+            <div class="col-md-1">
+              <div class="dropdown pull-right">
+                <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+                <div class="dropdown-content">
+                  <ul>
+                    <li>Items Per Page</li>
+                    <li [class.active]="pageCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+                    <li [class.active]="pageCount==0" (click)="chengePageSize(0)">All</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid pt-3 pb-1">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>
+                  <b>Expense Start Date</b>
+                </label>
+                <div class="input-group">
+
+                  {{expenses?.expenseStartDate}}
+
+
+                </div>
+              </div>
+            </div>
+            <!--QB date-->
+            <div class="col-md-2" *ngIf="expenses.status == 'O' || expenses.status == 'P' || expenses.status == 'G'">
+              <div class="form-group">
+                <label>
+                  <b>QB Report Date</b>
+                </label>
+                <div class="input-group">
+                
+                  {{qbExpenseDate |  date:'yyyy-MM-dd'}}
+
+
+                  <a class="text-link" (click)="showIconForEdit(true)">
+                    <span class="glyphicon glyphicon-pencil" [hidden]=showEditIcon></span>
+                  </a>
+                  <a class="text-link" (click)="showIconForEdit(false)">
+                    <span class="glyphicon glyphicon-ok" [hidden]=!showEditIcon></span>
+                  </a>
+
+
+                  <div class="input-group" #DatePickContainer5 [hidden]=!showEditIcon>
+                    <input id="addExpenseDate" name="addExpenseDate" #expenseDate="ngModel" class="col-sm-4 form-control" [minDate]="expenseSelectedMinDateField"
+                      [maxDate]="expenseSelectedMaxDateField" placeholder={{expenses?.qbExpenseDate}} [(ngModel)]="qbExpenseDate"
+                      ngbDatepicker #d5="ngbDatepicker" (dateChange)="changeDate()" (dateSelect)="validateDate('addExpenseDate', qbExpenseDate);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeExpenseDateAddExpense();"
+                      (change)="validateDate('addExpenseDate', qbExpenseDate);validateNotBeforeToday('exstartdate', expenseStartDateField);showIconForEdit(false);"
+                      (focusout)="validateDate('addExpenseDate', qbExpenseDate);validateNotBeforeToday('exstartdate', expenseStartDateField);"
+                      required>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d5.toggle()" type="button" (document:click)="closeFix5($event, d5)">
+                        <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                          <i class="fa fa-lg fa-calendar date-pick"></i>
+                        </span>
+                      </button>
+                    </div>
+
+                    <div *ngIf="validationError.addExpenseDate" class="alert alert-danger validationAlert">Invalid QB Date</div>
+                  </div>
+
+
+
+                </div>
+              </div>
+            </div>
+
+            <!--QB date-->
+            <!-- <div class="col-md-1"></div> -->
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>
+                  <b>Employee Name</b>
+                </label>
+                <div class="input-group"> {{employeeFullName}} </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-2"></div> -->
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>
+                  <b>Tracking ID</b>
+                </label>
+                <div class="input-group">
+                  <div class="row">
+                    <div class="col-md-4 mt-1" title="Parent Report" *ngIf="parentReportId && parentReportId != 0">{{parentReportId}}</div>
+                    <div class="col-md-1 pb-1" *ngIf="parentReportId && parentReportId != 0">
+                      <i class="glyphicon glyphicon-arrow-right" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-md-3 mt-1">{{reportid}} </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <label>
+                  <b>Total Amount</b>
+                </label>
+                <div> {{totalAmount | number: '1.2-2'}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>
+                  <b>Description</b>
+                </label>
+                <textarea id="description" name="description" maxlength="255" class="form-control form-control-sm border-radius-zero" rows="2"
+                  [(ngModel)]="user.description" placeholder='Description' [required]="true">
+                                </textarea>
+              </div>
+            </div>
+            <div class="col-md-2 col-md-2 mt-2 pt-4 pr-0 text-right">
+              <button type="button" (click)="getExpenseForApproval()" class="btn btn-outline-primary">Current Status</button>
+            </div>
+            <div class="col-md-6">
+              <div class="row mt-2 pt-4">
+                <div class="col">
+                  <button type="button" (click)="downloadAllAttachments()" class="btn btn-outline-primary">Download Attachments</button>
+                </div>
+                <div class="col pl-0">
+                  <button type="button" (click)="getPdfData()" [disabled]="expenses?.lineItems?.length==0" class="btn btn-outline-secondary">Export To PDF</button>
+                </div>
+                <div class="col pl-0">
+                  <select title="PDF Layout" class="form-control" name="exportLayoutType" [(ngModel)]="exportLayoutType">
+                    <option value="l">Landscape</option>
+                    <option value="p">Portrait</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10" style="word-break: break-word;" *ngIf="showRejectedField; else blank_col">
+            <b style="color: rgb(0, 123, 255) !important;">Rejection Reason:</b>
+            {{rejectionReason}}
+          </div>
+          <ng-template #blank_col>
+            <div class="col-md-10">
+            </div>
+          </ng-template>
+          <div class="col-md-2 text-right">
+            <div class="form-container">
+              <span>
+                <a [class.disabled]="f.form.invalid" href="#add_expense" data-toggle="modal" (click)="openModal('add_expense')" *ngIf="isModificationAllowed">
+                  <i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+                </a> &nbsp;
+              </span>
+              <span>
+                <a [class.disabled]="selectedRowId===undefined || selectedRowId==0 || checkMultiSelect()" class="text-link" (click)="openModal('edit_expense')"
+                  *ngIf="isModificationAllowed">
+                  <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i>
+                </a> &nbsp;
+              </span>
+              <span>
+                <a [class.disabled]="!isSelectedExpensesDeletable" (click)="deleteExpenseRow()" class="text-link" *ngIf="isModificationAllowed">
+                  <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="box1">
+              <div class="box-body table-responsive">
+                <table class="table table-bordered edit-expensive">
+                  <tr>
+                    <td>
+                      <input type="checkbox" class="onoffswitch-checkbox" [checked]="isAllChecked" (change)="checkAll($event)">
+                    </td>
+                    <td>
+                      <b>Status</b>
+                    </td>
+                    <td class="project-size">
+                      <b>Project</b>
+                    </td>
+                    <td class="task-size">
+                      <b>Task</b>
+                    </td>
+
+                    <td class="date-size">
+                      <b>Expense Date</b>
+                    </td>
+                    <td>
+                      <b>Expense Type</b>
+                    </td>
+                    <td>
+                      <b>Quantity</b>
+                    </td>
+                    <td>
+                      <b>Receipt Currency</b>
+                    </td>
+                    <td>
+                      <b>Price</b>
+                    </td>
+                    <td class="base-amt">
+                      <b>Employee Base Currency Amount</b>
+                    </td>
+                    <td>
+                      <b>Billable</b>
+                    </td>
+                    <td>
+                      <b>Reimbursable</b>
+                    </td>
+                    <td>
+                      <b>Missing Receipts</b>
+                    </td>
+                    <td>
+                      <b>Exchange Rate</b>
+                    </td>
+                    <td style="min-width: 250px;">
+                      <b>Notes</b>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let exField of expenses?.field | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                    <td>
+                      <input type="checkbox" value="{{exField.id}}" name="{{exField.id}}" class="onoffswitch-checkbox" [(ngModel)]="exField.selected"
+                        (change)="onEditChecked($event)">
+                    </td>
+                    <td class="text-link" (click)="showHistory(exField.id)"> {{statusCodes[exField.status]}} </td>
+                    <!-- <td *ngIf="exField.status == 'R'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Rejected </td>
+                    <td *ngIf="exField.status == 'S'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Submitted </td>
+                    <td *ngIf="exField.status == 'N'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Open </td>
+                    <td *ngIf="exField.status == 'G'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Charged </td>
+                    <td *ngIf="exField.status == 'I'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Invoiced </td>
+                    <td *ngIf="exField.status == 'U'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Reversed </td>
+                    <td *ngIf="exField.status == 'P'" [ngClass]="{'text-link':exField.status}" (click)="showHistory(exField.id)"> Reimbursed </td> -->
+                    <td> {{exField.projectName}}</td>
+                    <td> {{exField.projectTaskName}}</td>
+
+                    <td> {{exField.expenseDate}}</td>
+                    <td> {{exField.expenseTypeName}}</td>
+                    <td> {{exField.quantity}}</td>
+                    <td> {{exField.currencyCode}}</td>
+                    <td> {{exField.receiptPrice | expenseDecimalFormat }}</td>
+                    <td> {{getCurr(exField.baseExchangeAmt)}} {{getVal(exField.baseExchangeAmt)| number: '1.2-2'}}</td>
+                    <!-- <td *ngIf="exField.billable == true">Yes</td>
+                    <td *ngIf="exField.billable == false">No</td>
+                    <td *ngIf="exField.reimbursible == true">Yes</td>
+                    <td *ngIf="exField.reimbursible == false">No</td>
+                    <td *ngIf="exField.missingReceipts == true">Yes</td>
+                    <td *ngIf="exField.missingReceipts == false">No</td> -->
+                    <td>{{exField.billable ? 'Yes' : 'No'}}</td>
+                    <td>{{exField.reimbursible ? 'Yes' : 'No'}}</td>
+                    <td>{{exField.missingReceipts ? 'Yes' : 'No'}}</td>
+                    <td> {{getExRateCurr(exField.exchangeRateWithDesc) | expenseDecimalFormat}} {{getExRateVal(exField.exchangeRateWithDesc)}}</td>
+                    <td> {{exField.notes}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <br/>
+        <br/>
+        <div class="row pt-2 pb-3">
+          <div class="col-md-4">
+            <pagination-controls (pageChange)="p = $event" maxSize="5" previousLabel="" nextLabel="" autoHide="false"></pagination-controls>
+          </div>
+
+          <div class="col-md-8" id="paddingbuttons">
+            <div class="pull-right">
+              <button type="button" (click)="cancel()" class="btn  btn-outline-secondary">Back</button>
+              <button value="Approve" data-toggle="modal" class="btn  btn-outline-primary" (click)="checkAnySelected('approve_expense')"
+                *ngIf="isModificationAllowed" [disabled]="isUploading">Approve</button>
+              <button value="Reject" (click)="openModal('reject_expense')" data-toggle="modal" class="btn btn-outline-warning" (click)="checkAnySelected('reject_expense')"
+                *ngIf="isModificationAllowed" [disabled]="isUploading">Reject</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade custom-modal-padding" id="add_expense" role="dialog" data-backdrop="static" data-keyboard="false">
+  <form name="form" (ngSubmit)="f1.form.valid" #f1="ngForm" novalidate>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Add Expense</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="snackbar danger" #AlertPopupError>{{errorMessage}}</div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Project</label>
+                  <select id="addProjectId" name="addProjectName" #addProjectName="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="addExpense.projectId" [ngModelOptions]="{standalone: true}" required autofocus (focusout)="validateField('addProjectId', addExpense.projectId)"
+                    (change)="onSelectProject($event.target.value)">
+                    <option disabled selected value=''>Select</option>
+                    <option *ngFor="let projectType of projectsData" value={{projectType.projectId}}> {{projectType.projectName}} </option>
+                  </select>
+                  <div *ngIf="validationError.addProjectId" class="alert alert-danger validationAlert">Project is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Task</label>
+                  <select id="addProjectTask" name="addProjectTaskName" #addProjectTaskName="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="addExpense.projectTaskId" [ngModelOptions]="{standalone: true}" required autofocus (focusout)="validateField('addProjectTask', addExpense.projectTaskId)"
+                    (change)="onSelect($event.target.value)">
+                    <option selected value=''>Select</option>
+                    <option *ngFor="let taskType of tasksData" value={{taskType.projectTaskId}}> {{taskType.projectTaskName}} </option>
+                  </select>
+                  <div *ngIf="validationError.addProjectTask" class="alert alert-danger validationAlert">Project Task is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Expense Date</label>
+                  <div class="input-group" #DatePickContainer>
+                    <input id="addExpenseDate" name="addExpenseDate" #expenseDate="ngModel" class="form-control form-control-sm form-field-border"
+                      placeholder="Expense Date" [(ngModel)]="expenseSelectedDateField" [ngModelOptions]="{standalone: true}" ngbDatepicker #d2="ngbDatepicker" [minDate]="expenseSelectedMinDateField"
+                      [maxDate]="expenseSelectedMaxDateField" (dateSelect)="validateDate('addExpenseDate', expenseSelectedDateField);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeExpenseDateAddExpense();"
+                      (change)="validateDate('addExpenseDate', expenseSelectedDateField);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeExpenseDateAddExpense();"
+                      (focusout)="validateDate('addExpenseDate', expenseSelectedDateField);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeExpenseDateAddExpense();"
+                      required>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary date-pick" (click)="d2.toggle()" type="button" (document:click)="closeFix($event, d2)">
+                        <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                          <i class="fa fa-lg fa-calendar date-pick"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div *ngIf="validationError.addExpenseDate" class="alert alert-danger validationAlert">Invalid Expense Date</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Expense Type</label>
+                  <select id="addExpenseTypeId" name="addExpenseTypeName" #addExpenseTypeName="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="addExpense.expenseTypeId" required autofocus (focusout)="validateField('addExpenseTypeId', addExpense.expenseTypeId)"
+                    (change)="onSelectExpenseType($event.target.value)">
+                    <option disabled selected value=''>Select</option>
+                    <option *ngFor="let expenseType of expenseTypesData" value={{expenseType.expenseTypeId}}> {{expenseType.expenseTypeName}} </option>
+                  </select>
+                  <div *ngIf="validationError.addExpenseTypeId" class="alert alert-danger validationAlert">Expense Type is required.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Quantity</label>
+                  <input appDecimal type="text" id="addQuantity" name="addQuantity" #addQuantity="ngModel" class="form-control form-control-sm form-field-border"
+                    [(ngModel)]="addExpense.quantity" [required]="true" placeholder="Quantity"
+                    (focusout)="validateField('addQuantity', addExpense.quantity);onChangeQtyAddExpense($event.target.value)">
+                  <div *ngIf="validationError.addQuantity" class="alert alert-danger validationAlert">Quantity is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Receipt Currency</label>
+                  <select id="addCurrencyCode" name="addCurrencyCode" #addCurrencyCode="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="addExpense.currencyCode"  required autofocus (focusout)="validateField('addCurrencyCode', addExpense.currencyCode)"
+                    (change)="onSelectCurrencyAddExpense($event.target.value)">
+                    <option value=''>Select</option>
+                    <option *ngFor="let currencyType of currencyListData" value={{currencyType.currencyCode}}> {{currencyType.currencyCode}} </option>
+                  </select>
+                  <div *ngIf="validationError.addCurrencyCode" class="alert alert-danger validationAlert">Currency Code is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Price</label>
+                  <input app3Decimal type="text" id="addReceiptPrice" name="addReceiptPrice" #addReceiptPrice="ngModel" class="form-control form-control-sm form-field-border"
+                    [(ngModel)]="addExpense.receiptPrice" [required]="true" placeholder="Price"
+                    (focusout)="validateField('addReceiptPrice', addExpense.receiptPrice);onChangeReceiptPriceAddExpense($event.target.value)">
+                  <div *ngIf="validationError.addReceiptPrice" class="alert alert-danger validationAlert">Price is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Employee Base Currency Amount</label>
+                  <p>
+                    <label *ngIf="addExpense.baseExchangeAmt != '' && addExpense.baseExchangeAmt != 0"> {{getCurr(addExpense.baseExchangeAmt)}} {{getVal(addExpense.baseExchangeAmt)| number:'1.2-2'}} </label>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Exchange Rate</label>
+                  <p>
+                    <label *ngIf="addExpense.exchangeRateWithDesc != '' && addExpense.exchangeRateWithDesc != 0"> {{getExRateCurr(addExpense.exchangeRateWithDesc) | expenseDecimalFormat}} {{getExRatePopupVal(addExpense.exchangeRateWithDesc)}}
+                    </label>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Billable</label>
+                  <p>
+                    <input type="checkbox" id="billable" name="billable" [disabled]="isInternalProject"
+                    class="onoffswitch-checkbox" [(ngModel)]="addExpense.billable">
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Reimbursable</label>
+                  <p>
+                    <input type="checkbox" id="reimbursible" [(ngModel)]="addExpense.reimbursible"  class="onoffswitch-checkbox"
+                      required>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Missing Paper Receipts</label>
+                  <p>
+                    <input type="checkbox" id="missingReceipts" [(ngModel)]="addExpense.missingReceipts"
+                      class="onoffswitch-checkbox">
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Notes</label>
+                  <textarea class="form-control" maxlength="255" rows="1" name="notes" id="notes" [(ngModel)]="addExpense.notes" [required]="true"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <div class="pull-right">
+            <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">Close</button>
+            <button class="btn btn-outline-primary" [disabled]="!f1.form.valid || addExpense.expenseTypeId==undefined ||
+                        addExpense.expenseTypeId=='' || addExpense.projectTaskId==undefined || addExpense.projectTaskId=='' || addExpense.quantity==undefined || 
+                        addExpense.quantity=='' || addExpense.currencyCode==undefined || addExpense.currencyCode =='' || addExpense.receiptPrice == undefined || 
+                        addExpense.receiptPrice == ''" (click)="submitAddExpense(f1)">Add</button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Edit Expense Modal -->
+<div class="modal fade custom-modal-padding" id="edit_expense" role="dialog" data-backdrop="static" data-keyboard="false">
+  <form name="form" (ngSubmit)="f2.form.valid" #f2="ngForm" novalidate>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Expense</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal" (click)="editExpenseClose()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="snackbar danger" #AlertPopupError>{{errorMessage}}</div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Project</label>
+                  <select id="addProjectId" name="addProjectName" #addProjectName="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="editExpense.projectId" [ngModelOptions]="{standalone: true}" required autofocus (focusout)="validateField('addProjectId', editExpense.projectId)"
+                    (change)="onChangeProject($event.target.value)">
+                    <option disabled selected value=''>Select</option>
+                    <option *ngFor="let projectType of projectsData" value={{projectType.projectId}}> {{projectType.projectName}} </option>
+                  </select>
+                  <div *ngIf="validationError.addProjectId" class="alert alert-danger validationAlert">Project is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Task</label>
+                  <select id="addProjectTask" name="addProjectTaskName" #addProjectTaskName="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="editExpense.projectTaskId" [ngModelOptions]="{standalone: true}" required autofocus (focusout)="validateField('addProjectTask', editExpense.projectTaskId)"
+                    (change)="onSelectEdit($event.target.value)">
+                    <option selected value=''>Select</option>
+                    <option *ngFor="let taskType of tasksData" value={{taskType.projectTaskId}}> {{taskType.projectTaskName}} </option>
+                  </select>
+                  <div *ngIf="validationError.addProjectTask" class="alert alert-danger validationAlert">Project Task is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Expense Date</label>
+                  <div class="input-group" #DatePickContainer2>
+                    <input id="addExpenseDate" name="addExpenseDate" #expenseDate="ngModel" class="form-control form-control-sm form-field-border"
+                      placeholder="Expense Date" [(ngModel)]="expenseSelectedDateField" ngbDatepicker #d3="ngbDatepicker" (dateSelect)="validateDate('addExpenseDate', expenseSelectedDateField);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeEditExpenseDateAddExpense();"
+                      [minDate]="expenseSelectedMinDateField" [maxDate]="expenseSelectedMaxDateField" (change)="validateDate('addExpenseDate', expenseSelectedDateField);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeEditExpenseDateAddExpense();"
+                      (focusout)="validateDate('addExpenseDate', expenseSelectedDateField);validateNotBeforeToday('exstartdate', expenseStartDateField);onChangeEditExpenseDateAddExpense();"
+                      required>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary date-pick" (click)="d3.toggle()" type="button" (document:click)="closeFix2($event, d3)">
+                        <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                          <i class="fa fa-lg fa-calendar date-pick"></i>
+                        </span>
+                      </button>
+                    </div>
+                    <div *ngIf="validationError.addExpenseDate" class="alert alert-danger validationAlert">Invalid Expense Date</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Expense Type</label>
+                  <select id="addExpenseTypeId" name="addExpenseTypeName" #addExpenseTypeName="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="editExpense.expenseTypeId" [ngModelOptions]="{standalone: true}" required autofocus 
+                    (focusout)="validateField('addExpenseTypeId', editExpense.expenseTypeId)"
+                    (change)="onSelectExpenseType($event.target.value)">
+                    <option disabled selected value=''>Select</option>
+                    <option *ngFor="let expenseType of expenseTypesData" value={{expenseType.expenseTypeId}}> {{expenseType.expenseTypeName}} </option>
+                  </select>
+                  <div *ngIf="validationError.addExpenseTypeId" class="alert alert-danger validationAlert">Expense Type is required.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Quantity</label>
+                  <input appDecimal type="text" id="addQuantity" name="addQuantity" #addQuantity="ngModel" class="form-control form-control-sm form-field-border"
+                    [(ngModel)]="editExpense.quantity" [ngModelOptions]="{standalone: true}" [required]="true" placeholder="Quantity"
+                    (focusout)="validateField('addQuantity', editExpense.quantity);onChangeQty($event.target.value);">
+                  <div *ngIf="validationError.addQuantity" class="alert alert-danger validationAlert">Quantity is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Receipt Currency</label>
+                  <select id="addCurrencyCode" name="addCurrencyCode" #addCurrencyCode="ngModel" class="form-control select-v4 form-control-sm form-field-border"
+                    [(ngModel)]="editExpense.currencyCode" [ngModelOptions]="{standalone: true}" required autofocus (focusout)="validateField('addCurrencyCode', editExpense.currencyCode)"
+                    (change)="onSelectCurrency($event.target.value)">
+                    <option value=''>Select</option>
+                    <option *ngFor="let currencyType of currencyListData" value={{currencyType.currencyCode}}> {{currencyType.currencyCode}} </option>
+                  </select>
+                  <div *ngIf="validationError.addCurrencyCode" class="alert alert-danger validationAlert">Currency Code is required.</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Price</label>
+                  <input app3Decimal type="text" id="addReceiptPrice" name="addReceiptPrice" #addReceiptPrice="ngModel" class="form-control form-control-sm form-field-border"
+                    [(ngModel)]="editExpense.receiptPrice" [required]="true" placeholder="Price"
+                    (focusout)="validateField('addReceiptPrice', editExpense.receiptPrice);onChangeReceiptPrice($event.target.value)">
+                  <div *ngIf="validationError.addReceiptPrice" class="alert alert-danger validationAlert">Price is required.</div>
+
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Employee Base Currency Amount</label>
+                  <p>
+                    <label *ngIf="editExpense.baseExchangeAmt != '' && editExpense.baseExchangeAmt != 0">{{getCurr(editExpense.baseExchangeAmt)}} {{getVal(editExpense.baseExchangeAmt)| number:'1.2-2'}}</label>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Exchange Rate</label>
+                  <p>
+                    <label *ngIf="editExpense.exchangeRateWithDesc != '' && editExpense.exchangeRateWithDesc != 0"> {{getExRateCurr(editExpense.exchangeRateWithDesc) | expenseDecimalFormat}} {{getExRatePopupVal(editExpense.exchangeRateWithDesc)}}
+                    </label>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Billable</label>
+                  <p>
+                    <input type="checkbox" id="billable" name="billable" [disabled]="isInternalProject"
+                    class="onoffswitch-checkbox" [(ngModel)]="editExpense.billable" [ngModelOptions]="{standalone: true}"
+                      checked>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Reimbursable</label>
+                  <p>
+                    <input type="checkbox" id="reimbursible" name="reimbursible" [(ngModel)]="editExpense.reimbursible" [ngModelOptions]="{standalone: true}">
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label>Missing Paper Receipts</label>
+                  <p>
+                    <input type="checkbox" [(ngModel)]="editExpense.missingReceipts" [ngModelOptions]="{standalone: true}" class="onoffswitch-checkbox">
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Notes</label>
+                  <textarea class="form-control" maxlength="255" rows="1" name="notes" id="notes" [(ngModel)]="editExpense.notes" [required]="true"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="pull-right">
+            <button class="btn btn-outline-secondary btn-cancel" type="button" data-dismiss="modal" (click)="editExpenseClose()">Close</button>
+            <button class="btn btn-outline-primary" type="submit" data-dismiss="modal" [disabled]="!f2.form.valid || editExpense.expenseTypeId==undefined ||
+                        editExpense.expenseTypeId=='' || editExpense.projectTaskId==undefined || editExpense.projectTaskId=='' || editExpense.quantity==undefined || editExpense.quantity=='' || 
+                        editExpense.currencyCode==undefined || editExpense.currencyCode =='' || editExpense.receiptPrice == undefined || editExpense.receiptPrice == ''
+                        || editExpense.notes == undefined || editExpense.notes ==''" (click)="submitEditExpense(f2)">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade custom-modal-padding" id="delete_expense" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Do you really want to Delete?</h5>
+      </div>
+      <div class="modal-footer">
+        <div class="pull-right">
+          <button type="button" class="btn btn-primary mr-3" (click)="onSelectedRowDelete()" data-dismiss="modal">Yes</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Reject Expense Modal -->
+<div class="modal fade custom-modal-padding" id="reject_expense" role="dialog" data-backdrop="static" data-keyboard="false">
+  <form name="form" (ngSubmit)="f2.form.valid" #f2="ngForm" novalidate>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reason to Reject</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Reason</label>
+            <textarea type="text" name="rejectReason" maxlength="199" #rejectReason="ngModel" class="form-control" [(ngModel)]="user.rejectReason"
+              [ngModelOptions]="{standalone: true}" [required]="true" rows="3">
+                                    </textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-primary" type="submit" data-toggle="modal" data-target="#approveRejectModal" data-dismiss="modal"
+            [disabled]="!user.rejectReason" (click)="rejectExpense()">Submit</button>
+          <button class="btn btn-outline-secondary btn-cancel" type="button" data-dismiss="modal" (click)="rejectReasonClose()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<!-- Approve Expense Modal -->
+<div class="modal fade custom-modal-padding" id="approve_expense" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <h5>Do you want to Approve the Expense?</h5>
+        <br>
+        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#approveRejectModal" (click)="approveExpense()"
+          data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Current Status Modal -->
+<div class="modal fade custom-modal-padding" id="waitingForApproval" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <h4>Current Status</h4>
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Current Status</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="height: 126px;overflow-x: auto;">
+          <table style="width: 100%;">
+            <tbody id="tsApprTds" style="max-height: 40vh;">
+              <tr>
+                <th style="width:33.33%">Status</th>
+                <th style="width:33.33%">Employee</th>
+                <th style="width:33.33%">Action On</th>
+              </tr>
+              <tr *ngFor="let empView of waitingOn">
+                <td>{{empView.status}}</td>
+                <td>{{empView.sourceName}}</td>
+                <td>{{empView.comments}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="pull-right">
+          <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

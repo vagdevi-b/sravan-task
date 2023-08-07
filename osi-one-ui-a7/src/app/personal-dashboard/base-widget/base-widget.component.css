@@ -1,0 +1,71 @@
+.card{
+    border: 1px solid #E2E2E2;
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.19);
+}
+.card .card-header {
+    height: auto;
+}
+.card .card-header .glyphicon-remove {
+    cursor: pointer;
+}
+.card .wTitle{
+    background-color: #FFFFFF !important;
+    display: flex;
+    justify-content: space-between;
+}
+.card .wTitle .title-text{
+    display: flex;
+    flex-direction: column;
+}
+.card .wTitle .title-text .weekRange label{
+    color: #575961;
+    font-family: Montserrat;
+    font-size: 12px;
+    cursor: pointer;
+}
+.card .wTitle span.glyphicon {
+   color: #575961;
+   font-size: 14px !important;
+}
+.card .wTitle span.name{
+    color: #575961;
+    font-family: Montserrat;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 18px;
+}
+.card.widget .card-body{
+    max-height: 278px;
+    min-height: 278px;
+    overflow-y: auto;
+    padding: 0;
+}
+
+#weeklyStatusDate{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0 !important;
+    width: 0;
+    caret-color: transparent;
+}
+
+.nav.nav-pills.timesheets-type{ 
+    align-self: flex-start;
+    height: 30px; float: right; margin-top: 10px; border: 1px solid #1d618a; background-color: #fff; overflow: hidden;
+    border-radius:25px; -webkit-border-radius:25px; -moz-border-radius:25px }
+    .nav.nav-pills.timesheets-type a{ padding: 0 12px; font-size: 12px; line-height: 28px; color: #1d618a; font-weight: 400;  background-color: #fff;
+    border-radius:0; -webkit-border-radius:0; -moz-border-radius:0  }
+    .nav.nav-pills.timesheets-type a.active{ background-color:#1d618a; color: #fff }
+    .nav.nav-pills.timesheets-type a:hover{ background-color:#3381b0; color: #fff }
+    /* #dashboardContainer .tab-content{ background-color: #fff }
+    .nav.nav-pills.timesheets-type li:last-child a{ padding-right:12px } */
+    .card-header{ padding-left: 15px !important;padding-right: 15px !important; }
+    .card-header .action-icon{ white-space: nowrap; }
+    .card-h-341{height:342px}
+    @media(max-width:800px){
+        .add-new-btn{ padding: 0 12px !important; margin-right:5px}
+    }
+    

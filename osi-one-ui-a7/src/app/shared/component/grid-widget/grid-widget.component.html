@@ -1,0 +1,54 @@
+<div class="card-custom pl-conntent-dashboard">
+  <div class="card-header mb-2">
+    <div class="card-actions float-right">
+      <div *ngIf="widgetData?.type === 'table'" class="dropdown show">
+        <a href="#" data-toggle="dropdown" data-display="static">
+          <i class="align-middle" data-feather="more-horizontal"></i>
+        </a>
+
+        <div class="dropdown-menu dropdown-menu-right">
+          <!-- <a class="dropdown-item"><i class="far fa-copy"></i> Copy</a> -->
+          <a class="dropdown-item" (click)="downloadData();"><i class="fas fa-file-export"></i> Export</a>
+          <!-- <a class="dropdown-item"><i class="fas fa-expand"></i> Full Screen</a> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="pl-conntent-search-field float-right" *ngIf="showSearch && widget?.type === 'table'">
+      <div class="input-group-append btn-search-icon"><button class="btn btn-navbar" type="submit"
+          style="margin-top: -3%;"><i class="fa fa-search"></i></button></div>
+      <input type="text" [(ngModel)]="searchValue" (ngModelChange)="searchValueChanges($event)" class="form-control"
+        placeholder="Search" style="padding-right: 20%;" />
+    </div>
+
+    <h5 class="card-title mb-0">{{widgetData.title}}</h5>
+  </div>
+  <div class="card-body d-flex w-100">
+    <div class="align-self-center chart">
+      <ng-container *ngIf="widgetData && data?.length && loading === false; else noDataAvailableTemplate">
+        <ng-container *ngIf="widgetData.type === 'chart'; else dataTableTemplate">
+          <ng-container *ngIf="widgetData?.details?.type === 'horizontalBar'; else canvasTemplate">
+            <div style="height:250px; overflow-y: scroll; position: relative">
+              <app-canvas-chart #canvasComponent [widget]="widgetData" [rawData]="data"></app-canvas-chart>
+            </div>
+          </ng-container>
+          <ng-template #canvasTemplate>
+            <app-canvas-chart #canvasComponent [widget]="widgetData" [rawData]="data"></app-canvas-chart>
+          </ng-template>
+        </ng-container>
+        <ng-template #dataTableTemplate>
+          <app-data-table-external #dataTableExternalComponent [gridColumns]="gridColumns"
+            [details]="extractedDataDeatails">
+          </app-data-table-external>
+        </ng-template>
+      </ng-container>
+      <ng-template #noDataAvailableTemplate>
+        <ng-container *ngIf="!data?.length && loading === false">
+          <div class="card-title" style="text-align: center;">
+            No Data Available
+          </div>
+        </ng-container>
+      </ng-template>
+    </div>
+  </div>
+</div>

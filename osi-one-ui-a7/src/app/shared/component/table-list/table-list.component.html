@@ -1,0 +1,225 @@
+<div class="table-responsive" style="height: 100% !important">
+  <table class="table table-hover table-bordered">
+    <thead>
+      <tr>
+        <ng-container *ngFor="let data of tableHeaders">
+          <ng-container *ngIf="!isProfileTable">
+            <th *ngIf="data !== 'Job Title' && data !== 'Assigned To' && data !== 'Request Number'"
+            [class]="getClass(data)" (click)="sort(data)" style="width: 10%;">
+              {{data}}</th>
+            <th *ngIf="data === 'Request Number'" [class]="getClass(data)" (click)="sort(data)" style="width: 13%;">
+              Request Number</th>
+            <th *ngIf="data === 'Job Title'" [class]="getClass(data)" (click)="sort(data)" style="width: 17%;">
+              Job Title</th>
+            <th *ngIf="data === 'Assigned To'" [class]="getClass(data)" (click)="sort(data)" style="width: 15%;">
+              Assigned To</th>
+          </ng-container>
+          <ng-container *ngIf="isProfileTable">
+            <th
+              *ngIf="data !== 'Created By' && data !== 'Request Number'&& data !== 'Email'&& data !== 'Exp' && data !== 'Applicant Name'"
+              [class]="getClass(data)" (click)="sort(data)" style="width: 9%;">
+              {{data}}</th>
+            <th *ngIf="data === 'Request Number'" [class]="getClass(data)" (click)="sort(data)" style="width: 11%;">
+              Request Number</th>
+            <th *ngIf="data === 'Applicant Name'" [class]="getClass(data)" (click)="sort(data)" style="width: 12%;">
+              Applicant Name</th>
+            <th *ngIf="data === 'Created By'" [class]="getClass(data)" (click)="sort(data)" style="width: 15%;">
+              Created By</th>
+            <th *ngIf="data === 'Email'" [class]="getClass(data)" (click)="sort(data)" style="width: 15%;">
+              Email</th>
+            <th *ngIf="data === 'Exp'" [class]="getClass(data)" (click)="sort(data)" style="width: 5%;">
+              Exp</th>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of tableData; let i = index">
+        <tr>
+          <ng-container *ngFor="let column of tableHeaders">
+            <td *ngIf="column === 'Request Number'" class="d-flex align-items-center">
+              <ng-container *ngIf="isDrillDownLevelOne">
+                <button (click)="getProfileSourceCountByRequistion(data.Id)" class="table-drilldown-btn"
+                  data-toggle="collapse" attr.data-target="#drillDownOne{{i}}" aria-expanded="false">
+                  <i class="fas fa-chevron-up"></i>
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+                <a (click)="viewReqData(data);">{{data['Request
+                  Number']}}</a>
+              </ng-container>
+              <ng-container *ngIf="!isDrillDownLevelOne">{{data['Request Number']}}</ng-container>
+            </td>
+            <td class="text-truncate" title="{{data[column]}}"
+              *ngIf="column !== 'Request Number' && column !== 'Submitted On'  && column !== 'Job Title' && column !== 'Target Date' && column !== 'Applicant Name' && column !== 'Resume' && column !== 'Created On'">
+              {{data[column]}}</td>
+            <td *ngIf="column === 'Submitted On'">
+              {{ data['Submitted On'] | date : 'MM/dd/yyyy' }}
+            </td>
+            <td *ngIf="column === 'Target Date'">
+              {{ data['Target Date'] | date : 'MM/dd/yyyy' }}
+            </td>
+            <td *ngIf="column === 'Job Title'">
+              {{data['Job Title']}}
+            </td>
+            <td *ngIf="column === 'Created On'">
+              {{data['Created On'] | date : 'MM/dd/yyyy' }}
+            </td>
+            <td *ngIf="column ==='Applicant Name'">
+              <a style="text-decoration: underline;" (click)='sendProfileData(data);'>{{data['Applicant
+                Name']}}</a>
+            </td>
+            <td *ngIf="column ==='Resume'" style="overflow: hidden;">
+        <tr *ngFor="let attachments of tableData[i].Resume">
+          <ng-container>
+            <a href="{{attachments.ResumeLink}}" download="{{attachments.fileName}}">{{attachments.fileName}}</a>
+          </ng-container>
+        </tr>
+        </td>
+
+        <!-- <div [innerHtml]="data['Job Details']" id="jobdet" class="hide"></div> -->
+
+        <!-- <td *ngIf="column === 'Action'">
+              <a class="p-2 text-secondary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+              <a class="p-2 text-secondary"><i class="fa fa-trash" aria-hidden="true"></i></a>
+            </td> -->
+      </ng-container>
+      </tr>
+      <ng-container *ngIf="isDrillDownLevelOne">
+        <ng-container>
+          <tr class="collapse" id="drillDownOne{{i}}">
+            <td colspan="9" style="padding: 0 !important;">
+              <table class="table table-hover table-bordered">
+                <tr>
+
+                  <ng-container *ngFor="let levelOneData of data.profileSourceCount">
+                    <td *ngIf="levelOneData.sourceName !=='Total'">
+                      <!-- <button style="border-radius: 8px; border-width: 1px; background: none; width: 95px;" -->
+                      <button class="btn c_btn"
+                        (click)="getProfilesByReqIdAndSourceId(data.Id,levelOneData.sourceId);" data-toggle="collapse"
+                        attr.data-target="#drillDownTwo{{i}}" aria-expanded="false">{{levelOneData.sourceName}}
+                        <p class="h1 mb-0" style="text-align: center;">{{levelOneData.count}}</p>
+                      </button>
+
+                    </td>
+                    <td *ngIf="levelOneData.sourceName==='Total'"><button
+                        (click)="getProfilesByReqIdAndSourceId(data.Id,null);" data-toggle="collapse"
+                        attr.data-target="#drillDownTwo{{i}}" aria-expanded="false"
+                        class="btn c_btn d-flex active m-auto"><span
+                          class="h3 mb-0 text-white align-self-end align-self-end pb-3 pr-2 font-weight-light">Total</span>
+                        <p class="display-3 align-self-end font-weight-normal">{{levelOneData.Totalcount}}</p>
+                      </button></td>
+                  </ng-container>
+
+
+
+                  <ng-container *ngIf="!data['isAssigned']">
+                    <td>
+                      <div class="text-center">
+                        <span class="h5 text-dark">Assign To</span>
+                        <select class="form-control" (change)="assignRecruiter($event)" [(ngModel)]="recruiterName">
+                          <option value="">Select</option>
+                          <option *ngFor='let recruitData of recruitmentGroupData'
+                            [value]="recruitData.employeeFullName">
+                            {{recruitData.employeeFullName}}</option>
+                        </select>
+                      </div>
+                    </td>
+                    <td>
+                      <button (click)="updateRequistion(data.Id);" class="btn btn-primary">Assign</button>
+                    </td>
+                  </ng-container>
+                  <ng-container *ngIf="data['isAssigned']">
+                    <td>
+                      <b>Assigned To</b>
+                      <p><a (click)="reAssignRecruiter(data,data['Assigned To']);" style="font-size: medium;">{{data['Assigned To']}}</a>
+                      </p>
+                    </td>
+                    <td>
+                      <a style="text-decoration: underline;" (click)='sendDataToAddProfile(data);'>Add
+                        Profile</a>
+                    </td>
+                  </ng-container>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isDrillDownLevelTwo">
+        <ng-container>
+          <tr class="collapse" id="drillDownTwo{{i}}">
+            <td colspan="9" style="padding: 0 !important;">
+              <table class="table table-hover table-bordered">
+                <thead class="table-level1">
+                  <tr>
+                    <th style="font-weight: lighter !important;" *ngFor="let column of drillDownTwoHeaders">{{column}}</th>
+
+                  </tr>
+                </thead>
+                <tbody style="text-align: left;">
+                  <ng-container *ngFor="let profileData of tableData[i].profilesData; let k=index">
+                    <tr>
+                      <ng-container *ngFor="let column of drillDownTwoHeaders">
+                        <td style="padding: .7rem !important" *ngIf="column ==='Applicant Name'">
+                          <a style="text-decoration: underline;"
+                            (click)='sendReqProfileData(data,profileData);'>{{profileData['Applicant Name']}}</a>
+                        </td>
+                        <td style="padding: .7rem !important" *ngIf="column !=='Resume' && column !=='Applicant Name'">
+                          {{profileData[column]}}
+                        </td>
+                        <td style="padding: .7rem !important" *ngIf="column ==='Resume'">
+                    <tr *ngFor="let attachments of profileData['Resume']">
+                      <ng-container>
+                        <a href="{{attachments.ResumeLink}}"
+                          download="{{attachments.fileName}}">{{attachments.fileName}}</a>
+                      </ng-container>
+                    </tr>
+            </td>
+            <!-- <ng-container *ngIf="column === 'Action'">
+                <ng-container *ngIf="profileData.Status != null">
+                  <td colspan="2">
+                    <select style="width: 100px;" class="form-control" (change)="getProfileStatus($event)">
+                      <option value="select">Select</option>
+                      <option *ngFor='let profileStatus of profileStatusData' [value]="profileStatus.lookupValue">
+                        {{profileStatus.lookupValue}}</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="btn btn-light"
+                      (click)="updateProfileStatus(data.Id,profileData.ProfileId);">Update</button>
+                  </td>
+                </ng-container>
+              </ng-container> -->
+        </ng-container>
+
+        </tr>
+      </ng-container>
+    </tbody>
+    <tfoot>
+      <tr *ngIf="tableData[i].profilesData?.length === 0">
+          <td colspan="7">
+              No records found
+          </td>
+      </tr>
+  </tfoot>
+  </table>
+  </td>
+  </tr>
+  </ng-container>
+  </ng-container>
+  </ng-container>
+  </tbody>
+  </table>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%; width: 15%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3 style="color: white;">Loading ...</h3>
+      </div>
+    </div>
+  </div>
+</div>

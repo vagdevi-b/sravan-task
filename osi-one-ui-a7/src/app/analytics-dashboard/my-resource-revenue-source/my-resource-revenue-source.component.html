@@ -1,0 +1,190 @@
+<div class="v-height" id="modal-container">
+
+  <!-- Refresh Button -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="float-right mr-4">
+        <span
+          class="glyphicon glyphicon-refresh"
+          data-tooltip
+          title="Sync data"
+          style="font-size: 16px !important; cursor: pointer; color: #578fd4;"
+          (click)="onRefresh()">
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdowns Begin -->
+  <div class="form-filter">
+
+    <!-- Dropdown for Organization filter -->
+    <div class="col-form-filter mb-3">
+      <label>Organization</label>
+      <ng-multiselect-dropdown 
+        id="mddOrg"
+        [disabled]="spinner"
+        [placeholder]="'Select'"
+        [data]="orgData"
+        [settings]="dropdownSettings"
+        [(ngModel)]="selectedOrgs"
+        (onSelectAll)="onSelectDeselectAll($event, 'selectedOrgs')"
+        (onDeSelectAll)="onSelectDeselectAll($event, 'selectedOrgs')">
+      </ng-multiselect-dropdown>
+    </div>
+
+    <!-- Dropdown for Practice filter -->
+    <div class="col-form-filter mb-3">
+      <label>Practice</label>
+      <ng-multiselect-dropdown 
+        id="mddPract"
+        [disabled]="spinner"
+        [placeholder]="'Select'"
+        [data]="practicesData"
+        [settings]="dropdownSettings"
+        [(ngModel)]="selectedPractices"
+        (onSelectAll)="onSelectDeselectAll($event, 'selectedPractices')"
+        (onDeSelectAll)="onSelectDeselectAll($event, 'selectedPractices')">
+      </ng-multiselect-dropdown>
+    </div>
+
+    <!-- Dropdown for Sub Practice filter -->
+    <div class="col-form-filter mb-3">
+      <label>Sub Practice</label>
+      <ng-multiselect-dropdown 
+        id="mddSubPract"
+        [disabled]="spinner"
+        [placeholder]="'Select'"
+        [data]="subPracticesData"
+        [settings]="dropdownSettings"
+        [(ngModel)]="selectedSubPractices"
+        (onSelectAll)="onSelectDeselectAll($event, 'selectedSubPractices')"
+        (onDeSelectAll)="onSelectDeselectAll($event, 'selectedSubPractices')">
+      </ng-multiselect-dropdown>
+    </div>
+
+    <!-- Dropdown for Employee filter -->
+    <div class="col-form-filter mb-3">
+      <label>Employee </label>
+      <ng-multiselect-dropdown 
+        id="mddEmployee"
+        [disabled]="spinner"
+        [placeholder]="'Select'"
+        [data]="employeesData"
+        [settings]="dropdownSettings"
+        [(ngModel)]="selectedEmployees"
+        (onSelectAll)="onSelectDeselectAll($event, 'selectedEmployees')"
+        (onDeSelectAll)="onSelectDeselectAll($event, 'selectedEmployees')">
+      </ng-multiselect-dropdown>
+    </div>
+
+  </div>
+  <!-- Dropdowns End -->
+
+  <div id="filter">
+
+    <div class="row">
+
+      <div class="col-md-12">
+
+        <div class="card" id="htmle2imagedata">
+          <div class="card-header">
+            <div class="row">
+
+              <!-- Chart Title -->
+              <div class="col-sm-5">
+                <h6 style="padding-top : 5px">My Resource Revenue Source</h6>
+              </div>
+
+              <!-- Year Selection -->
+              <div class="col-md-2">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label>Year </label>
+                  </div>
+                  <div class="col-sm-10">
+                    <select
+                      class="form-control rounded-0 form-control-sm form-field-border dd"
+                      [(ngModel)]="selectedYear"
+                      (change)="onYearChange()">
+
+                      <option
+                        *ngFor="let eachYear of yearsList"
+                        value="{{ eachYear }}">
+                        {{ eachYear }}
+                      </option>
+
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Compare On/Off Toggle -->
+              <div class="col-sm-2 h-25">
+                <button
+                  type="button"
+                  id="toggle"
+                  class="btn btn-toggle"
+                  data-toggle="button"
+                  aria-pressed="false"
+                  autocomplete="off"
+                  (click)="onCompareToggle()"
+                  [disabled]="disableCompare">
+                  <div class="handle"></div>
+                </button>
+              </div>
+
+              <!-- Grid/Chart Toggle -->
+              <div class="col-sm-2 h-25">
+                <button
+                  type="button"
+                  id="toggleGrid"
+                  class="btn btn-toggle_"
+                  data-toggle="button"
+                  aria-pressed="false"
+                  autocomplete="off"
+                  (click)="onGridToggle()">
+                  <div class="handle"></div>
+                </button>
+              </div>
+
+              <!-- Excel Download Button -->
+              <div class="col-sm-1">
+                <span
+                  class="glyphicon glyphicon-download-alt"
+                  data-tooltip
+                  title="Download in excel"
+                  style="font-size: 22px !important; cursor: pointer;"
+                  (click)="onExportToExcel()"></span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Chart Display -->
+          <div class="card-body chartContainer" [hidden]="isGridModeOn">
+            <canvas id="myResourcesRevenueChart"></canvas>
+          </div>
+
+          <!-- Grid Display -->
+          <div class="card-body" [hidden]="!isGridModeOn">
+            <div class="row">
+              <div class="col-md-12">
+                <ag-grid-angular style="width: auto;" class="ag-theme-balham"
+                  [rowData]="gridRowData"
+                  [columnDefs]="columnDefs"
+                  [gridOptions]="gridOptions"
+                  [paginationPageSize]="paginationPageSize"
+                  pagination="true"
+                  [defaultColDef]="defaultColDef">
+                </ag-grid-angular>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="spinner" class="overlay">
+      <div class="loader"></div>
+    </div>
+  </div>

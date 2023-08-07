@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed">
+  <div class="wrapper">
+    <!-- Preloader -->
+
+    <!-- Navbar -->
+
+    <!-- /.navbar -->
+    <!-- Main Sidebar Container -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper" style="margin-bottom:50px;">
+      <!-- Main content -->
+      <!-- <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="custom-crumb breadcrumb-item active" aria-current="page">Resignation Management</li> -->
+      <!-- <button type="button" class="backbutton" class="btn btn-block btn-primary btn-initiate mr-3"
+            (click)="navigateToInitiate()">Back</button> -->
+      <!-- </ol>
+      </nav> -->
+      <div class="card custom-margin custom-card">
+
+        <div class="card-header custom-header d-flex justify-content-between">
+          Resignation Request
+          <div class="action-badge-with-value-sec d-flex align-items-center">
+            <div class="action-badge-value-wrap">
+              <ul class="">
+                <li>HR SLA <span class="action-badge-value danger-action-badge-value"></span></li>
+                <li>BU SLA <span class="action-badge-value primary-action-badge-value"></span></li>
+              </ul>
+            </div>
+            <div class="action-badge-wrap accepted-badge">
+              Accepted Resignation
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body d-none">
+
+
+        </div>
+
+
+
+        <!-- Demo Structure Start -->
+        <!-- <app-emp-resignation-details></app-emp-resignation-details> -->
+
+        <div class="reg-emp-details">
+          <div class="reg-emp-details-head">
+            <table class="table table-hover table-bordered">
+              <tbody>
+                <tr>
+                  <td><span class="reg-emp-details-label">Full Name</span>: {{rowdata.employeeName}}</td>
+                  <td><span class="reg-emp-details-label">Resignation Type</span>: {{rowdata.requestType}}</td>
+                  <td><span class="reg-emp-details-label">Replacement Required</span>: {{rowdata.isReplacementRequired
+                    == true ? "Yes" : "No"}}</td>
+                  <td><span class="reg-emp-details-label">Dependency</span>: {{rowdata.levelOfDependency}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="reg-emp-details-content">
+            <table class="table table-hover table-bordered">
+              <tbody>
+                <tr>
+                  <td><span class="reg-emp-details-date-label">Date of Resignation</span>: {{rowdata.resignationDate}}
+                  </td>
+                  <td><span class="reg-emp-details-date-label">Date of Creation</span>: {{rowdata.creationDate}}</td>
+                  <td><span class="reg-emp-details-date-label">Date of Decision</span>: {{rowdata.decisionDate}}</td>
+                  <td><span class="reg-emp-details-date-label">&nbsp;</span>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td><span class="reg-emp-details-date-label">Requested Releasing Date</span>: --</td>
+                  <td><span class="reg-emp-details-date-label">Last Date as per Policy</span>:{{rowdata.relievingDate}}
+                  </td>
+                  <td><span class="reg-emp-details-date-label">Last Working Date</span>: {{rowdata.actualLWD}}</td>
+                  <td><span class="reg-emp-details-date-label">&nbsp;</span>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="accordion custom-accordion px-3 pb-0 custom-accordion-structure mb-0" id="accordionExample2">
+            <div class="card">
+              <div class="card-head" id="headingOne">
+                <h2 class="mb-0" data-toggle="collapse" data-target="#collapseOne2" aria-expanded="true"
+                  aria-controls="collapseOne2">
+                  View Details
+                </h2>
+              </div>
+              <div id="collapseOne2" class="collapse show" aria-labelledby="headingOne"
+                data-parent="#accordionExample2">
+                <div class="card-body">
+                  <!-- Start 1 -->
+                  <div class="employee-details-data">
+                    <h4>Employee Details</h4>
+                    <div class="row">
+                      <div class="col-lg-4 col-md-4 employee-details-data-item ">
+                        <div class="table-responsive employee-details-data-item-border">
+                          <table class="table table-hover table-bordered">
+                            <tbody>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">Emp Number</span> :
+                                  {{emprequestinfo1.employeeNumber}}</td>
+                              </tr>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">Designation</span> :
+                                  {{emprequestinfo1.designation}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">Practice</span> :
+                                  {{emprequestinfo1.practice}}</td>
+                              </tr>
+                              <tr>
+                                <td class="last-child-no-padd"><span class="employee-details-data-item-label">Employee
+                                    Status</span> :
+                                  {{emprequestinfo1.contractType}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-md-4 employee-details-data-item ">
+                        <div class="table-responsive custom-table employee-details-data-item-border">
+                          <table class="table table-hover table-bordered">
+                            <tbody>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">DOJ</span> :
+                                  {{emprequestinfo1.dateOfJoining}}</td>
+                              </tr>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">BU</span> :
+                                  {{emprequestinfo1.businessUnit}}</td>
+                              </tr>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">Sub Practice</span> :
+                                  {{emprequestinfo1.subPractice}}</td>
+                              </tr>
+                              <!-- <tr>
+                                <td class="last-child-no-padd"><span class="employee-details-data-item-label">Practice
+                                    Head</span> : Satish Kumar Velagapudi</td>
+                              </tr> -->
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-md-4 employee-details-data-item">
+                        <div class="table-responsive">
+                          <table class="table table-hover table-bordered">
+                            <tbody>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">Location</span> :
+                                  {{emprequestinfo1.location}}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">RM</span> :
+                                  {{emprequestinfo1.rmEmpName}}</td>
+                              </tr>
+                              <tr>
+                                <td><span class="employee-details-data-item-label">On Probation</span> :
+                                  {{emprequestinfo1.onProbation}}</td>
+                              </tr>
+                              <tr>
+                                <td class="last-child-no-padd"><span
+                                    class="employee-details-data-item-label">Tenure</span> :
+                                  {{emprequestinfo1.osiExperience}} years </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End 1 -->
+
+                  <!-- Start 2 -->
+                  <div class="discussion-with-employee-data">
+                    <h4>Discussion with Employee</h4>
+                    <div class="row">
+                      <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                        <div class="discussion-with-employee-data-item">
+                          <h4>PD Discussion with Employee</h4>
+                          <ul>
+                            <li></li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                        <div class="discussion-with-employee-data-item">
+                          <h4>HR Discussion with Employee</h4>
+                          <ul *ngFor="let item of hrDiscussionData">
+                            <li>{{item}}</li>
+
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-md-4 col-lg-4 col-xl-4">
+                        <div class="discussion-with-employee-data-item">
+                          <h4>RM Discussion with Employee</h4>
+                          <ul *ngFor="let item of rmDiscussionData">
+                            <li>{{item}}</li>
+
+                          </ul>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  <!-- End 2 -->
+
+                  <!-- Start 3 -->
+                  <div class="notes-attached-doc-data">
+                    <div class="row">
+                      <div class="col-lg-8 col-md-8 notes-section notes-list-wrap">
+
+                        <!-- <app-notes></app-notes> -->
+
+
+                        <div class="d-flex flex-column mt-4 pd-5 notes-list-inner-wrap">
+                          <div class="category-item d-flex notes-list-item" *ngFor="let item of empresignationnotes">
+                            <span
+                              class="sub-name right badge badge-danger sub-name-blue mr-2">{{item.osiEmployeesCurrentDto.userName.substring(0,
+                              2).toUpperCase()}}</span>
+                            <div class="summary flex-grow-1">
+                              <div class="title font-16 fw-600 notes-title">
+                                {{item.osiEmployeesCurrentDto.userName}}
+                                <h3 class="title font-14 fw-500 float-right notes-title-sub">
+                                  <span class="sub-title right badge badge-danger">{{item.role}}</span> | <span
+                                    class="text-muted discussion-text">Discussion : Discussion : {{item.createdDate |
+                                    date}}</span>
+                                </h3>
+                              </div>
+                              <p class="font-14 text-muted">
+                                {{item.notes}}
+                              </p>
+                            </div>
+                          </div>
+
+                          <!-- <div class="category-item d-flex notes-list-item">
+                            <span class="sub-name right badge badge-danger sub-name-orange">RT</span>
+                            <div class="summary">
+                              <div class="title font-16 fw-600 ml-2 notes-title">
+                                rtummala
+                                <h3 class="title font-14 fw-500 float-right notes-title-sub">
+                                  <span class="sub-title right badge badge-danger">RM</span> | <span
+                                    class="text-muted discussion-text">Discussion : 18 Nov 2021</span>
+                                </h3>
+                              </div>
+                              <p class="font-14 text-muted ml-2">
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                has
+                                been the industry's standard dummy text
+                              </p>
+                            </div>
+                          </div>
+
+                          <div class="category-item d-flex notes-list-item">
+                            <span class="sub-name right badge badge-danger sub-name-green">RT</span>
+                            <div class="summary">
+                              <div class="title font-16 fw-600 ml-2 notes-title">
+                                rtummala
+                                <h3 class="title font-14 fw-500 float-right notes-title-sub">
+                                  <span class="sub-title right badge badge-danger">RM</span> | <span
+                                    class="text-muted discussion-text">Discussion : 18 Nov 2021</span>
+                                </h3>
+                              </div>
+                              <p class="font-14 text-muted ml-2">
+                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+                                has
+                                been the industry's standard dummy text
+                              </p>
+                            </div>
+                          </div> -->
+
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-md-4 notes-section-col-2 notes-attached-wrap">
+                        <!-- <app-attachments></app-attachments> -->
+                        <div class="notes-attached-inner">
+                          <h4 class="doc-title">Attached Documents</h4>
+                          <div *ngFor="let item of fileAttachments">
+                            <h4 class="doc-sub-title">
+
+
+                              <div *ngIf="item.fileType === 'pdf'">
+                                <i class="fa fa-file-pdf-o"></i>
+                                <a [href]="downloadFileUrl+item.filePath" target="_blank" title={{item.displayName}}>
+                                  {{item.displayName.slice(0,15)+'...'}}</a>
+                                <span class="float-right">By {{item.osiEmployeesCurrentDto.fullName}}</span>
+                              </div>
+                              <div *ngIf="item.fileType === 'eml'">
+                                <i class="fa fa-envelope-o"></i> <a [href]="downloadFileUrl+item.filePath"
+                                  target="_blank" title={{item.displayName}}>
+                                  {{item.displayName.slice(0,15)+'...'}}</a>
+                                <span class=" float-right">By {{item.osiEmployeesCurrentDto.fullName}}</span>
+                              </div>
+                              <div *ngIf="item.fileType === 'jpeg'">
+                                <i class="fa fa-file-image-o"></i> <a [href]="downloadFileUrl+item.filePath"
+                                  target="_blank" title={{item.displayName}}>
+                                  {{item.displayName.slice(0,15)+'...'}}</a>
+                                <span class="float-right">By {{item.osiEmployeesCurrentDto.fullName}}</span>
+                              </div>
+                              <div *ngIf="item.fileType === 'png'">
+                                <i class="fa fa-file-image-o"></i> <a [href]="downloadFileUrl+item.filePath"
+                                  target="_blank" title={{item.displayName}}>
+                                  {{item.displayName.slice(0,15)+'...'}}</a>
+                                <span class="float-right">By {{item.osiEmployeesCurrentDto.fullName}}</span>
+                              </div>
+                              <div *ngIf="item.fileType === 'docx'">
+                                <i class="fa fa-envelope"></i> <a [href]="downloadFileUrl+item.filePath" target="_blank"
+                                  title={{item.displayName}}>
+                                  {{item.displayName.slice(0,15)+'...'}}</a>
+                                <span class="float-right">By {{item.osiEmployeesCurrentDto.fullName}}</span>
+                              </div>
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End 3 -->
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+
+
+
+        <div class="row m-0">
+          <div class="col-12  d-flex pt-3 align-items-center justify-content-between px-4">
+            <div><button type="button" class="backbutton" class="btn btn-block btn-primary btn-initiate mr-3 ml-0"
+                (click)="navigateToInitiate()">Back</button></div>
+            <div class="float-right">
+              <!-- <a href="#" class="btn btn-outline-primary mr-2 btn-style-1">Cancel</a> -->
+              <input type="button" value="Close" class="btn btn-primary btn-style-1">
+            </div>
+          </div>
+        </div>
+        <!-- Demo Retain Process End -->
+
+
+        <!-- /.content -->
+      </div>
+    </div>
+    <!-- /.content-wrapper -->
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+  <div class="modal fade bs-example-modal-new" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <!-- Modal Content: begins -->
+      <app-attachmentpopup></app-attachmentpopup>
+    </div>
+  </div>
+  <!-- Modal Content: ends -->
+  <!-- Modal Content: Notes -->
+  <div class="modal fade bs-example-modal-notes" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <!-- Modal Content: begins -->
+      <!-- Modal Content: begins -->
+      <app-notepopup></app-notepopup>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,293 @@
+<div class="container-fluid">
+  <app-expense-attachment></app-expense-attachment>
+  <div class="snackbar" #AlertSuccess>{{flashMessage}}</div>
+  <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+  <div class="">
+    <div class="">
+      <div class="row">
+        <div class="col-md-9">
+          <h3 class="pagetitle">Review Expense Report</h3>
+        </div>
+        <div class="col-md-2 text-right mt-2">
+          <button type="button" class="btn btn-outline-primary" (click)="previewCalled()">Preview Receipts</button>
+        </div>
+        <div class="col-md-1 mt-3">
+            <div class="dropdown pull-right">
+                <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+                <div class="dropdown-content">
+                    <ul>
+                        <li>Items Per Page</li>
+                        <li [class.active]="pageCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+                        <li [class.active]="pageCount==0" (click)="chengePageSize(0)">All</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid pt-3 pb-1">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Expense Start Date</b>
+          </label>
+          <div class="input-group">
+            {{expenseStartDate}}
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-1"></div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Employee Name</b>
+          </label>
+          <div class="input-group"> {{employeeFullName}} </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-1"></div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Tracking ID</b>
+          </label>
+          <div class="input-group">
+            <div class="row">
+              <div class="col-md-4 mt-1" title="Parent Report" *ngIf="parentReportId && parentReportId != 0">
+                {{parentReportId}}</div>
+              <div class="col-md-1 pb-1" *ngIf="parentReportId && parentReportId != 0"><i
+                  class="glyphicon glyphicon-arrow-right" aria-hidden="true"></i></div>
+              <div class="col-md-3 mt-1">{{reportid}} </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>
+            <b>Total Amount</b>
+          </label>
+          <div> {{totalAmount | number: '1.2-2'}} </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>
+            <b>Description</b>
+          </label>
+          <textarea id="description" name="description" maxlength="255"
+            class="form-control form-control-sm border-radius-zero" rows="2" [(ngModel)]="user.description"
+            placeholder='Description' [required]="true">
+                          </textarea>
+        </div>
+      </div>
+      <div class="col-md-2 col-md-2 mt-2 pt-4 pr-0 text-right">
+        <button type="button" (click)="getExpenseForApproval()" [disabled]="!isEnableWaitingOn"
+          class="btn btn-outline-primary" href="#waitingForApproval" data-toggle="modal">Current Status</button>
+      </div>
+      <div class="col-md-6">
+        <div class="row mt-2 pt-4">
+          <div class="col">
+            <button type="button" (click)="downloadAllAttachments()" class="btn btn-outline-primary">Download
+              Attachments</button>
+          </div>
+          <div class="col pl-0">
+            <button type="button" (click)="getPdfData()" [disabled]="fieldArray.length==0"
+              class="btn btn-outline-primary">Export To PDF</button>
+          </div>
+          <div class="col pl-0">
+            <select title="PDF Layout" class="form-control" name="exportLayoutType" [(ngModel)]="exportLayoutType">
+              <option value="l">Landscape</option>
+              <option value="p">Portrait</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <br />
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box1">
+        <div class="box-body table-responsive">
+          <table class="table table-hover table-bordered">
+           <thead>
+            <tr>
+              <th>
+              </th>
+              <th>
+                <b>Status</b>
+              </th>
+              <th>
+                <b>Project</b>
+              </th>
+              <th class="task-size">
+                <b>Task</b>
+              </th>
+              <th>
+                <b>Business Unit</b>
+              </th>
+              <th class="date-size">
+                <b>Expense Date</b>
+              </th>
+              <th>
+                <b>Expense Type</b>
+              </th>
+              <th>
+                <b>Quantity</b>
+              </th>
+              <th>
+                <b>Receipt Currency</b>
+              </th>
+              <th>
+                <b>Receipt Price</b>
+              </th>
+              <th class="base-amt">
+                <b>Employee Base Currency Amount</b>
+              </th>
+              <th>
+                <b>Billable</b>
+              </th>
+              <th>
+                <b>Reimbursable</b>
+              </th>
+              <th>
+                <b>Missing Receipts</b>
+              </th>
+              <th>
+                <b>Exchange Rate</b>
+              </th>
+              <th style="min-width: 250px;">
+                <b>Notes</b>
+              </th>
+            </tr>
+            </thead>
+           <tbody>
+            <tr
+              *ngFor="let field of fieldArray | paginate: { id: 'pg1', itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+              <td>
+                <input type="radio" value="{{field.id}}" name="reviewRadioButton" class="onoffswitch-checkbox"
+                  (change)="onRowChecked($event)">
+              </td>
+              <td *ngIf="field.status == 'O'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Approved </td>
+              <td *ngIf="field.status == 'R'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Rejected </td>
+              <td *ngIf="field.status == 'S'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Submitted </td>
+              <td *ngIf="field.status == 'N'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Open </td>
+              <td *ngIf="field.status == 'G'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Charged </td>
+              <td *ngIf="field.status == 'I'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Invoiced </td>
+              <td *ngIf="field.status == 'U'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Reversed </td>
+              <td *ngIf="field.status == 'P'" [ngClass]="{'text-link':field.status}" (click)="showHistory(field.id)">
+                Reimbursed </td>
+              <td> {{field.projectName}}</td>
+              <td> {{field.projectTaskName}}</td>
+              <td> {{field.deptName}} </td>
+              <td> {{field.expenseDate}}</td>
+              <td> {{field.expenseTypeName}}</td>
+              <td> {{field.quantity}}</td>
+              <td> {{field.currencyCode}}</td>
+              <td> {{field.receiptPrice| expenseDecimalFormat }}</td>
+              <td> {{getCurr(field.baseExchangeAmt)}} {{getVal(field.baseExchangeAmt)| number: '1.2-2'}}</td>
+              <td *ngIf="field.billable == true">Yes</td>
+              <td *ngIf="field.billable == false">No</td>
+              <td *ngIf="field.reimbursible == true">Yes</td>
+              <td *ngIf="field.reimbursible == false">No</td>
+              <td *ngIf="field.missingReceipts == true">Yes</td>
+              <td *ngIf="field.missingReceipts == false">No</td>
+              <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+              <td> {{field.notes}}</td>
+            </tr>
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <br />
+  <!-- <br/> -->
+  <div class="row">
+    <div class="col-md-8">
+      <pagination-controls id="pg1" (pageChange)="p = $event" maxSize="5" previousLabel="" nextLabel=""
+        autoHide="false"></pagination-controls>
+    </div>
+
+    <div class="col-md-4" id="paddingbuttons">
+      <div class="pull-right">
+        <button type="button" (click)="cancel()" class="btn btn-primary">Close</button>&nbsp;
+        <!-- <button type="button" class="btn btn-primary" [disabled]="fieldArray.length==0 || selectedRowId===undefined || selectedRowId==0"
+          (click)="showHistory()">Show History</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade custom-modal-padding" id="waitingForApproval" role="dialog" data-backdrop="static"
+  data-keyboard="false">
+  <div class="modal-dialog">
+    <!-- <h4>Current Status</h4> -->
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Current Status</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="height: 126px;overflow-x: auto;">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th style="width:33.33%">Status</th>
+                <th style="width:33.33%">Employee</th>
+                <th style="width:33.33%">Action On</th>
+              </tr>
+            </thead>
+            <tbody id="tsApprTds" style="max-height: 40vh;">
+              <tr *ngFor="let empView of waitingOn">
+                <td>{{empView.status}}</td>
+                <td>{{empView.sourceName}}</td>
+                <td>{{empView.comments}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="pull-right">
+          <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+
+  </div>
+</div>

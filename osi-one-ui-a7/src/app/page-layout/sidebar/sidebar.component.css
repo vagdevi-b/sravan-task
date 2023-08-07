@@ -1,0 +1,19 @@
+
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,500,600');
+/*font-family: 'Montserrat', sans-serif; */
+
+nav.side-navbar{ width:240px; background-color:#2b3a4e }
+nav.side-navbar .sidenav-header{ background-color:#263445; margin-bottom:1px solid rgba(255,255,255,0.1) }
+nav.side-navbar a:focus, nav.side-navbar a:hover, nav.side-navbar a[aria-expanded="true"]{ background-color:inherit; 
+-webkit-border-radius: 0px;
+-moz-border-radius: 0px;
+border-radius: 0px }
+nav.side-navbar ul.side-menu > li a { font-family: 'Montserrat', sans-serif; font-size:13px !important }
+nav.side-navbar ul.side-menu > li .dynatree-icon { width:20px; margin-left:8px; display: inline-block }
+nav.side-navbar ul.side-menu > li:hover { background-color:#037bb1 }
+.header.navbar, nav.navbar{ background-color:#fff !important }
+nav.navbar a.menu-btn{ background-color: inherit }
+nav.navbar a.menu-btn:hover{ color:#2b3a4e; background-color: inherit }
+nav.navbar a.menu-btn i{ color:#2b3a4e; font-size:18px }
+#logo{ width:160px; height:auto }
+.img-profile{ width:50px; height:50px; margin:0 auto; background-size:cover !important; background-repeat:no-repeat !important; border-radius:100%; -weblit-border-radius:100%; -moz-border-radius:100%; background-position:center !important }

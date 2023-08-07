@@ -1,0 +1,91 @@
+<div class="accordion custom-accordion" id="accordionExample">
+  <div class="card">
+    <div class="card-head custom-card-head" id="headingOne">
+      <h2 class="mb-0" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+        aria-controls="collapseOne">
+        Employee Details
+      </h2>
+    </div>
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-4 col-md-4">
+            <div class="table-responsive">
+              <!-- {{emprequestinfo | json}} -->
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th style="width:40%">Emp Number</th>
+                    <td>: {{emprequestinfo?.employeeNumber}}</td>
+                  </tr>
+                  <tr>
+                    <th>RM</th>
+                    <td>: {{emprequestinfo?.rmEmpName}}</td>
+                  </tr>
+                  <tr>
+                    <th>Practice Head</th>
+                    <td>: {{emprequestinfo?.practiceDirector}}</td>
+                  </tr>
+
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4">
+            <div class="table-responsive custom-table">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th style="width:40%">DOJ</th>
+                    <td>: {{emprequestinfo?.dateOfJoining}}</td>
+                  </tr>
+                  <tr>
+                    <th>On Probation</th>
+                    <td>: {{emprequestinfo?.onProbation}}</td>
+                  </tr>
+                  <tr>
+                    <th>Tenure</th>
+                    <td><span>:</span> <span class="ml-1" style="font-size: 14px;"
+                        *ngIf="emprequestinfo != undefined ">{{emprequestinfo?.osiExperience}} Years </span></td>
+                  </tr>
+
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4">
+            <div class="table-responsive">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th>Designation</th>
+                    <td>: {{newArr}}</td>
+                  </tr>
+                  <tr>
+                    <th style="width:40%">Location</th>
+                    <td>: {{emprequestinfo?.location}}</td>
+                  </tr>
+                  <tr>
+                    <th>Dept</th>
+                    <td>
+                      <span>:</span> <span class="ml-1" style="font-size: 14px;" *ngIf="emprequestinfo != undefined ">
+                        {{
+                        emprequestinfo?.businessUnit}}/{{emprequestinfo?.practice}}/{{emprequestinfo?.subPractice}}</span>
+                    </td>
+                  </tr>
+
+                  <!-- <tr>
+                    <th>Tenure</th>
+                    <td>: {{emprequestinfo.osiExperience}} {{years}}</td>
+                  </tr> -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

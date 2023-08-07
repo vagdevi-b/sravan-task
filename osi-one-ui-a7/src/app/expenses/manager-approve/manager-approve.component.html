@@ -1,0 +1,568 @@
+<div class="v-height">
+    <app-expense-attachment></app-expense-attachment>
+    <div class="view-expense-section">
+        <div class="snackbar" #AlertSuccess>{{flashMessage}}</div>
+        <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+
+        <div class="sub-header border-bottom">
+            <div class="row">
+                <div class="col-md-9">
+                    <h3 class="pagetitle">Approve Expenses</h3>
+                </div>
+                <div class="col-md-2 text-right mt-2">
+                    <button type="button" class="btn btn-outline-primary" (click)="previewCalled()">Preview
+                        Receipts</button>
+                </div>
+                <div class="col-md-1 mt-2">
+                    <div class="dropdown pull-right">
+                        <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+                        <div class="dropdown-content">
+                            <ul>
+                                <li>Items Per Page</li>
+                                <li [class.active]="pageCount==itemCount" (click)="chengePageSize(itemCount)"
+                                    *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+                                <li [class.active]="pageCount==0" (click)="chengePageSize(0)">All</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid pt-3 pb-3">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>
+                            <b>Expense Start Date</b>
+                        </label>
+                        <div class="input-group"> {{expenses.expenseDate}} </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>
+                            <b>Employee Name</b>
+                        </label>
+                        <div class="input-group"> {{employeeFullName}} </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>
+                            <b>Tracking ID</b>
+                        </label>
+                        <div class="input-group">
+                            <div class="row">
+                                <div class="col-md-4 mt-1" title="Parent Report"
+                                    *ngIf="parentReportId && parentReportId != 0">{{parentReportId}}</div>
+                                <div class="col-md-1 pb-1" *ngIf="parentReportId && parentReportId != 0"><i
+                                        class="glyphicon glyphicon-arrow-right" aria-hidden="true"></i></div>
+                                <div class="col-md-3 mt-1">{{trackingId.trackingId}} </div>
+                            </div>
+                            <!-- <span class="text-link" *ngIf="parentReportId && parentReportId != 0"> {{parentReportId}}</span>
+                            <span *ngIf="parentReportId && parentReportId != 0"> <i class="glyphicon glyphicon-arrow-right" aria-hidden="true"></i></span>
+                                {{trackingId.trackingId}}  -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>
+                            <b>Total Expenses :</b>
+                        </label>
+                        <span>
+                            <b>{{currencyType}} {{ totalEmpExchangeAmt | number: '1.2-2' }}</b>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <!-- <div class="col-md-2">
+                    
+                </div> -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>
+                            <b>Description</b>
+                        </label>
+                        <textarea id="description" name="description" maxlength="255"
+                            class="form-control form-control-sm border-radius-zero" rows="2"
+                            [(ngModel)]="expenses.reportDescription" placeholder='Description' readonly>
+                    </textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row mt-2">
+                        <div class="col">
+                            <button type="button" (click)="getExpenseForApproval()"
+                                [disabled]="expenses.lineItems?.length==0" class="btn btn-outline-primary mr-2"
+                                data-toggle="modal">Current Status</button>
+                            <button type="button" (click)="downloadAllAttachments()"
+                                class="btn btn-outline-primary mr-2">Download Attachments</button>
+                            <button type="button" (click)="getPdfData()" [disabled]="expenses.lineItems?.length==0"
+                                class="btn btn-outline-primary">Export To PDF</button>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col">
+                            <div class="text-right form-group form-inline">
+                                <label>PDF Layout : </label>
+                                <select class="form-control mt-2" [(ngModel)]="exportLayoutType">
+                                    <option value="l">Landscape</option>
+                                    <option value="p">Portrait</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="table-responsive table-shadow border-0 mb-3">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" [(ngModel)]="selectedAll" [ngModelOptions]="{standalone: true}"
+                                    class="onoffswitch-checkbox" (change)="selectAll($event)">
+                            </th>
+                            <th>Date</th>
+                            <th>Project</th>
+                            <th>Task</th>
+                            <th>Expense Type</th>
+                            <th>Quantity</th>
+                            <th>Total Receipt Amount</th>
+                            <th>Exchange Rate</th>
+                            <th>Employee Base Currency Amount</th>
+                            <th>Billable</th>
+                            <th>Reimbursable</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>{{field.status}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- DEMO TABLE ALL DESIGN START -->
+              <!-- <div class="table-responsive table-shadow border-0 mb-3 show-row-3">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" [(ngModel)]="selectedAll" [ngModelOptions]="{standalone: true}"
+                                    class="onoffswitch-checkbox" (change)="selectAll($event)">
+                            </th>
+                            <th>Date</th>
+                            <th>Project</th>
+                            <th>Task</th>
+                            <th>Expense Type</th>
+                            <th>Quantity</th>
+                            <th>Total Receipt Amount</th>
+                            <th>Exchange Rate</th>
+                            <th>Employee Base Currency Amount</th>
+                            <th>Billable</th>
+                            <th>Reimbursable</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>{{field.status}}</td>
+                        </tr>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>{{field.status}}</td>
+                        </tr>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>{{field.status}}</td>
+                        </tr>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>{{field.status}}</td>
+                        </tr>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>
+                                <i style="cursor: pointer;" class="glyphicon glyphicon-plus btn-font-icon icon-font-16 font-color-blue"
+                                    (click)="createLeaveRequest()"
+                                    *ngIf="userOrgId!== 17 && userOrgId!== 28"></i>&nbsp;&nbsp;
+                                <i style="cursor: pointer;" class="glyphicon glyphicon-pencil btn-font-icon icon-font-16 font-color-blue"
+                                    [hidden]="!editRepoteeLeave" (click)="edit()"></i>&nbsp;&nbsp;
+                                <i style="cursor: pointer;" class="glyphicon glyphicon-eye-open btn-font-icon icon-font-16 font-color-blue"
+                                    (click)="view()"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr
+                            *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                            <td>
+                                <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                    class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                    (change)="checkIfAllSelected(field.expenseId);">
+                            </td>
+                            <td>{{field.expenseDate}}</td>
+                            <td>{{field.projectName}}</td>
+                            <td>{{field.taskName}}</td>
+                            <td>{{field.typeName}}</td>
+                            <td>{{field.quantity}}</td>
+                            <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                }}</td>
+                            <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                            <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                            <td *ngIf="field.billable == true">Yes</td>
+                            <td *ngIf="field.billable == false">No</td>
+                            <td *ngIf="field.reimbursible == true">Yes</td>
+                            <td *ngIf="field.reimbursible == false">No</td>
+                            <td>{{field.notes}}</td>
+                            <td>{{field.status}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div> -->
+
+            <!-- <div class="row"> -->
+            <!-- <div class="col-lg-12"> -->
+            <!-- <div class="panel panel-default panel-table">
+
+                        <div class="panel-body">
+                            <table class="table table-bordered table-responsive approve-expenses">
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" [(ngModel)]="selectedAll"
+                                            [ngModelOptions]="{standalone: true}" class="onoffswitch-checkbox"
+                                            (change)="selectAll($event)">
+                                    </td>
+                                    <td class="date-size">
+                                        <b>Date</b>
+                                    </td>
+                                    <td class="project-size">
+                                        <b>Project</b>
+                                    </td>
+                                    <td class="task-size">
+                                        <b>Task</b>
+                                    </td>
+                                    <td>
+                                        <b>Expense Type</b>
+                                    </td>
+                                    <td>
+                                        <b>Quantity</b>
+                                    </td>
+                                    <td>
+                                        <b>Total Receipt Amount</b>
+                                    </td>
+                                    <td>
+                                        <b>Exchange Rate</b>
+                                    </td>
+                                    <td class="base-amt">
+                                        <b>Employee Base Currency Amount</b>
+                                    </td>
+                                    <td>
+                                        <b>Billable</b>
+                                    </td>
+                                    <td>
+                                        <b>Reimbursable</b>
+                                    </td>
+                                    <td style="min-width: 250px;">
+                                        <b>Notes</b>
+                                    </td>
+                                    <td>
+                                        <b>Status</b>
+                                    </td>
+                                </tr>
+                                <tr
+                                    *ngFor="let field of expenses.lineItems | paginate: { itemsPerPage: currentPageItemCount, currentPage: p }; let i = index">
+                                    <td>
+                                        <input type="checkbox" value="{{field.expenseId}}" [(ngModel)]='field.selected'
+                                            class="onoffswitch-checkbox" [ngModelOptions]="{standalone: true}"
+                                            (change)="checkIfAllSelected(field.expenseId);">
+                                    </td>
+                                    <td>{{field.expenseDate}}</td>
+                                    <td>{{field.projectName}}</td>
+                                    <td>{{field.taskName}}</td>
+                                    <td>{{field.typeName}}</td>
+                                    <td>{{field.quantity}}</td>
+                                    <td>{{field.receiptCurrencyCode}} {{field.totalRecieptAmount | expenseDecimalFormat
+                                        }}</td>
+                                    <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                                        {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                                    <td>{{field.currencyTyp}} {{field.amt | number: '1.2-2' }}</td>
+                                    <td *ngIf="field.billable == true">Yes</td>
+                                    <td *ngIf="field.billable == false">No</td>
+                                    <td *ngIf="field.reimbursible == true">Yes</td>
+                                    <td *ngIf="field.reimbursible == false">No</td>
+                                    <td>{{field.notes}}</td>
+                                    <td>{{field.status}}</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div> -->
+            <div class="container-fluid pb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <pagination-controls (pageChange)="p = $event" maxSize="5" previousLabel="" nextLabel=""
+                            autoHide="false"></pagination-controls>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="pull-right">
+                            <input type="button" value="Back" (click)="cancel()" class="btn btn-secondary mr-2" />
+                            <input type="button" [disabled]="isSkipDisabled" value="Skip" (click)="skipExpense()"
+                                class="btn btn-outline-primary mr-2" />
+
+                            <button value="Reject" (click)="openModal('reject_expense')" data-toggle="modal"
+                                class="btn btn-outline-danger mr-2"
+                                (click)="checkAnySelected('reject_expense')">Reject</button>
+                            <button value="Approve" data-toggle="modal" class="btn btn-primary"
+                                (click)="checkAnySelected('approve_expense')">Approve</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- </div> -->
+            <!-- </div> -->
+        </div>
+
+    </div>
+</div>
+<!-- Edit Expense Modal -->
+<div class="modal fade custom-modal-padding" id="reject_expense" role="dialog" data-backdrop="static"
+    data-keyboard="false">
+    <form name="form" (ngSubmit)="f2.form.valid" #f2="ngForm" novalidate>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reason to Reject</h5>
+                    <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Reason</label>
+                        <textarea type="text" name="rejectReason" maxlength="199" #rejectReason="ngModel"
+                            class="form-control" [(ngModel)]="user.rejectReason" [ngModelOptions]="{standalone: true}"
+                            [required]="true" rows="3">
+                                        </textarea>
+                        <!--<textarea class="form-control" rows="1" name="notes" id="notes" [(ngModel)]="editExpense.notes"></textarea>-->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" type="submit" data-toggle="modal"
+                        data-target="#approveRejectModal" data-dismiss="modal" [disabled]="!user.rejectReason"
+                        (click)="rejectExpense()">Submit</button>
+                    <button class="btn btn-outline-secondary btn-cancel" type="button" data-dismiss="modal"
+                        (click)="rejectReasonClose()">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Approve Expense Modal -->
+<div class="modal fade custom-modal-padding" id="approve_expense" role="dialog" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h5>Do you want to Approve the Expense?</h5>
+                <br>
+                <button type="button" class="btn btn-outline-primary" data-toggle="modal"
+                    data-target="#approveRejectModal" (click)="approveExpense()" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="approveRejectModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="top: 40%;">
+
+        <!-- Modal content-->
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-body">
+                <h3>Loading..</h3>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Cuurent Status POPup-->
+<div class="modal fade custom-modal-padding" id="waitingForApproval" role="dialog" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Current Status</h5>
+                <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="height: 126px;overflow-x: auto;">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width:33.33%">Status</th>
+                                <th style="width:33.33%">Employee</th>
+                                <th style="width:33.33%">Action On</th>
+                            </tr>
+                        </thead>
+                            <tbody id="tsApprTds" style="max-height: 40vh;">
+                            <tr *ngFor="let empView of waitingOn">
+                                <td>{{empView.status}}</td>
+                                <td>{{empView.sourceName}}</td>
+                                <td>{{empView.comments}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary btn-cancel" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    history.pushState(null, null, '');
+    window.addEventListener('popstate', function (event) {
+        alert("1");
+        history.pushState(null, null, '');
+    });
+</script>

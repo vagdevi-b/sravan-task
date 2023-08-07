@@ -1,0 +1,48 @@
+<!-- <div class="grid-wrapper" style="box-sizing: border-box; padding-top: 30px; height: 98%;"> -->
+    <div>
+        <div *ngIf="showButtons">&nbsp;&nbsp; 
+            <app-grid-buttons
+                [showAddButton]="showAddButton"
+                [showEditButton]="showEditButton"
+                [showDeleteButton]="showDeleteButton"
+                [showViewButton]="showViewButton"
+                (sendbuttonClick)="receiveButtonClick($event)">
+            </app-grid-buttons>
+        </div>
+
+    <ag-grid-angular 
+        #agGrid [ngStyle]="getStyle()"  
+        [class]="getClass()"
+        [domLayout]="getDomLayout()"
+        [enableColResize]="getEnableColResize()"     
+        [rowSelection]="getRowSelection()"    
+        [pagination]="getPagination()"  
+        [paginationPageSize]="getPaginationPageSize()"
+        [rowGroupPanelShow]="getRowGroupPanelShow()"
+        [pivotPanelShow]="getPivotPanelShow()"   
+        [suppressHorizontalScroll]="getSuppressHorizontalScroll()" 
+        [suppressMovableColumns]="getSuppressMovableColumns()" 
+        [enableSorting]="getSorting()"
+        [enableFilter]="getFilter()"        
+        [gridOptions]="gridOptions"
+        [columnDefs]="columnDefs"
+        [rowData]="rowData"
+        (gridSizeChanged)="onGridSizeChanged($event)"
+        (onColumnResized)="onColumnResizedHandler($event)"
+        (componentStateChanged)="onComponentStateChanged($event)"
+        (rowSelected)="onRowSelected($event)"  
+        (selectionChanged)="onSelectionChanged($event)"
+        (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+    <!--
+    <div class="ag-paging-panel ag-font-style pull-right" *ngIf="showButtons">&nbsp;&nbsp; 
+        <app-grid-buttons
+            [showAddButton]="showAddButton"
+            [showEditButton]="showEditButton"
+            [showDeleteButton]="showDeleteButton"
+            [showViewButton]="showViewButton"
+            (sendbuttonClick)="receiveButtonClick($event)">
+        </app-grid-buttons>
+    </div>
+    -->
+</div>

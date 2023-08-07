@@ -1,0 +1,168 @@
+<div data-theme="default" data-layout="fluid" data-sidebar-position="left" data-sidebar-behavior="sticky">
+	<div class="wrapper">
+
+		<div class="main">
+			<app-pandl-nav-bar (refreshEmitter)="refresh()"></app-pandl-nav-bar>
+			<main class="content content-master">
+				<section class="content-dashboard content--shrinked pl-conntent-dashboard">
+					<div class="container-fluid p-0">
+						<app-quick-board [rawData]="chartData"></app-quick-board>
+
+						<div class="card shadow-none">
+
+							<div *ngFor="let card of cardsList" class="row">
+								<ng-container *ngFor="let widget of card.widgets">
+									<div class="col-{{widget.width}} col-md-{{widget.width}} d-flex" fullscreen #fullscreenProj="fullscreen">
+										<div class="card flex-fill w-100 shadow-none pl-conntent-dashboard-inner">
+											<app-grid-widget #gridWidget [widget]="widget"></app-grid-widget>
+										</div>
+									</div>
+								</ng-container>
+							</div>
+
+							<!-- <div class="row">
+								<div class="col-12 col-lg-12 d-flex" fullscreen #fullscreenYM="fullscreen">
+									<div class="card flex-fill w-100 shadow-none">
+										<div class="card-header">
+											<div class="card-actions float-right">
+												<a href="#" data-toggle="dropdown" data-display="static">
+													<i class="align-middle" data-feather="more-horizontal"></i>
+												</a>
+
+												<div class="dropdown-menu dropdown-menu-right">
+													<a class="dropdown-item"
+														(click)="downloadData('yearMonthChart');"><i
+															class="fas fa-file-export"></i> Export</a>
+												</div>
+
+											</div>
+											<h5 class="card-title mb-0">Year Month</h5>
+										</div>
+										<div class="card-body d-flex w-100">
+											<div class="align-self-center chart">
+												<app-canvas-chart [widget]="barEmpRevenueWidget" [rawData]="chartData"></app-canvas-chart>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-6 col-md-6 d-flex" fullscreen #fullscreenProj="fullscreen">
+									<div class="card flex-fill w-100 shadow-none">
+										<div class="card-header">
+											<div class="card-actions float-right">
+												<div class="dropdown show">
+													<a href="#" data-toggle="dropdown" data-display="static">
+														<i class="align-middle" data-feather="more-horizontal"></i>
+													</a>
+
+													<div class="dropdown-menu dropdown-menu-right">
+														<a class="dropdown-item"
+															(click)="downloadData('projOrgChart');"><i
+																class="fas fa-file-export"></i> Export</a>
+													
+													</div>
+												</div>
+											</div>
+											<h5 class="card-title mb-0">Project Organization</h5>
+										</div>
+										<div class="card-body d-flex w-100">
+											<div class="align-self-center chart">
+												<canvas id="barProjectOrg" #canvas></canvas>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div id="empOrg" class="col-6 col-md-6 d-flex" fullscreen #fullscreen="fullscreen">
+									<div class="card flex-fill w-100 shadow-none" >
+										<div class="card-header">
+											<div class="card-actions float-right">
+												<div class="dropdown show">
+													<a href="#" data-toggle="dropdown" data-display="static">
+														<i class="align-middle" data-feather="more-horizontal"></i>
+													</a>
+
+													<div class="dropdown-menu dropdown-menu-right">
+														<a class="dropdown-item"
+															(click)="downloadData('empOrgChart');"><i
+																class="fas fa-file-export"></i> Export</a>
+													</div>
+												</div>
+											</div>
+											<h5 class="card-title mb-0">Employee Organization</h5>
+										</div>
+										<div class="card-body d-flex w-100">
+											<div class="align-self-center chart">
+												<canvas id='barEmpOrg' #canvas></canvas>
+											</div>
+										</div>
+									</div>
+								</div>
+									
+		
+							</div>
+							<div class="row">
+								<div class="col-12 col-lg-12 d-flex" fullscreen #fullscreenYM="fullscreen">
+									<div class="card flex-fill w-100 shadow-none">
+										<div class="card-header">
+											<div class="card-actions float-right">
+												<a href="#" data-toggle="dropdown" data-display="static">
+													<i class="align-middle" data-feather="more-horizontal"></i>
+												</a>
+
+												<div class="dropdown-menu dropdown-menu-right">
+													<a class="dropdown-item"
+														(click)="downloadData('yearMonthChart');"><i
+															class="fas fa-file-export"></i> Export</a>
+												</div>
+
+											</div>
+											<h5 class="card-title mb-0">Employee Practice</h5>
+										</div>
+										<div class="card-body d-flex w-100">
+											<div class="align-self-center chart">
+												<canvas id="barEmpRevenue" #canvas></canvas>
+											</div>
+											
+										</div>
+									</div>
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</section>
+				<app-filters *ngIf="showFilters" (closefilters)="closingFilters($event)"></app-filters>
+			</main>
+			<footer class="footer">
+				<div class="container-fluid">
+					<div class="row text-muted">
+						<div class="col-6 text-left">
+						</div>
+						<div class="col-6 text-right">
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+	<div>
+		<!-- Add / remove [hidden] class vice-versa according inorder to show or hide according to click -->
+		<button [ngClass]="buttonClass" (click)="showfilters()">
+			<span class="btn__content">
+				<i class="fas fa-filter"></i>
+				<span style="font-size: small;"> Filters</span>
+			</span>
+		</button>
+	</div>
+	<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+		<div class="modal-dialog"  style="top: 40%; width: 15%;">
+			<!-- Modal content-->
+			<div class="modal-content bg-dark text-light">
+				<div class="modal-body">
+					<h3 style="color: white;">Loading ...</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

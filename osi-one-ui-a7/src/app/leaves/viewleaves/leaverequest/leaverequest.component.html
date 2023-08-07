@@ -1,0 +1,314 @@
+<div class="v-height">
+    <!-- <div class="breadcrumb-wrapper">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">New Leave Request</li>
+            </ol>
+        </nav>
+    </div> -->
+    <div class="snackbar" #AlertSuccess>{{successMessage}}</div>
+    <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+    <div class="notification-section">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center" *ngIf="invalidTotalHours">
+                        <strong>Total Hours Exceeded for the selected leave type</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="new-leave-request">
+        <div class="sub-header bb-color">
+            <h1>New Leave Request</h1>
+        </div>
+        <div class="container-fluid pt-3">
+            <div class="row">
+                <div class="col-sm-12 col-md-6">
+                    <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>From Date:</label>
+                                    <div class="input-group" #DatePickContainer1>
+                                        <input id="fromDate" name="fromDate" #fromDate="ngModel" class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd"
+                                            [(ngModel)]="leaveSelectedFromDate" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="dateSelected() "
+                                            (dateSelect)="validateDate('fromDate', leaveSelectedFromDate)" (change)="validateDate('fromDate', leaveSelectedFromDate); d2.open()"
+                                            (focusout)="validateDate('fromDate', leaveSelectedFromDate) " required [maxDate]="leaveSelectedToDate">
+
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary date-pick" (change)='dateSelected();d2.open()' (click)="!completed && d1.toggle(); " type="button"
+                                                (document:click)="closeFix1($event, d1)">
+                                                <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                                                    <i class="fa fa-lg fa-calendar"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="validationError.fromDate" class="alert alert-danger validationAlert"> From Date is required.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>To Date:</label>
+                                    <div class="input-group" #DatePickContainer2>
+                                        <input id="toDate" name="toDate" #toDate="ngModel" class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd"
+                                            [(ngModel)]="leaveSelectedToDate" ngbDatepicker #d2="ngbDatepicker" (dateSelect)="dateSelected()"
+                                            (dateSelect)="validateDate('toDate', leaveSelectedToDate)" (change)="validateDate('toDate', leaveSelectedToDate)"
+                                            (focusout)="validateDate('toDate', leaveSelectedToDate)" required [minDate]="leaveSelectedFromDate">
+
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary date-pick" (dateSelect)='dateSelected()' (click)="!completed && d2.toggle();" type="button"
+                                                (document:click)="closeFix($event, d2)">
+                                                <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                                                    <i class="fa fa-lg fa-calendar"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="validationError.toDate" class="alert alert-danger validationAlert"> To Date is required.</div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>Leave Types:</label> 
+        
+                                    <!-- <span *ngIf="isPTO && !isLOP" class="alert alert-danger validationAlert">Your Leave Balance is available. Please Apply for Other Leave</span> -->
+                                    <span *ngIf="isLOP" class="alert alert-danger validationAlert">Your Leave Balance is over. Please Apply for LOP</span>
+                                    <select id="leaveTypeId" name="leaveTypeId" #leaveTypeId="ngModel" class="form-control" [(ngModel)]="user.leaveTypeId" [ngModelOptions]="{standalone: true}"
+                                        required (change)="getHoursByLeaveId(user.leaveTypeId)" (focusout)="validateField('leaveTypeId', user.leaveTypeId)">
+                                        <option selected value=''>-- Select --</option>
+                                        <option *ngFor="let leave of leaveType" value='{{leave.leaveTypeId}}'>
+                                            {{leave.leaveTypeName}}
+                                        </option>
+                                    </select>
+                                    <span *ngIf="validationError.leaveTypeId" class="alert alert-danger validationAlert">Leave Type is required.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>Purpose:</label>
+                                    <textarea rows="5" cols="46" name="leaveReason" value={{user.leaveReason}} [(ngModel)]="user.leaveReason" placeholder="Reason for leave"
+                                        required class="form-control" maxlength="250"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <!-- <label>Attachment:</label>
+                                    <input type="file" class="hide-text btn btn-outline-primary" #AttachmentFile multiple name="uploadfile" [(ngModel)]="user.uploadfile" (change)="detectFiles($event)"
+                                    /> -->
+                                    <label>Attachment:</label>
+                                    <label for="file-upload" class="custom-file-upload">
+                                        <i class="fa fa-cloud-upload"></i> Custom Upload</label>
+                                    <input id="file-upload" type="file" #AttachmentFile multiple name="uploadfile" [(ngModel)]="user.uploadfile" (change)="detectFiles($event)"
+                                    />
+                                </div>
+                                <div>
+                                    <table class="table table-hover table-bordered">
+                                        <tr *ngFor="let file of leaveAttachments;let i=index">
+                                            <td>{{file.originalFileName}}</td>
+                                            <td>
+                                                <a (click)="removeFile(i)">
+                                                    <i class="glyphicon glyphicon-remove"  aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <pre>(<u style="color: black">Note</u>:Allowed formats are jpg/jpeg/png/gif/pdf/docx/txt/xls/xlsx/doc/ppt/pptx/vsd/vsdx/zip/rar/rtf/mpp/eml <br>and maximum file size should be less than 5MB)
+                                </pre>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12">
+
+                                <div class="form-group">
+                                    <label>Also Notify:</label>
+                                    <input type="email" class="form-control" name="email" (keydown)=getMailSuggestion($event) [(ngModel)]="email">
+                                    <span *ngIf="emailLength">No Match found with the given Employee Name</span>
+                                    <div class="row pt-2">
+
+                                        <div class="col-sm-12 col-md-12">
+                                            <label>Notify To:</label>
+
+                                            <!-- <div > -->
+
+                                            <span style="margin-right: 2%; font-size: 12px;" class="badge badge-primary" *ngFor="let email of addedEmails;let i=index">{{email.fullName}} |
+                                                <a style="cursor:pointer;background-color:whitesmoke;color: black" (click)="removeEmail(i)">&times;</a>
+                                            </span>
+
+                                            <!-- </div> -->
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <!-- <div class="col-sm-3 list-group">
+                                    <ul *ngFor="let users of notifyData">
+                                        <li>{{users.fullName}}</li>
+                                    </ul>
+                                </div> -->
+
+                    </form>
+
+                </div>
+
+                <!--Leave Summary Table  -->
+                <div class="col-sm-12 col-md-6" *ngIf="selectedDates;">
+                    <div class="row">
+                        <div class="col-md-12 leavesSummary table-responsive table-shadow border-0 mb-3 show-row-5">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Days
+                                        </th>
+                                        <th>
+                                            Note
+                                        </th>
+                                        <th>
+                                            Hours
+                                        </th>
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody class='removeSpinner'>
+                                    <tr *ngFor="let date1 of applyingHours">
+                                        <td width="30%">
+                                            <!-- {{date1.dates | date:"EEE, MMMM d"}} -->
+                                            {{date1.date| date:"EEE, MMM d, yyyy"}}
+                                        </td>
+                                        <td width="50%">
+                                            <!-- {{date1.dates | date:"EEE, MMMM d"}} -->
+                                            {{date1.leaveDescription}}
+                                        </td>
+                                        <td width="20%">
+                                            <input type="text" id="number" min="0" oninput="validity.valid||(value=value.replace(/\D+/g, ''))" value={{date1.noOfHours}}
+                                                (keypress)="numberOnly($event)" max="8" min="0" onKeyDown="if(this.value.length==1 && event.keyCode>47 && event.keyCode < 58)return false;"
+                                                [(ngModel)]="date1.noOfHours" (change)=checkTotalHours(date1.noOfHours) style="width:50px; text-align:center;">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td width="80%" colspan="2">Total Hours:</td>
+                                        <td width="20%">{{totalHours}}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                  
+
+
+                    <div class='row mt-2'>
+                        <div class="col-md-8">
+
+                        </div>
+                        <div class="col-md-4 text-right">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row pt-2 pb-3">
+                <div class="col-md-12 ">
+                    <div class="pull-left">
+                        <button type="button" class="btn btn-secondary   btn-cancel ml-0" (click)="onCancel()">Back</button>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-outline-primary  mr-2" [disabled]="!f.form.valid ||isHourNull|| enableButton||user.leaveTypeId==undefined ||user.leaveTypeId==''||user.leaveReason==undefined || user.leaveReason==''||totalHours==0 || isLOP"
+                            (click)="saveLeaveRequest()">Save</button>
+                        <button type="button" class="btn btn-primary" [disabled]="!f.form.valid ||isHourNull|| enableButton||user.leaveTypeId==undefined || user.leaveTypeId==''||user.leaveReason==undefined || user.leaveReason=='' ||totalHours==0  ||isLOP"
+                            data-toggle="modal" data-target="#modelApproval">Save & Submit</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="mailList" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Employee List</h5>
+                <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="col-lg-4 text-align-right">
+                        <label for="Employee Name" class="control-label">Employee Name</label>
+                    </div>
+                    <div class="col-lg-5">
+                        <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText" placeholder="Enter Employee Name" maxlength="50"
+                            type="text">
+                    </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-outline-secondary" style="float: right;" (click)="filteredMailSearch(searchedText)">Search</button>
+                    </div>
+                </div>
+                <ul class="list-group" *ngFor="let users of notifyData ;let i=index" (click)="selectedNotify(users)">
+                    <li class="list-group-item " [value]="users.mail" *ngIf="i<10">{{users.fullName}} ( {{users.officeEmail|lowercase}}) </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modelApproval" role="dialog">
+    <div class="modal-dialog">
+
+        <form class="form-horizontal">
+            <div class="modal-header">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="container submit-leave-confirm-modal">
+                        <h4>Do you really want to Submit Leave Request ? </h4>
+                        <hr>
+                        <!--<form action="/action_page.php">-->
+                        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="submitLeaveRequest()">Yes</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

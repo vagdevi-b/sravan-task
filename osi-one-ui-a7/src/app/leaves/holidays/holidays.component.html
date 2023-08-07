@@ -1,0 +1,397 @@
+<div class="v-height row-offcanvas row-offcanvas-left">
+  <form name="form" #f="ngForm" novalidate>
+
+    <div class="inner-wrapper">
+
+      <div class="sub-header border-bottom">
+        <h1>List Of Holidays</h1>
+      </div>
+
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="alert alert-success text-center" *ngIf="successAlert">
+              <strong>{{successMessage}}</strong>
+            </div>
+            <div class="col-sm-8 notificationTextDiv" id="errorMessage">
+              <div class="alert alert-danger alert-dismissible notificationText">
+                {{errorMessage}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="container-fluid pt-2 pb-2">
+        <div class="row">
+          <div class="col-md-2 respKey">
+            <label for="orgName">
+              <strong>Organization Name: </strong>
+            </label>
+          </div>
+          <div class="col-md-3 respValue">
+            <!-- <label for="orgName">{{orgName.name}}</label> -->
+            <select (change)="getLocations($event.target.value)" name="orgId" class="form-control" [(ngModel)] ="orgId" >
+              <option selected value="">Select</option>
+              <option *ngFor="let orgs of orgList" [value]=orgs.orgId>
+                {{orgs.orgName}}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-md-2 respKey">
+            <label for="orgName">
+              <strong>Location Name:</strong>
+            </label>
+          </div>
+          <div class="col-md-3 respValue" id="dateselectiondiv">
+            <select (change)="onSelect($event.target.value)" name="location" class="form-control" [(ngModel)] ="holidayLocationId">
+              <option selected value="">Select</option>
+              <option *ngFor="let loc of allLocation" [value]=loc.locationId>
+                {{loc.locationName}}
+              </option>
+            </select>
+          </div>
+          <div class="col-md-2"></div>
+        </div>
+
+      </div>
+
+
+
+      <!-- End -->
+
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="container-fluid">
+
+            <section class="forms">
+
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th style='padding-left:15px;'>
+                        <strong>Holiday Date</strong>
+                      </th>
+                      <th>
+                        <strong>Holiday Name</strong>
+                      </th>
+                      <th>
+                        <strong>Location</strong>
+                      </th>
+                      <th>
+                        <strong>Optional</strong>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let field of fieldArray | paginate: { itemsPerPage:10,currentPage: crntpage,totalItems: fieldArray.length };trackBy : trackByFn "
+                    (click)="setClickedRow(field)" [class.active]="field.id == selectedRow">
+
+                    <td style='padding-left:15px;'>{{field.holidaydate | date:"EEE, MMM d, yyyy"}}</td>
+                    <td>{{field.holidayname}}</td>
+                    <td>{{field.locationName | titlecase}}</td>
+
+                    <td *ngIf="field.optionals == true">Yes</td>
+                    <td *ngIf="field.optionals == false">No</td>
+                  </tr>
+                  </tbody>
+
+                </table>
+                <div class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+                <div class="no-records-found-wrap">
+                  <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records" class="icon-27"></figure>
+                  <h5 [hidden]="fieldArray.length!=0" class="text-center mt-2 m-0" style="text-align: center;">No Records Found</h5>
+                </div>
+              </div>
+              </div>
+
+              <div class="col-sm-12 row">
+                <div class="col-sm-10">
+                  <!-- pagination -->
+                  <div class="paginate" [hidden]=' (fieldArray.length<=10)'>
+                    <!-- hide when result is less than 5 -->
+                    <pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+                  </div>
+                  <!-- END OF PAGE CONTROL -->
+                </div>
+                <div class="col-sm-2" style="padding-right: 0px;">
+                  <div class="text-right">
+                    <div class="form-container">
+                      <span>
+                        <a (click)="openModal('add_holiday')">
+                          <i class="glyphicon glyphicon-plus blue-glyph" aria-hidden="true"></i> &nbsp;
+                        </a>
+                      </span>
+                      <span>
+                        <a (click)="openModal('edit_holiday')">
+                          <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i> &nbsp;
+                        </a>
+                      </span>
+                      <span>
+                        <a (click)="openModal('delete_holiday')">
+                          <i class="glyphicon glyphicon-trash blue-glyph" aria-hidden="true"> </i>
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+            </section>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+<!-- Add Holiday Modal -->
+<div class="modal fade custom-modal-padding" id="add_holiday" role="dialog">
+  <form name="form" #holidayForm="ngForm">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="pagetitle">Add Holiday Name</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div [hidden]="!showMessage" class="alert alert-danger validationAlert">{{holidayExistMessage}}</div>
+          <div class="row">
+            <div class="col-md-5">
+              <div class="form-group">
+                <label for="holidayDate">
+                  <strong>Holiday Date</strong>
+                </label>
+
+                <div class="input-group" #DatePickerContainer1>
+                  <input id="holidaydate" name="holidaydate" class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd "
+                    [(ngModel)]="holidaySelectedDate" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="getDateCheckedBasedOnLocation(holidaySelectedDate)">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (document:click)="onClick($event,d1,'d1')" (click)="d1.toggle()" type="button">
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                        <i class="fa fa-lg fa-calendar"></i>
+                      </span>
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for='holidayName'>
+                  <strong>Holiday Name</strong>
+                </label>
+                <input type="text" id="holidayName" [(ngModel)]="addHoliday.holidayname" name="holidayname" class="form-control select-v4 form-control-sm form-field-border"
+                  #holidayname="ngModel">
+
+              </div>
+            </div>
+
+            <!-- isWeekend checkbox -->
+            <div class="col-md-2">
+              <div class="form-group">
+                  <label>
+                    <strong>isWeekend</strong>
+                  </label>
+                  <p>
+                    <input type="checkbox" id="isWeekend" [(ngModel)]="addHoliday.isWeekend" name="isWeekend" class="form-control select-v4 form-control-sm form-field-border">
+                  </p>
+              </div>
+            </div>
+
+
+            <div class="row col-sm-12">
+              <section class="forms">
+                <div class="box-body table-responsive">
+                  <table class="table table-hover table-bordered">
+                    <thead class="thead">
+                      <tr class="thead">
+                        <th>
+                          <label>
+                            <input type="checkbox" [(ngModel)]='all'  name="all" [checked]="isAllChecked()" (change)="checkAll($event)" /> Select All
+                          </label>
+                        </th>
+                        <th>
+                          <label>Locations</label>
+                        </th>
+                        <th>
+                          <label>Optional</label>
+                        </th>
+
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let loc of allLocation;let i=index">
+                        <td>
+                          <label>
+                            <input type="checkbox" id="{{loc.locationId}}" class="chkbx" name="locCB[]" [value]="loc.locationId" [(ngModel)]="loc.state"
+                            />
+                          </label>
+                        </td>
+                        <td>
+                          <label for={{loc.locationId}}> {{loc.locationName}} </label>
+                        </td>
+                        <td>
+                          <label>
+                            <input type="checkbox" class="chkbx" name='optional' [(ngModel)]='loc.optional'>
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+            </div>
+
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <div class="pull-right">
+            <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-outline-primary" (click)="addHolidayToList(holidayForm.value)">Save </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+
+
+<!--Edit Holiday-->
+
+<div class="modal fade custom-modal-padding" id="edit_holiday" role="dialog">
+  <form name="form" #editHoliday="ngForm">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Holiday Name</h5>
+          <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+
+        </div>
+        <div class="modal-body">
+          <div [hidden]="!showMessage" style="margin:1%" class="alert alert-danger validationAlert">{{holidayExistMessage}}</div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="holidayDate">
+                  <strong>Holiday Date</strong>
+                </label>
+                <div class="input-group" #DatePickerContainer2>
+                  <input id="holidaydate" name="holidaydate" #holidaydate="ngModel" class="form-control form-control-sm form-field-border"
+                    placeholder="yyyy-mm-dd " [(ngModel)]="expenseSelectedDateField" ngbDatepicker #d2="ngbDatepicker">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (document:click)="onClick($event,d2,'d2')" (click)="d2.toggle()" type="button">
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                        <i class="fa fa-lg fa-calendar"></i>
+                      </span>
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for='holidayName'>
+                  <strong>Holiday Name</strong>
+                </label>
+                <input id='holidayName' type="text" name="holidayname" [(ngModel)]="HoliName" class="form-control form-control-sm form-field-border"
+                  style="width: 100%;" #holidayname="ngModel">
+
+              </div>
+
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                  <label>
+                    <strong>isWeekend</strong>
+                  </label>
+                  <p>
+                    <input type="checkbox" id="isWeekend" [(ngModel)]="Weekend" name="isWeekend" class="form-control select-v4 form-control-sm form-field-border">
+                  </p>
+              </div>
+            </div>
+
+            <div class="row col-sm-12">
+              <section class="forms">
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered">
+                    <thead class="thead">
+                      <tr class="thead">
+                        <th>
+                          <label>Location</label>
+                        </th>
+                        <th>
+                          <label>Optional</label>
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+
+                        <td>
+                          <label> {{editedLocation}} </label>
+                        </td>
+                        <td>
+                          <input type="checkbox" name="optionals" [(ngModel)]="optional" class="offswitch-checkbox">
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div class="pull-right">
+            <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-outline-primary" (click)="editHolidaysToList(editHoliday.value)">Update</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+</div>
+
+<!-- model -->
+<div class="modal fade" id="delete_holiday" role="dialog">
+  <div class="modal-dialog modal-sm">
+    <form class="form-horizontal">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <h5>Do you want to Delete this holiday ? </h5>
+          <br>
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal" (click)="onSelectedRowDelete()">Yes</button>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

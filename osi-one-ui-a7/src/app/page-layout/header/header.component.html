@@ -1,0 +1,43 @@
+<div class="position-fixed fixed-top app-header header">
+  <div class="hamburger-menu" (click)="openMegaMenu()">
+      <span></span> <span></span> <span></span>
+  </div>
+  <div class="navbar-brand" routerLink="/dashboard">
+      <img class="navbar-brand-full" src="{{imageFile}}" id="logo">
+  </div>
+  <ul class="nav navbar-nav ml-auto">
+      <li class="nav-item px-3 d-md-down-none page_links_s">
+        <a class="nav-link" href="https://osius.sharepoint.com/sites/OSICentral/pages/osicentral-welcome-in.aspx" target="_blank">
+          OSI Central 
+          <i class="fa fa-link"></i>
+      </a>
+      </li>
+      <li class="nav-item d-md-down-none">
+        <a [routerLink]="['/logout']" class="nav-link logout">Logout
+            <i class="fa fa-power-off"></i>
+        </a>
+      </li>
+      <li class="nav-item px-3 d-md-down-none page_links_s">
+        <a class="nav-link" href="https://osione.osius.com/a1/osione-help/OSI%20One%20User%20Manual.html" target="_blank">
+          Help
+          <i class="fa fa-question-circle"></i>
+      </a>
+      </li>
+      <li class="nav-item dropdown" dropdown placement="bottom right">
+        <a class="nav-link" href="javascript:void(0);" role="button" aria-haspopup="true" aria-expanded="false"
+          dropdownToggle (click)="false">
+          <img [src]="photoPath" (error)="img.src = defaultImg" class="img-avatar" #img alt="Employee Profile Pic"/>
+          <span class="d-md-down-none">{{ userName | titlecase }}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right profile-pic-links" *dropdownMenu aria-labelledby="simple-dropdown">
+          <a class="dropdown-item" (click)="routeTo('profile')"> My Profile</a>
+          <a class="dropdown-item" (click)="routeTo('employeeChart')"> Organization Chart</a>
+          <a class="dropdown-item" [routerLink]="['/analyticsdashboard']"> Analytics View</a>
+          <a class="dropdown-item d-md-none"  href="https://osius.sharepoint.com/sites/OSICentral/pages/osicentral-welcome-in.aspx" target="_blank"> HR Policies</a>
+          <a class="dropdown-item d-md-none" href="https://osione.osius.com/a1/osione-help/OSI%20One%20User%20Manual.html" target="_blank"> Help</a>
+          <a class="dropdown-item" [routerLink]="['/logout']"> Logout</a>
+        </div>
+      </li>
+    </ul>
+</div>
+<mega-menu [toggleMegaMenu]="toggleMegaMenu" (closeMegamenu)="toggleMegaMenu = $event;"></mega-menu>

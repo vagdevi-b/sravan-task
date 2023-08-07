@@ -1,0 +1,133 @@
+<div class="v-height" id="modal-container">
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="float-right mr-4">
+        <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+          style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="refresh()"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-filter" >
+    <div class="col-form-filter mb-3">
+      <label>Organization </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="orgData"
+        [settings]="dropdownSettings" [(ngModel)]="org"
+        id="mddOrg"
+        (onSelectAll)="onSelectDeselectAll($event,'org')" (onDeSelectAll)="onSelectDeselectAll($event,'org')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Region </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="regionData"
+        [settings]="dropdownSettings" [(ngModel)]="region"
+        id="mddRegion"
+        (onSelectAll)="onSelectDeselectAll($event,'region')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'region')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Practice </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="practiceData"
+        [settings]="dropdownSettings" [(ngModel)]="practice" 
+        id="mddPractice"
+        (onSelectAll)="onSelectDeselectAll($event,'practice')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'practice')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Sub-practice </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="subPracticeData"
+        [settings]="dropdownSettings" [(ngModel)]="subPractices"
+        id="mddSubPractice"
+        (onSelectAll)="onSelectDeselectAll($event,'subPractice')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'subPractice')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Client </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="clientData"
+        [settings]="dropdownSettings" [(ngModel)]="client"
+        id="mddClient"
+        (onSelectAll)="onSelectDeselectAll($event,'client')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'client')">
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="col-form-filter mb-3">
+      <label>Project </label>
+      <ng-multiselect-dropdown [disabled]="spinner" [placeholder]="'Select'" [data]="projectData"
+        [settings]="dropdownSettings" [(ngModel)]="project"
+        id="mddProject"
+        (onSelectAll)="onSelectDeselectAll($event,'project')"
+        (onDeSelectAll)="onSelectDeselectAll($event,'project')">
+      </ng-multiselect-dropdown>
+    </div>
+  </div>
+
+  <div id="filter">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card" id="htmle2imagedata">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-sm-5">
+                <h6>Projects Revenue</h6>
+              </div>
+              <div class="col-sm-2">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <label>Year </label>
+                  </div>
+                  <div class="col-sm-10">
+                    <select class="form-control rounded-0 form-control-sm form-field-border dd" [(ngModel)]="orgMaxYear"
+                      (change)="updateHrsByResourceGrid()">
+                      <!-- <option value="*">All</option> -->
+                      <option *ngFor="let year of orgYearData" value="{{year.key}}">{{year.key}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-2 h-25">
+                <button type="button" id="toggle" class="btn btn-toggle" data-toggle="button" aria-pressed="false"
+                  autocomplete="off" (click)="toggle($event)">
+                  <div class="handle"></div>
+                </button>
+              </div>
+              <div class="col-sm-2 h-25">
+                <button type="button" id="toggleGrid" class="btn btn-toggle_" data-toggle="button" aria-pressed="false"
+                  autocomplete="off" (click)="toggleGrid($event)">
+                  <div class="handle"></div>
+                </button>
+              </div>
+              <div class="col-sm-1">
+                <span class="glyphicon glyphicon-download-alt" data-tooltip title="Download in excel"
+                  style="font-size: 22px !important; cursor: pointer;" (click)="downloadDetailsInExel()"></span>
+                <!-- <img src="../../../assets/images/download.png" (click)="downloadDetailsInExel()"> -->
+              </div>
+            </div>
+          </div>
+          <div class="card-body" [hidden]="isGrid"  [ngClass]="{'d-none': isGrid}">
+            <canvas id="OrgProjectRevenue"></canvas>
+          </div>
+          <div class="card-body" [hidden]="!isGrid" [ngClass]="{'d-none': !isGrid}">
+            <div class="row">
+              <div class="col-md-12">
+                <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+                  [rowData]="projectRevenue"
+                  [columnDefs]="columnDefs" 
+                  [gridOptions]="gridOptions" 
+                  [defaultColDef]="defaultColDef"
+                  [paginationPageSize]="paginationPageSize"
+                  pagination="true"  
+                  (gridReady)="onGridReady($event)">
+                </ag-grid-angular>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="spinner" class="overlay">
+      <div class="loader"></div>
+    </div>
+  </div>

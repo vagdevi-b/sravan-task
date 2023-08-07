@@ -1,0 +1,83 @@
+<!-- Set  GOAL MODAL START -->
+<div class="team-goal-settings-section team-goal-section">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="addGoalModalLabel">Change Manager</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="projectWeightageForm" class="spaced">
+
+          <div class="form-row mb-2">
+              <div class="col-md-6">Project Name
+              </div>
+              <div class="col-md-3">Review Manager
+              </div>
+              <div class="col-md-3">View All ?
+              </div>
+            </div>
+
+
+        <div class="form-row mb-2" formArrayName="projectWeightageList" *ngFor="let project of projectWeightageForm.get('projectWeightageList')['controls']; let i = index;"
+          >
+          <ng-container [formGroupName]="i" *ngIf="displayableProjects[projectList[i].projectId]">
+            <div class="col-6">
+              <input formControlName="projectName" class="form-control" disabled>
+            </div>
+                <div class="col-3">
+                  <select class="form-control" formControlName="rmPmId"
+                  (change)="onChangeManager($event)"
+                  *ngIf="getViewAllValue(i)?.value"
+                  >
+                  <option value="">Select</option>
+                    <option *ngFor="let employee of allEmployeeList" [value]="employee?.employeeId">
+                      {{employee?.fullName}}</option>
+                </select>
+                <select class="form-control" formControlName="rmPmId"
+                  *ngIf="!getViewAllValue(i)?.value"
+                  (change)="onChangeManager($event)">
+                  <option value="">Select</option>
+                  <option *ngFor="let manager of getReviewManagersListByIndex(i)?.value" [value]="manager?.employeeId">
+                    {{manager?.fullName}}</option>
+                </select>
+                </div>
+                <div class="col-3">
+                  <input type="checkbox"  
+                  formControlName="viewAll"  class="form-control"
+                  [checked]="getViewAllValue(i)?.value"
+                  (change)="onChangeViewAll($event,i)"
+                />
+                </div>
+
+
+
+          </ng-container>
+        </div>
+      </form>
+      <div class="row"
+        *ngIf="displayErrorMessage">
+        <div class="col-12">
+        <p class="text-danger">Total project Weightage should be 100.</p>
+      </div>
+      </div>
+    <div class="row"
+      *ngIf="checkRmExistErrorInfo">
+      <div class="col-12">
+      <p class="text-danger">Please select Review Manager for Active projects.</p>
+    </div>
+    </div>
+      <div class="row float-right">
+        <div class="col">
+            <button type="button" class="btn btn-outline-primary" (click)="close()">Cancel</button>
+            <button type="button" 
+            class="btn btn-primary" (click)="updateProjectWeightage()"
+            *ngIf="(appraisalService?.epmsStatus)!=='Closed' && !isReadOnly"
+            >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- ADD GOAL MODAL END -->

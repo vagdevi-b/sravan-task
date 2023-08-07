@@ -1,0 +1,457 @@
+<div class="v-height">
+
+    <!-- <div class="breadcrumb-wrapper">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Edit Leave Request</li>
+            </ol>
+        </nav>
+    </div> -->
+    <div class="snackbar" #AlertSuccess>{{successMessage}}</div>
+    <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger text-center" *ngIf="invalidTotalHours" style="margin-top: 1%;">
+                    <strong>Total Hours Exceeded for the selected leave type</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="new-leave-request">
+        <div class="sub-header bb-color">
+            <h1>Edit Leave Request</h1>
+        </div>
+
+        <div class="container-fluid mt-3">
+            <div class="row">
+                <div class="col-md-6 ">
+                    <form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>From Date:</label>
+
+                                    <div class="input-group">
+                                        <input id="fromDate" name="fromDate" #fromDate="ngModel"
+                                            class="form-control form-control-sm form-field-border"
+                                            placeholder="yyyy-mm-dd" [(ngModel)]="leaveSelectedFromDate" ngbDatepicker
+                                            #d1="ngbDatepicker" (dateSelect)="dateSelected()"
+                                            (dateSelect)="validateDate('fromDate', leaveSelectedFromDate)"
+                                            (change)="validateDate('fromDate', leaveSelectedFromDate)"
+                                            (focusout)="validateDate('fromDate', leaveSelectedFromDate)" required
+                                            [disabled]="isStatusApprove">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary date-pick"
+                                                (click)="!completed &&d1.toggle();$event.stopPropagation();"
+                                                type="button" (document:click)="closeFix($event, d1)"
+                                                [disabled]="isStatusApprove">
+                                                <span class="input-group-addon"
+                                                    style="cursor: pointer; border-radius: 0px;">
+                                                    <i class="fa fa-lg fa-calendar"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="validationError.fromDate"
+                                            class="alert alert-danger validationAlert"> From Date is required.</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>
+                                        To Date:
+                                    </label>
+                                    <div class="input-group" style="padding-bottom: 15px">
+                                        <input id="toDate" name="toDate" #toDate="ngModel"
+                                            class="form-control form-control-sm form-field-border"
+                                            placeholder="yyyy-mm-dd" [(ngModel)]="leaveSelectedToDate" ngbDatepicker
+                                            #d2="ngbDatepicker" (dateSelect)="dateSelected()"
+                                            (dateSelect)="validateDate('toDate', leaveSelectedToDate)"
+                                            (change)="validateDate('toDate', leaveSelectedToDate)"
+                                            (focusout)="validateDate('toDate', leaveSelectedToDate)" required
+                                            [minDate]="leaveSelectedFromDate" [disabled]="isStatusApprove">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary date-pick"
+                                                (click)="!completed && d2.toggle();$event.stopPropagation();"
+                                                type="button" (document:click)="closeFix($event, d2)"
+                                                [disabled]="isStatusApprove">
+                                                <span class="input-group-addon"
+                                                    style="cursor: pointer; border-radius: 0px;">
+                                                    <i class="fa fa-lg fa-calendar"></i>
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div *ngIf="validationError.toDate" class="alert alert-danger validationAlert">
+                                            To Date is required.</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label> Leave Types:</label>
+                                    <!-- <span *ngIf="isPTO" class="alert alert-danger validationAlert">Your Leave Balance is available. Please Apply for Other Leave</span> -->
+                                    <span *ngIf="isLOP" class="alert alert-danger validationAlert">Your Leave Balance is
+                                        over. Please Apply for LOP</span>
+                                    <select [(ngModel)]="user.leaveTypeId" [ngModelOptions]="{standalone: true}"
+                                        [disabled]="isStatusApprove" class="form-control"
+                                        (change)="getHoursByLeaveId(user.leaveTypeId)">
+                                        <option *ngFor="let leave of leaveType" value='{{leave.leaveTypeId}}'>
+                                            {{leave.leaveTypeName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>
+                                        Purpose:</label>
+                                    <textarea rows="2" name="leaveReason" [disabled]="isStatusApprove"
+                                        [(ngModel)]="user.leaveReason" cols="46" placeholder="Reason for leave"
+                                        class="form-control" maxlength="250"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label> Attachment:</label>
+                                    <label for="file-upload" class="custom-file-upload">
+                                        <i class="fa fa-cloud-upload"></i> Custom Upload</label>
+                                    <input id="file-upload" type="file" #AttachmentFile multiple name="uploadfile"
+                                        [(ngModel)]="user.uploadfile" (change)="detectFiles($event)"
+                                        [disabled]="isStatusApprove" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3"></div>
+                            <div class="col-sm-6">
+                                <table class="table table-hover table-bordered">
+                                    <tr *ngFor="let file of leaveAttachments;let i=index">
+                                        <th>
+                                            <a style="cursor: pointer;color: #2199e8;"
+                                                (click)="downloadFile(file.originalFileName,file.duplicateFileName, file.fileType, user.leaveId)">{{file.originalFileName}}</a>
+                                        </th>
+                                        <th>
+                                            <a (click)="removeFile(i)">
+                                                <i class="glyphicon glyphicon-remove"  aria-hidden="true"></i>
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <pre>(<u style="color: black">Note</u>:Allowed formats are jpg/jpeg/png/gif/pdf/docx/txt/xls/xlsx/doc/ppt/pptx/vsd/vsdx/zip/rar/rtf/mpp/eml <br>and maximum file size should be less than 5MB)
+                                </pre>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-group">
+                                    <label>Also Notify:</label>
+                                    <input type="email" class="form-control" name="email"
+                                        (keydown)=getMailSuggestion($event) [(ngModel)]="email"
+                                        [disabled]="isStatusApprove">
+                                    <span *ngIf="emailLength">No Match found with the given Employee Name</span>
+                                    <div class="row pt-2">
+                                        <div class="col-sm-12 nowrap">
+                                            <p>Notify To:</p>
+                                        </div>
+                                        <div class="col-sm-12 notify-list">
+                                            <span style="margin-right: 2%;"
+                                                *ngFor="let email of recievedMail;let i=index"
+                                                class="badge badge-primary"> {{email.fullName}} |
+                                                <a style="cursor:pointer;background-color:whitesmoke;color: black"
+                                                    (click)="removeEmail(i)"> &times;</a>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                                <div class="col-sm-3 nowrap">
+                                    <strong> Also Notify</strong>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" name="email" (keydown)=getMailSuggestion($event) [(ngModel)]="email" style="width:346px">
+                                    </div>
+                                    <div *ngFor="let email of addedEmails;let i=index">
+                                            <span class="badge badge-primary">{{email.fullName}}  | <a style="cursor:pointer;background-color:whitesmoke;color: black" (click)="removeEmail(i)">&times;</a>  </span>
+                                            
+                                        </div>
+
+                                </div>
+                            </div> -->
+
+
+                    </form>
+                </div>
+
+                <!-- table -->
+                <div class="col-md-6" *ngIf="selectedDates">
+                    <!-- ; else dates_content -->
+                    <div class="row">
+                        <div class="col-md-12 leavesSummary ">
+                            <div class="table-responsive table-shadow border-0 mb-3 show-row-5">
+                                <table class="table table-hover table-bordered mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <strong>Days</strong>
+                                            </th>
+                                            <th>
+                                                <strong>Note</strong>
+                                            </th>
+                                            <th>
+                                                <strong>Hours</strong>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let date1 of applyingHours">
+                                            <td width="30%">
+                                                {{date1.date | date:"EEE, MMM d, yyyy"}}
+                                            </td>
+                                            <td width="50%">
+    
+                                                {{date1.leaveDescription}}
+                                            </td>
+                                            <td width="20%">
+                                                <input type="text" id="number" min="0"
+                                                    oninput="validity.valid||(value=value.replace(/\D+/g, ''))"
+                                                    value={{date1.noOfHours}} (keypress)="numberOnly($event)" max="8"
+                                                    min="0"
+                                                    onKeyDown="if(this.value.length==1 && event.keyCode>47 && event.keyCode < 58)return false;"
+                                                    [(ngModel)]="date1.noOfHours" (change)=checkTotalHours($event)
+                                                    style="width:50px; text-align:center;"
+                                                    [disabled]="user.statusCode === 'Approved' || user.statusCode === 'Submitted'">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot class="">
+                                        <tr>
+                                            <td colspan="2" class="bg-none">
+                                                <strong>Total Hours:</strong>
+                                            </td>
+                                            <td width="20%" class="bg-none">
+                                                <span class="total-hour">{{totalHours}}</span>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-hover table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Total Hours:</strong>
+                                        </td>
+                                        <td width="20%">
+                                            <span class="total-hour">{{totalHours}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> -->
+                    
+                </div>
+                <!-- end of table -->
+                <div class="col-md-6"></div>
+                <div class="row col-md-6" *ngIf="user.statusCode=='Rejected'" style="margin-top: -8%;">
+                    <!-- <div class="col-md-6"></div> -->
+                    <div>Reason For Rejection:</div>
+                    <div class="col-md-6 ">
+                        {{rejectionReason}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row pt-2 pb-3">
+                <div class="col-md-3">
+                    <button type="button" class="btn  btn-secondary" (click)="onCancel()">Back</button>
+                </div>
+                <div class="col-md-9">
+                    <div class="text-right">
+                        <button type="button" class="btn  btn-outline-primary " data-toggle="modal"
+                            [disabled]="enableCancelLeaveButton" [hidden]="user.statusCode == 'Approved'"
+                            data-target="#cancelApproval">Cancel Leave</button>
+                        <button type="button" class="btn  btn-outline-primary" data-toggle="modal"
+                            [disabled]="enableCancelLeaveButton" [hidden]="user.statusCode != 'Approved' || user.statusCode == 'Submitted'
+					" data-target="#cancelApprovedLeave">Cancel Leave</button>
+                        <button type="button" class="btn btn-outline-primary "
+                            [disabled]="!f.form.valid ||enableButton||isHourNull|| user.leaveReason==''||totalHours==0 "
+                            [hidden]="user.statusCode != 'Open' && user.status !== 'N'"
+                            (click)="saveLeaveRequest()">Save</button>
+                        <button type="button" class="btn  btn-primary" [disabled]="!f.form.valid ||isHourNull||enableButton ||user.leaveTypeId==undefined ||user.leaveTypeId==''||user.leaveReason==undefined || user.leaveReason=='' || user.statusCode == 'Approved'
+                    || user.statusCode == 'Submitted'||totalHours==0 ||isLOP" data-toggle="modal"
+                            data-target="#modelApproval">Save & Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Notify model -->
+<div class="modal fade" id="mailList" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+            <h5 class="modal-title">Employee List</h5>
+        </div>
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-group row">
+                    <div class="col-lg-4 text-align-right">
+                        <label for="Employee Name" class="control-label">Employee Name</label>
+                    </div>
+                    <div class="col-lg-5">
+                        <input class="form-control  " [(ngModel)]="searchedText" placeholder="Enter Employee Name"
+                            maxlength="50" type="text">
+                    </div>
+                    <div class="col-lg-3">
+                        <button class="btn btn-outline-secondary" style="float: right;"
+                            (click)="filteredMailSearch(searchedText)">Search</button>
+                    </div>
+                </div>
+                <div class="container">
+                    <ul class="list-group" *ngFor="let users of notifyData ;let i=index"
+                        (click)="selectedNotify(users)">
+                        <li class="list-group-item" [value]="users.mail" *ngIf="i<10">{{users.fullName}} (
+                            {{users.officeEmail|lowercase}}) </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Notify model -->
+
+
+<!-- model -->
+<div class="modal fade" id="modelApproval" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <form class="form-horizontal">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Submit Leave Request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to Submit Leave Request ?</p>
+                    <!-- <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button> -->
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-outline-secondary mr-2" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                            (click)="editLeaveRequest()">Yes</button>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<div class="modal fade  delete-modal" id="cancelApproval" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <form class="form-horizontal">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Leave Request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to Cancel Leave Request ?</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-outline-secondary mr-2" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                            (click)="cancelLeaveRequest()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade  delete-modal" id="cancelApprovedLeave" role="dialog">
+    <div class="modal-dialog modal-dialog-centered ">
+        <form class="form-horizontal">
+            <div class="modal-header">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cancel Leave Request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Do you want to Cancel Leave Request ?</p>
+                        <form>
+                            <textarea cols="55" size="35" [(ngModel)]="user.rejectReason" required
+                                [ngModelOptions]="{standalone: true}" placeholder="Enter Reason For Cancellation">
+                            </textarea>
+                        </form>
+                        <div *ngIf="showMessage" style="margin:1%" class="alert alert-danger validationAlert">
+                            {{statusMessage}}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-outline-secondary mr-2"
+                                data-dismiss="modal">No</button>
+                            <button type="button" class="btn btn-danger"
+                                (click)="cancelApprovedLeaveRequest()">Yes</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+    <div class="modal-dialog"  style="top: 40%;">
+        <!-- Modal content-->
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-body">
+                <h3>Loading..</h3>
+            </div>
+        </div>
+    </div>
+</div>

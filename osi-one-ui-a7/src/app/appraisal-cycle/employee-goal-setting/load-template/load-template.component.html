@@ -1,0 +1,204 @@
+<!-- Set  GOAL MODAL START -->
+<div class="team-goal-settings-section team-goal-section">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="LoadTemplateModalLabel">{{projectName}}</h5>
+      <button type="button" class="close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- Tab Content Start -->
+      <div class="tab-content" id="myTabContent">
+        <!-- Project Tab Start -->
+        <div class="tab-pane  show active" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+            <div class="form-row mb-2">
+                <div class="form-group col-md-3">
+                    <label class="radio-inline">
+                        <input type="radio" name="category" 
+                        [(ngModel)]="category"
+                        value="guildelines"> From Guide Line
+                    </label>
+                </div>
+                <div class="form-group col-md-3">
+                    <label class="radio-inline">
+                        <input type="radio" 
+                        name="category"
+                        [(ngModel)]="category"
+                        value="projects" (ngModelChange)="onCategoryChange()"> From Project
+                        
+                    </label>
+                </div>
+          </div>
+
+              
+          <div class="form-row mb-2" *ngIf="category==='guildelines'">
+            <div class="form-group col-md-3">
+              <label for="BU">Grade</label>
+              <select class="form-control border" [(ngModel)]="gradeId" (change)="onGradeChange()">
+                <option value="">Select</option>
+                <option *ngFor="let grade of gradesList" [ngValue]="grade?.gradeName">{{grade?.gradeName}}</option>
+              </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="BU">Functional Role</label>
+                <select class="form-control border" [(ngModel)]="practiceId" (change)="onPracticeIdChange()">
+                  <option value="">Select</option>
+                  <ng-container *ngFor="let practice of practiceList">
+                    <option *ngIf="practice?.isActive" [ngValue]="practice?.practiceShortName">
+                      {{practice?.practiceShortName}}
+                    </option>
+                  </ng-container>
+                </select>
+              </div>
+
+          </div>
+          <div class="form-row mb-2" *ngIf="category==='projects'">
+              <div class="form-group col-md-6">
+                <label for="employee">Select Employee</label>
+                <select class="form-control border" [(ngModel)]="employeeId" (change)="getEmployeeGoals()">
+                  <option value="">Select</option>
+                  <option *ngFor="let employee of employeesList" [ngValue]="employee?.employeeId">{{employee?.fullName}}</option>
+                </select>
+              </div>
+            </div>
+
+
+
+          <ng-container *ngIf="(projectForm&&gradeId&&practiceId) || (projectForm&&employeeId)">
+            <form [formGroup]="projectForm">
+              <!-- Delivery & Process Section Start -->
+
+              <ng-container formGroupName="osiEpmsCategoriesProcess"
+                *ngIf="projectForm?.get('osiEpmsCategoriesProcess')?.value">
+                <div class="row">
+                  <div class="col-12">
+                    <h2 class="float-left">
+                      {{projectForm?.value?.osiEpmsCategoriesProcess?.categoryName}}
+                    </h2>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="projectForm?.get('osiEpmsCategoriesProcess')?.value">
+                  <div class="row" formArrayName="osiEpmsEmpKraDetails">
+                    <div class="col-12" *ngFor="let empKpa of projectForm.get('osiEpmsCategoriesProcess').get('osiEpmsEmpKraDetails')?.controls;
+        let empKpaIndex = index" [formGroupName]="empKpaIndex">
+                      <div class="accordion accordion-custom">
+                        <div class="card">
+                          <div class="card-header" (click)="onClickDelivaryProcessHeader(empKpaIndex)">
+                            <button class="btn btn-link" [ngClass]="{'collapsed':!empKpa?.value?.isExpand}"
+                              type="button">
+                              {{empKpa?.value?.osiEpmsKra?.name}} ( {{empKpa?.value?.weightage}}% )
+                            </button>
+                          </div>
+                          <div [hidden]="!(empKpa?.value?.isExpand)">
+                            <div class="card-body" formArrayName="osiEpmsEmpKpaDetails">
+                              <div class="form-row mb-2" *ngFor="let empKparatingInfo of empKpa?.get('osiEpmsEmpKpaDetails')?.controls;
+                  let empKparatingInfoIndex = index" [formGroupName]="empKparatingInfoIndex">
+                                <div class="col-12 col-md-8">
+                                  <div class="row">
+                                    <div class="col-md-10 font-weight-semi-bold">
+                                      <div class="form-check checkbox">
+                                          <label class="form-check-label pointer"><input type="checkbox" class="form-check-input" formControlName="isSelected"> {{empKparatingInfo?.value?.kpa}}</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <!-- Delivery & Process Section Start -->
+
+              <!-- Delivery Values Section Start -->
+
+              <ng-container formGroupName="osiEpmsCategoriesValues"
+                *ngIf="projectForm?.get('osiEpmsCategoriesValues')?.value">
+                <div class="row mt-5">
+                  <div class="col-12">
+                    <h2 class="float-left">
+                      {{projectForm?.value?.osiEpmsCategoriesValues?.categoryName}}
+                    </h2>
+                  </div>
+                </div>
+
+                <ng-container *ngIf="projectForm?.get('osiEpmsCategoriesValues')?.value">
+                  <div class="row" formArrayName="osiEpmsEmpKraDetails">
+                    <div class="col-12" *ngFor="let empKpa of projectForm.get('osiEpmsCategoriesValues').get('osiEpmsEmpKraDetails')?.controls;
+        let empKpaIndex = index" [formGroupName]="empKpaIndex">
+                      <div class="accordion accordion-custom">
+                        <div class="card">
+                          <div class="card-header" (click)="onClickDelivaryHeader(empKpaIndex)">
+                            <button class="btn btn-link" [ngClass]="{'collapsed':!empKpa?.value?.isExpand}"
+                              type="button">
+                              {{empKpa?.value?.osiEpmsKra?.name}} ( {{empKpa?.value?.weightage}}% )
+                            </button>
+                          </div>
+                          <div [hidden]="!(empKpa?.value?.isExpand)">
+                            <div class="card-body" formArrayName="osiEpmsEmpKpaDetails">
+                              <div class="form-row mb-2" *ngFor="let empKparatingInfo of empKpa?.get('osiEpmsEmpKpaDetails')?.controls;
+                  let empKparatingInfoIndex = index" [formGroupName]="empKparatingInfoIndex">
+                                <div class="col-12 col-md-8">
+                                  <div class="row">
+                                    <div class="col-md-10 font-weight-semi-bold">
+                                      <div class="form-check">
+                                        <label class="form-check-label pointer"><input type="checkbox" class="form-check-input" formControlName="isSelected"> {{empKparatingInfo?.value?.kpa}}</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+                
+
+              </ng-container>
+              
+              <ng-container *ngIf="!projectForm?.get('osiEpmsCategoriesValues')?.value && 
+              !projectForm?.get('osiEpmsCategoriesValues')?.value
+              ">
+                <div class="row">
+                  <div class="col text-center">
+                    <p >No templates defined</p>
+                  </div>
+                </div>
+              </ng-container>
+
+
+
+
+              <!-- Delivery Values Section Start -->
+
+              <div class=" float-right mt-3">
+                <input type="button" value="Cancel" class="btn btn-light" (click)="close()">
+                <input
+                    type="button"
+                    value="Save"
+                    class="btn btn-primary"
+                    (click)="onSaveTemplateInfo()"
+                    *ngIf="projectForm?.get('osiEpmsCategoriesValues')?.value &&
+                      projectForm?.get('osiEpmsCategoriesValues')?.value && !isReadOnly">
+              </div>
+            </form>
+          </ng-container>
+        </div>
+        <!-- Project Tab End -->
+      </div>
+      <!-- Tab Content End -->
+      <!-- Modal for showing loading text -->
+
+    </div>
+  </div>
+</div>
+<!-- ADD GOAL MODAL END -->

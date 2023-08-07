@@ -1,0 +1,118 @@
+<div class="v-height">
+
+  <div class="row">
+    <div class="col-sm-11">
+      <span class="lastRefresh">Last Refresh : {{ refreshDate | date:'medium' }}</span>
+    </div>
+    <div class="col-sm-1">
+      <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+        style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="refresh()"></span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col col-md-6">
+      <div class="mt-1">
+        <div class="mb-2">Organization &nbsp; </div>
+        <label>
+          <input type="checkbox" checked value="*" id="all"
+            (change)="onCheckboxChange($event.target.value, $event.target.checked)" /> All &nbsp;
+          <label *ngFor="let org of checkboxData">
+            <input type="checkbox" [(ngModel)]="org.checked" value={{org.value}}
+              (change)="onCheckboxChange($event.target.value, $event.target.checked)" />{{org.name}} &nbsp;
+          </label>
+        </label>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="row">
+        <div class="col-md-6">
+          <label>Select start month</label>
+          <input style="caret-color: transparent;" type="text" class="form-control" bsDatepicker id="startDate"
+            name="plannedStartDate" [(ngModel)]="startDate" placeholder="Select Month range"
+            (ngModelChange)="selectMonth()" [bsConfig]="datePickerConfig" (onShown)="onOpenCalendar($event)"
+            autocomplete="false" readonly>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Select end month</label>
+            <input style="caret-color: transparent;" type="text" class="form-control" bsDatepicker id="endDate"
+              name="plannedStartDate" [(ngModel)]="endDate" placeholder="Select Month range"
+              (ngModelChange)="selectMonth()" [bsConfig]="datePickerConfig" (onShown)="onOpenCalendar($event)"
+              autocomplete="false" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartContainer">
+    <div id="filter">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card" id="htmle2imagedata">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-sm-9">
+                      <h6>Invoiced Revenue By Customer</h6>
+                    </div>
+                    <div class="col-sm-2" style="border-right: 1px solid">
+                      <button type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false"
+                        autocomplete="off" (click)="onToggleTableVsChartChange($event)">
+                        <div class="handle"></div>
+                      </button>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="glyphicon glyphicon-download-alt" data-tooltip title="Download in excel"
+                        style="font-size: 22px !important; cursor: pointer;" (click)="exportDetailsInExcel()"></span>
+                      <!-- <img src="../../../assets/images/download.png" (click)="exportDetailsInExcel()"> -->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div class="table-responsive table-shadow border-0" [hidden]="shouldShowGrid"
+                    style="position: relative; height: 200vh !important">
+                    <canvas id="invoicedRevenueByCustomer" #canvas></canvas>
+                  </div>
+
+                  <div class="row" [hidden]="!shouldShowGrid">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                      <ag-grid-angular style="width: auto;" class="ag-theme-balham"
+                        [rowData]="formattedGridInvRevByCustimerData" [columnDefs]="columnDefs"
+                        [gridOptions]="gridOptions" [paginationPageSize]="paginationPageSize"
+                        [getRowHeight]="getRowHeight" pagination="true" enableSorting enableFilter enableColResize
+                        (gridReady)="onGridReady($event)">
+                      </ag-grid-angular>
+                    </div>
+
+                    <div class="col-md-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="spinner || isDataLoading || isResourceListLoading" class="overlay">
+    <div class="loader"></div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>

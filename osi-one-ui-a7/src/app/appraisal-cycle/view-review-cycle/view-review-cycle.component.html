@@ -1,0 +1,67 @@
+<div class="v-height">
+  <div class="new-leave-request">
+    <div class="sub-header bb-color">
+      <h1>Review Cycle</h1>
+    </div>
+    <div class="container-fluid pt-3">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <form [formGroup]="initAppraisalForm">
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Organization:</label>
+                  <select name="organization" class="form-control" formControlName='orgId'>
+                    <option selected value=''>-- Select --</option>
+                    <option
+                    *ngFor='let organization of organizationList'  [value]="organization.orgId"
+                    >{{organization?.orgName}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Employee:</label>
+                  <input type="text" class="form-control" 
+                  formControlName='empId'
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Year:</label>
+                  <select name="year" class="form-control" formControlName='year'>
+                    <option selected value=''>-- Select --</option>
+                    <option
+                    *ngFor='let year of yearsList'  [value]="year"
+                    >{{year}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-12">
+                <div class="form-group">
+                  <label>Frequency:</label>
+                  <select name="frequency" class="form-control" formControlName='frequency'>
+                    <option selected value=''>-- Select --</option>
+                    <option
+                    *ngFor='let frequency of frequencyList'  [value]="frequency.name"
+                    >{{frequency?.description}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

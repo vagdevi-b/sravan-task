@@ -1,0 +1,42 @@
+	.panel-default {
+		min-height: inherit
+	}
+
+	h4.panel-title {
+		position: relative
+	}
+
+	h4.panel-title a {
+		display: block;
+		position: relative
+	}
+
+	h4.panel-title .collapsed {
+		position: relative
+	}
+
+	h4.panel-title a.collapsed:before {
+		position: absolute;
+		content: '\002b';
+		top: 0px;
+		right: 0px;
+		color: #666;
+		font-size: 16px;
+	}
+
+	h4.panel-title a:before {
+		position: absolute;
+		content: '\2212';
+		top: 0px;
+		right: 0px;
+		color: #666;
+	}
+
+	#empDetailsContainer .col-lg-4 {
+		text-align: right;
+	}
+
+    .table-scroll {
+        max-height: 218px !important;
+        overflow-y: auto !important
+      }

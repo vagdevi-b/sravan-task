@@ -1,0 +1,22 @@
+<table class="table table-hover table-bordered" *ngIf="config?.headers?.length">
+  <thead>
+    <tr>
+      <th *ngFor="let item of config?.headers">{{item.label}}</th>
+    </tr>
+    
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of config?.data" (click)="onRowClick(config, item)">
+      <td *ngFor="let obj of config?.headers" (click)="onCellClick(config, item)">
+        <ng-container *ngIf="obj.key && obj.actionType !== 'button'">
+          {{item[obj.key]}}
+        </ng-container>
+        <ng-container *ngIf="obj.actionType === 'button'">
+          <button class="btn">{{item[obj.key]}}</button>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p *ngIf="(config?.data && !config?.data?.length) || !config?.data" class="load_no_data_context">No Data Found</p>
+<!-- <p *ngIf="!config?.data" class="load_no_data_context">Loading...</p> -->

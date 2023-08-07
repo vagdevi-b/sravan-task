@@ -1,0 +1,28 @@
+<div class="modal-content">
+  <!-- Modal Header -->
+  <!-- Modal Body -->
+  <form [formGroup]="noteDetailForm">
+    <div class="modal-body">
+      <h4>Notes<span class="required" *ngIf="mandatory == 'Mandatory'">*</span></h4>
+      <div class="body-message-notes">
+        <div id="actions" class="row">
+          <div class="col-lg-12 col-md-12">
+            <textarea id="inputDescription" formControlName="notes" class="form-control" rows="5"
+              placeholder="Add a Comment"></textarea>
+          </div>
+          <div *ngIf="mandatory == 'Mandatory'">
+            <div class="fieldError"
+              *ngIf="(noteDetailForm.get('notes')?.dirty || noteDetailForm.get('notes')?.touched) && noteDetailForm.get('notes')?.errors?.required">
+              <small>Please Enter the Notes </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- Modal Footer -->
+  <div class="modal-footer custom-modal-footer">
+    <button type="button" (click)="save()" class="btn btn-primary btn-style-1">Add</button>
+    <button type="button" class="btn btn-outline-secondary btn-style-1" (click)="close()">Cancel</button>
+  </div>
+</div>

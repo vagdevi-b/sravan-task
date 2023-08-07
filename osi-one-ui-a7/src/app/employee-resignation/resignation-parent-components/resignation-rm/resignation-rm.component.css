@@ -1,0 +1,1011 @@
+.breadcrumb.breadcrumb {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding: .75rem 1rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  background-color: #D4DCE5 !important;
+  border-radius: 0
+}
+
+.breadcrumb .breadcrumb-item+.breadcrumb-item {
+  padding-left: .5rem
+}
+
+.breadcrumb .breadcrumb-item+.breadcrumb-item::before {
+  float: left;
+  padding-right: .5rem;
+  color: #6c757d;
+  content: "/"
+}
+
+.breadcrumb .breadcrumb-item+.breadcrumb-item:hover::before {
+  text-decoration: underline;
+  text-decoration: none
+}
+
+.breadcrumb .breadcrumb-item.active {
+  color: #6c757d !important
+}
+
+label {
+  color: #141414;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 16px;
+  font-weight: 400
+}
+
+h4 {
+  font-weight: 400;
+  font-size: 18px;
+  color: #2A2A2A
+}
+
+/* label.col-sm-4.col-form-label{color:#141414;font-size:14px;letter-spacing:0;line-height:16px;font-weight:500} */
+.custom-form-inline {
+  width: 100%
+}
+
+.font-14 {
+  font-size: 14px
+}
+
+.font-16 {
+  font-size: 16px
+}
+
+.fw-500 {
+  font-weight: 500
+}
+
+.font-18 {
+  font-size: 18px
+}
+
+.fw-600 {
+  font-weight: 600
+}
+
+.w-60 {
+  width: 208px !important
+}
+
+.form-group {
+  margin-bottom: 1rem !important
+}
+
+.custom-margin {
+  margin: 0 16px
+}
+
+.custom-card {
+  border: none;
+  -webkit-box-shadow: 0 0 5px 2px #fff;
+  -moz-box-shadow: 0 0 5px 2px #fff;
+  box-shadow: 0 0 5px 2px #e1e1e1;
+  border-radius: 0;
+  padding-bottom: 15px;
+}
+
+.custom-header {
+  background: #fff !important;
+  min-height: 56px;
+  color: #313641;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 25px
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  background-color: #fff !important
+}
+
+.card-header .search-input {
+  height: 31px;
+  overflow: hidden;
+}
+
+.card-header .search-input .form-control {
+  height: 100% !important;
+  padding: 0 0.5rem;
+  box-shadow: inherit !important;
+  -webkit-box-shadow: inherit !important;
+  -moz-box-shadow: inherit !important;
+  border-right: inherit
+}
+
+.card-header .search-input .btn-search-icon {
+  height: 100% !important
+}
+
+.card-header .search-input .btn-search-icon .btn {
+  height: 100% !important;
+  box-shadow: inherit !important;
+  -webkit-box-shadow: inherit !important;
+  -moz-box-shadow: inherit !important;
+  border-left: inherit
+}
+
+.btn-resignations label {
+  margin: 0
+}
+
+.btn-resignations input[type="button"] {
+  height: 32px;
+  border: 1px solid #C9C9C9;
+  padding: 0 10px;
+  margin: 0 10px 15px 0;
+  background-color: #fff;
+  color: #7C7C7C;
+  font-size: 14px;
+  border-radius: 3px
+}
+
+.btn-resignations input[type="button"].active {
+  color: #fff;
+  background-color: #2B6086
+}
+
+.btn-initiate {
+  height: 32px !important;
+  width: auto;
+  border-radius: 3px !important;
+  background-color: #2B6086;
+  border: none;
+  margin-left: 1000px;
+
+}
+
+.filter-link {
+  color: #646C73;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 16px
+}
+
+.status-table .table-head-title {
+  border-bottom: 1px solid #e9e9e9;
+  background: #2B3A4E;
+  padding: 15px 30px;
+  color: #fff
+}
+
+.status-table table.table {
+  border-collapse: collapse
+}
+
+.status-table table.table tr th,
+table.table tr td {
+  border-color: #e9e9e9;
+  vertical-align: middle;
+  font-size: 14px;
+  line-height: 16px
+}
+
+.status-table table.table tr th:first-child {
+  width: 200px;
+  color: #FFF;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 16px;
+  padding: 20px !important
+}
+
+.status-table table.table-striped tbody tr {
+  background: #f2f2f2;
+  border-top: 6px solid #fff !important;
+  font-weight: 400
+}
+
+.custom-table .table th,
+.table td {
+  border-top: none !important;
+  color: #141414;
+  letter-spacing: 0;
+  font-weight: 500;
+  height: 56px
+}
+
+.status-table table.table tr th,
+table.table tr td {
+  border-color: #e9e9e9;
+  vertical-align: middle;
+  font-size: 14px;
+  line-height: 16px
+}
+
+.page-item .page-link {
+  cursor: pointer;
+  margin-right: 5px
+}
+
+.status-table .pagination>.active>a {
+  background-color: #100249 !important;
+  border-color: #100249 !important;
+  color: #fff !important;
+  border-radius: 50%;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.status-table .pagination>li>a,
+.pagination>li>span {
+  border: none !important;
+  color: #000 !important;
+  border-radius: 50%;
+  background-color: none !important
+}
+
+.page-item.status-table-left-arrow,
+.page-link.status-table-left-right {
+  background-color: #F2F2F2 !important;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2) !important;
+  border-color: #100249 !important;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.page-item.disabled .page-link {
+  background-color: #F2F2F2 !important;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2) !important;
+  border-color: #100249 !important;
+  border-radius: 50%
+}
+
+.status-table table.table tr .hr-status {
+  width: 40px;
+  padding-left: 1px;
+  padding-right: 1px
+}
+
+.status-table table.table tr .pd-status {
+  width: 40px;
+  padding-left: 1px;
+  padding-right: 1px
+}
+
+.status-table table.table tr .r-status {
+  width: 40px;
+  height: 32px;
+  text-align: center;
+  background-color: #2B6086;
+  color: #fff;
+  font-size: 8px;
+  line-height: 12px;
+  font-weight: 400;
+  padding-top: 5px;
+}
+
+.status-table table.table tr .r-status span {
+  font-size: 14px;
+  display: block;
+  font-weight: 300
+}
+
+.status-table table.table tr .hr-status .r-status {
+  border-radius: 14px 0 0 14px;
+}
+
+.status-table table.table tr .pd-status .r-status {
+  border-radius: 0 14px 14px 0
+}
+
+.status-table table.table tr .r-status.close {
+  background-color: #001B94;
+  color: #fff;
+  opacity: 1;
+}
+
+.status-table table.table tr .r-status.open {
+  background-color: #C52F34;
+  color: #fff;
+  opacity: 1;
+}
+
+
+.filter-link {
+  color: #646C73;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 16px
+}
+
+.filter-modal-header {
+  background-color: #2C3A4E;
+  color: #FFF;
+  font-size: 22px;
+  letter-spacing: 0;
+  line-height: 25px
+}
+
+.filter-modal-close {
+  color: #FFF;
+  font-size: 22px
+}
+
+.modal-btn-actions .btn {
+  border-radius: 4px !important
+}
+
+.datepicker-wrapper {
+  position: relative;
+}
+
+.datepicker-wrapper .form-control {
+  padding-left: 35px
+}
+
+.datepicker-wrapper .input-group-append {
+  position: absolute;
+  top: 1px;
+  left: 2px
+}
+
+.datepicker-wrapper .input-group-append button.btn {
+  padding: 0 10px !important;
+  border: inherit
+}
+
+label.col-form-label {
+  color: #141414;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 16px;
+  font-weight: 400;
+  justify-content: flex-start
+}
+
+.form-inline .form-control {
+  width: 100% !important
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  color: #495057;
+  background-color: #fff;
+  box-shadow: inherit;
+  border-radius: 4px !important;
+  font-weight: 400
+}
+
+.validationAlert {
+  margin: 5px 0 0;
+  padding: 0;
+  text-align: left;
+  font-size: 12px;
+  background: #fff;
+  color: #C52F34
+}
+
+.datepicker-wrap {
+  position: relative
+}
+
+.datepicker-wrap .form-control {
+  padding-right: 45px
+}
+
+.datepicker-wrap .input-group-append {
+  position: absolute;
+  top: 0;
+  right: 15px
+}
+
+.custom-input-group-text {
+  background: none;
+  height: 34px !important;
+  width: 44px;
+  border: inherit;
+  box-shadow: inherit !important
+}
+
+.custom-input-group-text .date-pick {
+  font-size: 15px
+}
+
+.custom-accordion {
+  margin-top: 0;
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 3px;
+  overflow: hidden
+}
+
+.accordion .card {
+  border: none
+}
+
+.custom-card-head {
+  background: #E1E3E7;
+  padding: 15px 20px
+}
+
+.accordion .card h2 {
+  background: url(../../../../assets/images/a-up-arrow.png) no-repeat 0 center;
+  background-size: 18px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 400;
+  float: left;
+  padding-left: 34px;
+  color: #222;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 21px
+}
+
+.accordion .card h2.collapsed {
+  background: url(../../../../assets/images/a-down-arrow.png) no-repeat 0 center;
+  background-size: 18px
+}
+
+.custom-accordion .card-body {
+  padding: 10px 20px;
+  border: 12px solid #E1E3E7;
+  border-top: 0
+}
+
+.custom-accordion .card-body table th,
+.custom-accordion .card-body table td {
+  height: auto;
+  color: #141414;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  vertical-align: top;
+  padding: 10px 0;
+  margin: 0;
+  border: inherit
+}
+
+.notes-section {
+  border-radius: 3px;
+  background-color: #FBFAFA;
+  padding: 20px 30px
+}
+
+.notes-section-col-2 {
+  background: #d2d2d2;
+  min-height: 50px;
+  padding: 20px 30px
+}
+
+.attach-col button {
+  font-size: 14px;
+  font-weight: 500;
+  color: #646C73;
+  margin: 0 28px 0 0
+}
+
+.attach-col button:last-child {
+  margin-right: 0
+}
+
+.notes-section textarea.form-control-lg {
+  height: 138px;
+  border: 1px solid #ced4da;
+  font-size: 14px;
+  line-height: 20px
+}
+
+.sub-name {
+  height: 30px;
+  width: 30px;
+  border-radius: 25px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #4E8BD7
+}
+
+.sub-title {
+  border-radius: 4px;
+  background-color: #2B6086
+}
+
+.discussion-text {
+  color: #A1A1A1;
+  font-size: 10px;
+  font-style: italic;
+  letter-spacing: 0;
+  line-height: 18px
+}
+
+.doc-title {
+  color: #313641;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 21px
+}
+
+.doc-sub-title {
+  margin-top: 24px;
+  color: #3D3D3D;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 14px
+}
+
+.custom-mail-icon {
+  font-size: 16px
+}
+
+.btn-style-1 {
+  height: 30px !important;
+  border-radius: 3px !important;
+  -webkit-border-radius: 3px !important;
+  -moz-border-radius: 3px !important
+}
+
+.upload-wrapper {
+  background: #2B6086;
+  border-radius: 3px;
+  padding: 21px 17px;
+  margin: 15px 0 0
+}
+
+.custom-browse-input {
+  width: 88px;
+  height: 30px;
+  display: block;
+  position: relative;
+  color: #533e00;
+  margin: 0
+}
+
+.custom-browse-input input {
+  visibility: hidden;
+  width: 88px
+}
+
+.custom-browse-input:before {
+  height: 30px;
+  content: 'Upload';
+  display: block;
+  color: #495057;
+  background: #fff;
+  border: 1px solid #C9C9C9;
+  border-radius: 2px;
+  padding: 5px 0 0 6px;
+  outline: none;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: 400;
+  text-align: left;
+  font-size: 13px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: url(../../../../assets/images/custom-upload-icon.png) no-repeat right center #fff;
+  background-size: 30px
+}
+
+.text-upload-info {
+  font-size: 10px;
+  color: #D2D2D2;
+  font-style: italic;
+  padding-right: 15px
+}
+
+.custom-modal-footer {
+  border-top: none !important;
+  display: flex;
+}
+
+
+/* 
+accordion
+*/
+
+
+/* Demo Reason for Resignation Form With Reason Items Start */
+/* .reason-resignation-buttons-wrap .reason-resignation-label-field label{ font-family: 'Roboto', sans-serif; font-weight: 400; font-size: 18px; line-height: 21px; color: #2A2A2A; padding: 0 0 0 0; margin: 0 0 20px 0; }
+
+.reason-resignation-buttons-wrap .reason-resignation-buttons label{ width: 100%; font-family: 'Roboto', sans-serif; font-weight: 400; font-size: 18px; line-height: 21px; color: #2A2A2A; padding: 0 0 0 0; margin: 0 0 20px 0; }
+.reason-resignation-buttons-wrap .reason-resignation-buttons .reason-resignation-item-wrap{ width: 100%; }
+.reason-resignation-buttons-wrap .reason-resignation-buttons .reason-resignation-item-wrap .reason-resignation-item{ padding: 7px 10px; margin: 0 20px 0 0; background-color: #fff; border: 1px solid #B3B3B3; font-size: 13px; line-height: 15px; color: #444444; font-family: 'Roboto', sans-serif; font-weight: 400; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; position: relative; }
+.reason-resignation-buttons-wrap .reason-resignation-buttons .reason-resignation-item-wrap .reason-resignation-item .btn{ position: absolute; right: 4px; top: -10px; width: 16px; height: 16px !important; border: 1px solid #979797; background-color: #D8D8D8; color: #666666; -webkit-border-radius: 50% !important; -moz-border-radius: 50% !important; border-radius: 50% !important; padding: 0 !important; color: #666666 !important; font-size: 16px !important; line-height: 16px !important; } */
+/* Demo Reason for Resignation Form With Reason Items End */
+
+/* Note Section Start */
+.notes-list-wrap .notes-list-item {
+  border-bottom: 1px solid #DEDEDE;
+  width: 100%;
+  margin: 0 0 15px 0;
+  padding: 0 15px 15px 0;
+  /* font-family: 'Roboto', sans-serif; */
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 16px;
+  color: #454545;
+  background-color: inherit;
+}
+
+/* .notes-list-wrap .notes-list-item:last-child{ border-bottom:none; padding-bottom: 0; margin-bottom: 0; } */
+.notes-list-wrap .notes-list-item .sub-name {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: #fff;
+  width: 31px;
+  padding: 0;
+}
+
+.notes-list-wrap .notes-list-item .sub-name-blue {
+  background-color: #4E8BD7;
+  color: #fff;
+}
+
+.notes-list-wrap .notes-list-item .sub-name-orange {
+  background-color: #E67E22;
+  color: #fff;
+}
+
+.notes-list-wrap .notes-list-item .sub-name-green {
+  background-color: #8BB63F;
+  color: #fff;
+}
+
+.notes-list-wrap .notes-list-item .notes-title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  color: #3D3D3D;
+  background-color: inherit;
+  padding: 0 0 10px 0;
+}
+
+.notes-list-wrap .notes-list-item .notes-title .notes-title-sub {
+  color: #DEDEDE;
+}
+
+.notes-list-wrap .notes-list-item .notes-title .notes-title-sub .discussion-text {
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 11px;
+  font-style: italic;
+  color: #A1A1A1;
+  background-color: inherit;
+}
+
+.notes-list-wrap .notes-list-item .summary {
+  width: 100%;
+  padding-top: 6px;
+}
+
+.notes-list-wrap .notes-list-item .summary p {
+  margin: 0 0 0 0;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 16px;
+  color: #454545;
+  background-color: inherit;
+  padding: 0;
+}
+
+/* Note Section End */
+
+/* Out Line Button Start */
+
+.btn-outline {
+  background-color: transparent;
+  outline: none;
+  color: #646C73 !important;
+  line-height: 16px !important;
+  border: none;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 0.4rem !important;
+}
+
+.btn:disabled {
+  cursor: default;
+}
+
+/* Out Line Button End */
+
+/* New Reg Employee Details Start */
+.reg-emp-details {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.reg-emp-details .reg-emp-details-head {
+  background-color: #2B3A4E;
+  color: #fff;
+  padding: 20px 20px 20px 20px;
+}
+
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table {
+  width: 100%;
+  margin: 0;
+}
+
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table tr td {
+  padding: 0;
+  /* font-family: 'Roboto', sans-serif; */
+  color: #fff;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 400;
+  border: none;
+  height: auto;
+}
+
+.reg-emp-details .reg-emp-details-head .reg-emp-details-table tr td .reg-emp-details-label {
+  margin: 0 15px 0 0;
+}
+
+.reg-emp-details .reg-emp-details-content {
+  background-color: #EDEDED;
+  color: #141414;
+  padding: 15px 20px 0 20px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 0 0 3px 3px;
+}
+
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table {
+  width: 100%;
+  margin: 0;
+}
+
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table tr td {
+  padding: 0 0 26px 0;
+  /* font-family: 'Roboto', sans-serif; */
+  color: #141414;
+  font-size: 16px;
+  line-height: 16px;
+  font-weight: 400;
+  border: none;
+  height: auto;
+}
+
+.reg-emp-details .reg-emp-details-content .reg-emp-details-date-table tr td .reg-emp-details-date-label {
+  margin: 0 10px 0 0;
+  display: inline-block;
+  min-width: 195px;
+}
+
+/* New Reg Employee Details End */
+
+
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1rem)
+}
+
+.modal-dialog-centered:before {
+  display: block;
+  height: calc(100vh - 1rem);
+  height: -webkit-min-content;
+  height: -moz-min-content;
+  height: min-content;
+  content: ""
+}
+
+.modal-dialog-centered.modal-dialog-scrollable {
+  flex-direction: column;
+  justify-content: center;
+  height: 100%
+}
+
+.modal-dialog-centered.modal-dialog-scrollable .modal-content {
+  max-height: none
+}
+
+.modal-dialog-centered.modal-dialog-scrollable:before {
+  content: none
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 0 solid rgba(0, 0, 0, .2);
+  border-radius: .3rem;
+  outline: 0
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000
+}
+
+.modal-backdrop.fade {
+  opacity: 0
+}
+
+.modal-backdrop.show {
+  opacity: .5
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  /* padding: 1rem; */
+  border-bottom: 1px solid #dee6ed;
+  border-top-left-radius: .3rem;
+  border-top-right-radius: .3rem
+}
+
+.modal-header .close {
+  padding: 1rem;
+  /* margin: -1rem -1rem -1rem auto */
+}
+
+/* .modal-title {
+	margin-bottom: 0;
+	line-height: 1.625
+} */
+
+.modal-body h5.modal-title {
+  padding-bottom: 15px;
+  color: #293746 !important
+}
+
+/* .modal-body {
+	position: relative;
+	flex: 1 1 auto;
+	padding: 1rem
+} */
+
+.modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: .75rem;
+  border-top: 1px solid #dee6ed;
+  border-bottom-right-radius: .3rem;
+  border-bottom-left-radius: .3rem
+}
+
+.modal-footer>* {
+  margin: .25rem
+}
+
+.custom-accordion {
+  margin-top: 0;
+  margin-bottom: 20px;
+  width: 146%;
+  border-radius: 3px;
+  overflow: hidden
+}
+
+.accordion .card {
+  border: none
+}
+
+.custom-card-head {
+  background: #E1E3E7;
+  padding: 15px 20px
+}
+
+.accordion .card h2 {
+  background: url(../../../../assets/images/a-up-arrow.png) no-repeat 0 center;
+  background-size: 18px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 400;
+  float: left;
+  padding-left: 34px;
+  color: #222;
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 21px
+}
+
+.accordion .card h2.collapsed {
+  background: url(../../../../assets/images/a-down-arrow.png) no-repeat 0 center;
+  background-size: 18px
+}
+
+.custom-accordion .card-body {
+  padding: 10px 20px;
+  border: 12px solid #E1E3E7;
+  border-top: 0
+}
+
+.custom-accordion .card-body table th,
+.custom-accordion .card-body table td {
+  height: auto;
+  color: #141414;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  vertical-align: top;
+  padding: 10px 0;
+  margin: 0;
+  border: inherit
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  background-color: #fff !important
+}
+
+.card-header .search-input {
+  height: 31px;
+  overflow: hidden;
+}
+
+.card-header .search-input .form-control {
+  height: 100% !important;
+  padding: 0 0.5rem;
+  box-shadow: inherit !important;
+  -webkit-box-shadow: inherit !important;
+  -moz-box-shadow: inherit !important;
+  border-right: inherit
+}
+
+.card-header .search-input .btn-search-icon {
+  height: 100% !important
+}
+
+.card-header .search-input .btn-search-icon .btn {
+  height: 100% !important;
+  box-shadow: inherit !important;
+  -webkit-box-shadow: inherit !important;
+  -moz-box-shadow: inherit !important;
+  border-left: inherit
+}
+
+.custom-card-head {
+  background: #E1E3E7;
+  padding: 15px 20px
+}
+
+.font-12 {
+  font-size: 12px;
+}
+
+.action-badge-with-value-sec .action-badge-wrap {
+  font-size: 14px;
+  line-height: 16px;
+  color: #141414;
+  /* font-family: 'Roboto', sans-serif; */
+  font-weight: 500;
+  padding: 10px 64px 10px 20px;
+  margin: 0;
+  background-color: #FFD17E;
+  -webkit-border-radius: 59px 0 0 59px;
+  -moz-border-radius: 59px 0 0 59px;
+  border-radius: 59px 0 0 59px;
+}
+
+
+.content-wrapper {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.resignation-rm-wrap .col-form-label {
+  align-items: flex-start !important;
+}
+
+.required {
+  color: #D53A3A;
+}

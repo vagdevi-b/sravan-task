@@ -1,0 +1,401 @@
+<div class="breadcrumb-holder">
+  <div class="container-fluid">
+    <ul class="breadcrumb" style="padding: 1;margin: 0;padding-top: 10px;width: 1199px;height: 35px;">
+      <li class="breadcrumb-item">
+        <a class="breadcrumb-item" href="#/pmoTimeSheetEntry">All TimeSheets</a>
+        <a class="breadcrumb-item">TimeSheet Entry</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="col-md-12 no-padding">
+  <div class="navbar-form navbar-left form-horizontal col-md-12" role="form">
+    <div class="row">
+      <div class="col-md-6">
+        <h3>Timesheet for submission</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tsWeeklyEntryContainer" class="tabcontent">
+  <div class="card">
+    <div class="show_history">
+      <button type="button" class="btn btn-outline-primary mr-2" (click)="showHistory()">Show
+        History
+      </button>
+    </div>
+    <div class="table-responsive scroll">
+      <table class="table table-hover table-bordered table-numberarrow-hide">
+        <thead *ngIf="formattedDates.length > 0">
+        <tr>
+          <th>Project</th>
+          <th>Task</th>
+          <th>Shift</th>
+          <th>Bill Type</th>
+          <th>
+            <div>
+              <span>{{formattedDates[0]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[0]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>
+            <div>
+              <span>{{formattedDates[1]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[1]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>
+            <div>
+              <span>{{formattedDates[2]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[2]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>
+            <div>
+              <span>{{formattedDates[3]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[3]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>
+            <div>
+              <span>{{formattedDates[4]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[4]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>
+            <div>
+              <span>{{formattedDates[5]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[5]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>
+            <div>
+              <span>{{formattedDates[6]| date: 'EEE'}}</span>
+            </div>
+            <div>
+              <span>{{formattedDates[6]| date: 'dd'}}</span>
+            </div>
+          </th>
+          <th>Total Hours</th>
+          <th colspan="2" class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody ng-form="myForm" *ngIf="tsRows">
+        <tr *ngFor=" let timeSheetEntry of tsRows; let i=index;">
+          <td>
+            <select class="form-control select-v4 form-control-sm form-field-border fixed-width-ctrl" name="projectField"
+                    [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)"
+                    [(ngModel)]="timeSheetEntry.projectId" (change)="addNewRow(i,timeSheetEntry.projectId)" required>
+              <option value="">Select</option>
+              <option *ngFor="let project of projects" value="{{project.projectId}}">
+                {{project.projectName}}</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-control select-v4 form-control-sm form-field-border fixed-width-ctrl" name="taskField"
+                    [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)"
+                    [(ngModel)]="timeSheetEntry.taskId" (ngModelChange)="checkTaskExist(i,'taskId',timeSheetEntry.projectId)"
+                    required>
+              <option value="">Select</option>
+              <option *ngFor="let task of taskList[i]" value="{{task.taskId}}">
+                {{task.taskName}}</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-control select-v4 form-control-sm form-field-border fixed-width-ctrl"
+                    [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)"
+                    [(ngModel)]="timeSheetEntry.shiftId" (change)="checkTaskExist(i,'shiftId')" required>
+              <option value="">Select</option>
+              <option *ngFor="let shift of shiftList[i]" value="{{shift.shiftId}}">
+                {{shift.shiftName}}</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-control select-v4 form-control-sm form-field-border fixed-width-ctrl"
+                    [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)"
+                    [(ngModel)]="timeSheetEntry.isBillable" id="day{{i}}" required>
+              <option value="">Select</option>
+              <option *ngFor="let billType of billTypes[i]" value="{{billType.id}}">
+                {{billType.value}}</option>
+            </select>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+            <input type="number" id="day1Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[0]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day1Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[0]]!= null && timeSheetEntry.notes[formattedDates[0]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+              <input type="number" id="day2Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[1]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day2Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[1]]!= null && timeSheetEntry.notes[formattedDates[1]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+            <input type="number" id="day3Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[2]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day3Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[2]]!= null && timeSheetEntry.notes[formattedDates[2]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+            <input type="number" id="day4Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[3]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day4Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[3]]!= null && timeSheetEntry.notes[formattedDates[3]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+              </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+            <input type="number" id="day5Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[4]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day5Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[4]]!= null && timeSheetEntry.notes[formattedDates[4]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+              </div>
+          </td>
+          <td>
+             <div class="d-flex align-items-center">
+            <input type="number" id="day6Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[5]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day6Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[5]]!= null && timeSheetEntry.notes[formattedDates[5]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+              </div>
+          </td>
+          <td>
+            <div class="d-flex align-items-center">
+            <input type="number" id="day7Note_{{i}}" [(ngModel)]="timeSheetEntry.spenthours[formattedDates[6]]"
+                   name="hours" min="0" max="24" class="number-of-hours" 
+                   (change)="getTotal();"
+                   [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)">
+            <span id="day7Note_{{i}}" data-toggle="modal"
+                  [ngClass]="{changeColor: timeSheetEntry.notes[formattedDates[6]]!= null && timeSheetEntry.notes[formattedDates[6]]!= undefined}"
+                  (click)="note($event,i)" class="glyphicon glyphicon-comment ml-1">
+              </span>
+              </div>
+          </td>
+          <td style="text-align: center;">
+              <span>
+                <strong>{{totalHours[i]}}</strong>
+              </span>
+          </td>
+
+          <td>
+            <button type="button"
+                    [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)"
+                    class="btn btn-default btn-sm" (click)="rejectModalTimeSheetsByProject(timeSheetEntry.projectId);">
+              <span class="glyphicon glyphicon-share-alt"></span>
+            </button>
+          </td>
+          <td>
+            <button
+                [disabled]="(timeSheetEntry.overallStatus === 'G' || timeSheetEntry.overallStatus === 'F') || (timeSheetEntry.leaveId !== null && enablePMO)"
+                type="button" class="btn btn-default btn-sm" (click)="deleteTimesheetEntry(i);">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </td>
+        </tr>
+        <tr id="totalHrsContianer">
+          <td><strong>Total Hours</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[0]]}}</strong></span></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[1]]}}</strong></span></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[2]]}}</strong></span></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[3]]}}</strong></span></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[4]]}}</strong></span></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[5]]}}</strong></span></td>
+          <td><span><strong>{{cumilativeTotal[formattedDates[6]]}}</strong></span>
+          </td>
+          <td><span><strong>{{grandTotal}}</strong></span></td>
+          <td></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card py-2">
+    <div class="">
+      <div class="col-lg-12 d-flex align-items-center justify-content-end" style="text-align: end;">
+        
+        <button type="button" class="btn btn-outline-primary mr-2"
+                  (click)="rejectModalTimeSheets()"  ng-disabled="disableRejectButton">
+            Reject
+          </button>
+          <button type="button" class="btn btn-outline-primary mr-2"
+                  (click)="previousPge()">
+            Cancel
+          </button>
+
+          <button type="submit" class="btn btn-primary mr-2"
+                  (click)="submitTimeSheet()" ng-disabled="singleRow || isValidHours">
+            Submit
+          </button>
+          
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Notes</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- <form name="descriptionForm"> -->
+        <div class="form-group">
+          <textarea class="form-control" rows="5" id="comment" [(ngModel)]="notes" required maxlength="2048"
+                    ng-disabled="leaveFlag"></textarea>
+        </div>
+        <!-- </form> -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="submitNotes()"
+                ng-disabled="leaveFlag">Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="deleteNotification" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            Are you sure you want to delete the task entry?
+            <br>
+            <br>
+          </div>
+          <div class="col-lg-12 text-align-right">
+            <button type="button" class="btn btn-default tsm-default-btn" data-dismiss="modal">No</button>
+            <button style="margin-left: 10px;" type="button" class="btn btn-primary tsm-primary-btn"
+                    (click)="deleteEntry()" data-dismiss="modal">Yes
+            </button>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" role="dialog" id="pmoTimeSheetRejectModel" role="dialog" aria-labelledby="confirmationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reject</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal" ng-click="">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label for="comment">Comment:</label>
+              <textarea class="form-control" rows="3" cols="30" id="comment" [(ngModel)]="rejectTsComment"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="rejectTimeSheet()">Reject
+            </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Timesheetreject by Project -->
+<div class="modal fade" role="dialog" id="pmoTimeSheetByProjectRejectModel" role="dialog"
+     aria-labelledby="confirmationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reject</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal" ng-click="">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="form-group">
+              <label for="comment">Comment:</label>
+              <textarea class="form-control" rows="3" cols="30" id="comment" [(ngModel)]="rejectTsComment"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <button type="button" class="btn btn-primary" (click)="rejectTimeSheetByProject()">Reject</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+<div class="modal-dialog"  style="top: 40%;">
+<!-- Modal content-->
+<div class="modal-content bg-dark text-light">
+<div class="modal-body">
+<h3>Loading..</h3>
+</div>
+</div>
+</div>
+</div>
+<!-- {{checkIndexForTimesheets()}} -->

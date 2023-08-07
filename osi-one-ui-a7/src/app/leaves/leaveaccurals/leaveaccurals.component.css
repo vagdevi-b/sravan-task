@@ -1,0 +1,38 @@
+.nowrap{
+    white-space: nowrap;
+}
+div {
+    padding-bottom: 5px;
+}
+
+.respKey{
+    text-align: right
+}
+
+.col-md-6{
+padding : 0px
+}
+
+.btn-spacing{
+    padding-right: 4%;
+}
+
+.months{
+    padding-right: 10px;
+    color: #aaaaaa;
+    font-size: 81%;
+}
+
+.btn-cancel, .btn-cancel:hover {
+    background-color: #ffffff !important;
+    border: 1px solid #428bca !important;
+    color: #428bca !important;
+}
+
+
+.btn-primary {
+    color: #fff;
+    background-color: #2b90d9;
+    border-color: #2b90d9;
+    border-radius: 4px !important;
+}

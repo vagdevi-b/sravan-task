@@ -1,0 +1,31 @@
+<div class="container-fluid mt-4 personal_dashboard_items">
+  <div class="row m-0 mb-3 heading">
+    <span class="personal_view_text">
+      Personal View
+    </span>
+    <div class="config_text" (click)="openConfigDashboardModel()">
+      <span class="glyphicon glyphicon-cog"></span> <span class="text">Configure Dashboard</span>
+    </div>
+  </div>
+  <div class="row">
+    <ng-container *ngIf="dashboardWidgetList?.length">
+      <div class="col-12 col-md-4 mb-4" *ngFor="let widget of dashboardWidgetList">
+      <app-base-widget [widgetData]="widget" (changeTimeSheetApproveBy)="onChangeTimeSheetApproveBy($event)"
+          (removeCurrentWidget)="onRemoveCurrentWidget($event)" (getWeeklyProjectStatus)="onGetWeeklyProjectStatus($event)"></app-base-widget>
+    </div>
+    </ng-container>
+    
+    <div class="col-3 col-md-3 widget" *ngIf="!dashboardWidgetList?.length">
+      <div class="card dashboard rounded shadow p-4" style="text-align: center; height: 100%;">
+          <div class="card-body p-5">
+              <img class="no-widget" src="assets/images/no_widget.svg" alt="" />
+              <p>No Dashboard Items</p>
+              <button type="button" class="btn btn-primary mb-4 no-widget-margin"
+                  (click)="openConfigDashboardModel()">Add
+                  Widget</button>
+          </div>
+      </div>
+  </div>
+  </div>
+</div>
+<app-loading *ngIf="showLoader"></app-loading>

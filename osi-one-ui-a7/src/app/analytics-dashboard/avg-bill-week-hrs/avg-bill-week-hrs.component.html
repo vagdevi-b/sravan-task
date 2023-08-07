@@ -1,0 +1,142 @@
+<div class="v-height">
+
+  <div class="row">
+    <div class="col-sm-11">
+      <span class="lastRefresh">Last Refresh : {{ refreshDate | date:'medium' }}</span>
+    </div>
+    <div class="col-sm-1">
+    <span class="glyphicon glyphicon-refresh" data-tooltip title="Sync data"
+      style="font-size: 16px !important; cursor: pointer; color: #578fd4;" (click)="refresh()"></span>
+  </div>
+</div>
+
+  <div class="row">
+    <div class="col col-md-6">
+      <div class="mt-1">
+        <div class="mb-2">Organization</div>
+        <label>
+          <input type="checkbox" checked value="*" id="all"
+            (change)="onCheckboxChange($event.target.value, $event.target.checked)" />All &nbsp;
+          <label *ngFor="let org of checkboxData">
+            <input type="checkbox" [(ngModel)]="org.checked" value={{org.value}}
+              (change)="onCheckboxChange($event.target.value, $event.target.checked)" />{{org.name}} &nbsp;
+          </label>
+        </label>
+      </div>
+    </div>
+    <div class="col col-md-6">
+      <div class="row">
+        <div class="col-md-4">
+          <label>Project Practice &nbsp; </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empPract"
+              (change)="selectMonth()">
+              <option value="*">All</option>
+              <option *ngFor="let practice of practiceData" value="{{practice}}">{{practice}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label>Employee Type </label>
+          <div>
+            <select class="form-control rounded-0 form-control-sm form-field-border" [(ngModel)]="empType"
+              (change)="selectMonth()">
+              <option value="*">All</option>
+              <option *ngFor="let empType of empTypeData" value="{{empType}}">{{empType}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="custom-slider">
+            <span>Billable Weeks</span>
+            <ng5-slider [(value)]="value" [options]="options" (valueChange)="selectMonth()">
+            </ng5-slider>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chartContainer">
+    <div id="filter">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card" id="htmle2imagedata">
+                <div class="card-header">
+                  <div class="row">
+                    <div class="col-sm-9">
+                      <h6>Average Weekly Billable Hours</h6>
+                    </div>
+                    <div class="col-sm-2" style="border-right: 1px solid">
+                      <button type="button" class="btn btn-toggle" data-toggle="button" aria-pressed="false"
+                        autocomplete="off" (click)="toggle($event)">
+                        <div class="handle"></div>
+                      </button>
+                    </div>
+                    <div class="col-sm-1">
+                      <span class="glyphicon glyphicon-download-alt" data-tooltip title="Download in excel"
+                        style="font-size: 22px !important; cursor: pointer;" (click)="downloadDetailsInExel()"></span>
+                      <!-- <img src="../../../assets/images/download.png" (click)="downloadDetailsInExel()"> -->
+                    </div>
+                  </div>
+
+                </div>
+                <div class="card-body mt-3" *ngIf="!isGrid">
+                  <div class="table-responsive table-shadow border-0" *ngFor="let chart of empweeklydata; let i = index"
+                    style="position: relative; height: 15vh !important; overflow-x: hidden;">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <span class="mt-4">{{chart.employee}}</span>
+                      </div>
+                      <div class="col-md-1">
+                        <span class="mt-4"><b>{{(chart.total/(chart.noOfWeeks + 1)).toFixed(2)}}</b></span>
+                      </div>
+                      <div class="col-md-9">
+                        <canvas id="canvas{{i}}" #canvas></canvas>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="card-body" *ngIf="isGrid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <ag-grid-angular style="width: auto;" class="ag-theme-balham" 
+                        [rowData]="empweeklydata"
+                        [columnDefs]="columnDefs" 
+                        [gridOptions]="gridOptions" 
+                        [paginationPageSize]="paginationPageSize"
+                        pagination="true" 
+                        enableSorting 
+                        enableFilter 
+                        enableColResize 
+                        (gridReady)="onGridReady($event)">
+                      </ag-grid-angular>
+
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div *ngIf="spinner || showPreservedSpinner" class="overlay">
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <!-- Modal for showing loading text -->
+      <div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+        <div class="modal-dialog"  style="top: 40%;">
+          <!-- Modal content-->
+          <div class="modal-content bg-dark text-light">
+            <div class="modal-body">
+              <h3>Loading..</h3>
+            </div>
+          </div>
+        </div>
+      </div>

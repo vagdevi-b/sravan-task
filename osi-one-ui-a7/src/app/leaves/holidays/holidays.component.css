@@ -1,0 +1,65 @@
+/*
+    component: Boxes
+-------------------------
+*/
+.nowrap {
+  white-space: nowrap;
+}
+
+.respKey {
+  padding-right: 0px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.respValue {
+  padding-left: 0px;
+}
+
+.table tr.active td {
+  background-color: #90b2d4a2 !important;
+  color: rgb(66, 66, 66);
+}
+
+.table tbody tr:hover td {
+  background-color: #e0eaf7;
+}
+
+.glyphicon-pencil:before {
+  content: "\270f";
+  color: #2b90d9;
+  cursor: pointer;
+}
+
+.cardBody {
+  padding-bottom: 0;
+  padding-bottom: 0px;
+  padding-bottom: 0px;
+  padding-top: 1px;
+  margin-top: 13px;
+  /* margin-bottom: 3px; */
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: calc(1.8rem + 2px);
+}
+
+.blue-glyph {
+  color: #2b90d9 !important;
+  cursor: pointer;
+}
+
+ 
+.footer{
+    padding-bottom: 0px;
+    padding-top: 16px;
+}
+
+.header {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.chkbx{
+  padding-left : 8% !important;
+}

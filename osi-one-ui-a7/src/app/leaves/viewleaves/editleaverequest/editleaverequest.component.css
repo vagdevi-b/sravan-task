@@ -1,0 +1,92 @@
+
+/* .container-fluid
+{
+    width: 200%;
+        margin: 20px; 
+        padding: 20px;
+    }
+     */
+
+.btn-div{
+    padding-left: 60px;
+   
+    padding-top: 30px;
+    
+}
+li.list-group-item:hover{
+    background-color:  #e0eaf7;
+} 
+
+#title{
+    float: left;
+}
+#leave-bal{
+    float: right;
+}
+#div-form{
+    margin: 0px 90px 0px;
+    padding-top: 50px;
+}
+td#hours input {
+    height:20px;
+    width:20px;
+}
+td#days input {
+    height:20px;
+    width:20px;
+}
+
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+    /* margin-left: 25px; */
+}
+
+select {
+    text-transform: capitalize;
+    
+}
+.modal-backdrop{
+    z-index: -1;
+    display: none,
+}
+.dateContainer {
+    margin-left: 125px;
+}
+    
+
+div.ex3 {
+
+    width: 700px;
+    height: 250px;
+    overflow: auto;
+}
+div.leavesSummary { 
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height:310px;
+
+}
+
+.leavelabels{
+    font-family: sans-serif;
+    font-weight: normal;
+}
+
+
+.modal-backdrop{
+    display: none,
+}
+.nowrap{
+    white-space: nowrap;
+}
+
+.removeSpinner input[type=number]::-webkit-inner-spin-button,
+.removeSpinner input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: auto;
+    margin: 0;
+}
+.removeSpinner input[type='number'] {
+    -moz-appearance:textfield;
+    appearance: auto;
+}

@@ -1,0 +1,37 @@
+<div class="month-picker-container">
+  <div class="month-picker">
+    <div class="month-picker-head">
+      <button
+        type="button"
+        class="year-navigation-btn"
+        [ngClass]="{'disabled': minMonth && minMonth.year >= this.displayedYear}"
+        (click)="navigateYear($event, -1)">
+        <span class="navigation-chevron"></span>
+      </button>
+      <div class="year-container">
+        <span class="unselectable">{{ displayedYear }}</span>
+      </div>
+      <button
+        type="button"
+        class="year-navigation-btn"
+        [ngClass]="{'disabled': maxMonth && maxMonth.year <= this.displayedYear}"
+        (click)="navigateYear($event, 1)">
+        <span class="navigation-chevron right"></span>
+      </button>
+    </div>
+    <div class="month-picker-body">
+      <div *ngFor="let row of monthMatrix" class="months-row">
+        <div
+          *ngFor="let month of row"
+          class="month"
+          (click)="onMonthSelect($event, month)"
+          [ngClass]="{
+            'highlight': value && displayedYear === value.year && monthNameToNumberMap[month] === value.month,
+            'disabled': (minMonth || maxMonth) && isDisabled(month)
+          }">
+          {{ month }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

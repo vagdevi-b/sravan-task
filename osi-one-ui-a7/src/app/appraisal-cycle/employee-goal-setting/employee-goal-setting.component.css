@@ -1,0 +1,8 @@
+.goal-setting-header {
+  background-color: #e8edf1;
+}
+
+.disable_Projects {
+  pointer-events: none;
+  opacity: 0.6;
+}

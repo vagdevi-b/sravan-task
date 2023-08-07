@@ -1,0 +1,95 @@
+<div class="v-height">
+
+    <!-- <div class="breadcrumb-wrapper">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Leave For Approval</li>
+            </ol>
+        </nav>
+    </div> -->
+
+    <div class="new-leave-request">
+
+        <div class="sub-header">
+            <h1>Leave For Approval</h1>
+        </div>
+        <section class="forms">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-success text-center" *ngIf="showAlert">
+                        <strong>{{alertText}}</strong>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class=" table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="10%">Leave Id
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="15%">Name
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="10%">From Date
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="10%">To Date
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="10%">No. of Hrs
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="30%">Purpose
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                            <th width="15%" align="right">Actions
+                                <span class="glyphicon sort-icon" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let item of leaves | paginate: { itemsPerPage: 10,currentPage: p,totalItems: totalLeaveReq }' (dblclick)='openLeave(item)'>
+                            <td>LR-{{item.leaveId }}</td>
+                            <td>{{item.name | titlecase }}</td>
+                            <td>{{item.fromDate}}</td>
+                            <td>{{item.toDate}}</td>
+                            <td>{{item.noOfHours}}</td>
+                            <td>{{item.reason}}</td>
+                            <td>
+                                <button (click)='openLeave(item)' [hidden]="item.status == 'Reversed'" class="btn btn-primary">View</button>
+                                <button (click)='openLeave(item)' [hidden]="item.status == 'Submitted'" class="btn btn-primary"> Cancel Request </button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+                <!-- page control -->
+                <div class="no-records-found-row d-flex align-items-center justify-content-center py-4">
+                <div class="no-records-found-wrap"  [hidden]=" totalLeaveReq!=0 ">
+                    <figure class="text-center mb-0"><img src="assets/images/no-records.svg" alt="No Records" class="icon-27"></figure>
+                    <h5 class="text-center mt-2 m-0">No Records Found</h5>
+                </div>
+                </div>
+                
+                <p></p>
+                <!-- End of page control -->
+            </div>
+            <div class="col-sm-12 row">
+                <!-- pagination -->
+                <div class="col-sm-10">
+                    <div class="paginate" [hidden]=' (totalLeaveReq<=10)'>
+                        <!-- hide when result is less than 5 -->
+                        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+                    </div>
+                </div>
+                <!-- END OF PAGE CONTROL -->
+
+            </div>
+
+        </section>
+
+    </div>
+</div>

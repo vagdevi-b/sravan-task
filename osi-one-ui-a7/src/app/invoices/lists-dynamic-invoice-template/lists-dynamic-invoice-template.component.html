@@ -1,0 +1,116 @@
+<div>
+    <section>
+      <div class="card" style="width: 100%;">
+        <div class="card-body">
+          <div *ngIf="showAlert" class="row notificationRow">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8 notificationTextDiv" id="successMessage">
+              <div class="alert alert-success alert-dismissible notificationText" id="successMessage">
+                <a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close"></a>
+                <strong>{{successMessage}}</strong>
+              </div>
+            </div>
+            <!-- <div class="col-sm-8 notificationTextDiv" id="errorMessage">
+              <div class="alert alert-danger alert-dismissible notificationText">
+                <a class="close" style="padding-top: 3px" data-dismiss="" aria-label="close" (click)="closeErrorMessage('errorMessage')">&times;</a>
+                {{errorMessage}}
+              </div>
+            </div> -->
+            <div class="col-sm-2"></div>
+          </div>
+          <div class="row dashboardBox">
+            <div class="col-sm-3">
+              <h3 class="title-text">
+                <span class="reportHeading">Saved Invoice Layouts</span>
+              </h3>
+            </div>
+            
+            <div class="col-sm-7">
+                <div class="form-group has-search">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search...">
+                  </div>
+            </div>
+
+
+            <div class="col-sm-2 pull-right">
+                <button class="btn btn-outline-secondary icon-with-outline-secondary pull-right" (click)="createNewInvoice()"><span class="fa fa-plus"></span> New</button>
+            </div>
+          </div>
+          <div class="row tableBox">
+            <div class="col-sm-12" style="margin: auto; margin-bottom: 50px;">
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col" width="29%">Invoice Name</th>
+                      <th scope="col" width="25%">Active</th>
+                      <!-- <th scope="col" width="18%">Default</th> -->
+                      <th scope="col" width="18%">Actions</th>
+                    </tr>
+                  </thead>
+                 <tbody>
+                  <tr *ngFor="let item of allListItems | filterInvoice : searchText | paginate: { itemsPerPage:20, currentPage: crntpage,totalItems: total }  ; ">
+                    <td scope="row">{{item.invoiceLayoutName}}</td>
+                   <td>
+                    <ng-container *ngIf="item.isActive; else cross " >
+                      <span> <i class="fa fa-check"></i></span>
+                    </ng-container>
+                    <ng-template #cross>
+                      <span><i class="fa fa-times"></i></span>
+                    </ng-template>
+                    
+                  </td> 
+                    
+                    <!-- <td>
+                        <ng-container *ngIf="item.isDefault" >
+                            <span> <i class="fa fa-check"></i></span>
+                          </ng-container>
+                    </td> -->
+                    <td>
+                      <span>
+                       <button class="icon-padding"  data-toggle="tooltip" title="View"  (click)="viewInvoice(item.invoiceLayoutId)"><i style="cursor: pointer;" class="glyphicon glyphicon-eye-open" ></i></button>&nbsp;&nbsp;
+                       <button class="icon-padding" data-toggle="tooltip" title="Edit" [disabled]="!item.isEditable" (click)="editInvoice(item.invoiceLayoutId)" > <i style="cursor: pointer;" class="glyphicon glyphicon-pencil" ></i></button>&nbsp;&nbsp;
+                     <button class="icon-padding" data-toggle="tooltip" title="Delete" [disabled]="!item.isDeletable"  (click)="deleteConfirmation(item.invoiceLayoutId)"><i style="cursor: pointer;" class="glyphicon glyphicon-trash"></i></button>
+                    </span>
+                    </td>
+                  </tr>
+                 </tbody>
+                </table>
+              </div>
+
+
+              <div class="col-sm-12 row pb-3">
+                <div class="col-sm-10">
+                  <pagination-controls (pageChange)="crntpage = $event" autoHide="true" previousLabel="" nextLabel="" ></pagination-controls>
+                </div>
+              </div>
+              <div *ngIf="total===0">
+                <h6 style="text-align: center; color:black;">No invoice Found</h6>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Delete - Modal -->
+  <div class="modal fade" id="delete_invoice" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <form class="form-horizontal">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <h5>Do you want to delete dis invoice layout details ? </h5>
+            <br>
+            <button type="button" class="btn btn-outline-primary" data-dismiss="modal" (click)="deleteInvoice()">Yes</button>
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  

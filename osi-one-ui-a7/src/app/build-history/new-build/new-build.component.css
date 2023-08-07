@@ -1,0 +1,31 @@
+.build-form-container {
+    margin-top: 10px;
+}
+.build-message-modal .modal-dialog {
+    max-height: 90vh;
+    max-width: 800px !important;
+}
+.is-deployed {
+    display: flex;
+}
+.is-deployed > label {
+    line-height: 34px;
+    height: 34px;
+    padding-left: 10px;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
+.is-deployed > input[type="checkbox"] {
+    height: 34px;
+}
+.build-type > option {
+    font-size: 14px;
+}
+.unsavedChangesModal .modal-title {
+    margin-bottom: 10px;
+}
+.unsavedChangesModal .no-button {
+    margin-left: 10px;
+}

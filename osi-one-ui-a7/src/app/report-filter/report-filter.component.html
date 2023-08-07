@@ -1,0 +1,438 @@
+<div class="inner-wrapper">
+  <section>
+    <div class=" cardFrame">
+      <div class="row notificationRow">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8 notificationTextDiv" id="successMessage" [hidden]="successMessage === ''">
+          <div class="alert alert-success alert-dismissible notificationText">
+            <a class="close" data-dismiss="" aria-label="close" (click)="closeErrorMessage('successMessage')">&times;</a>
+            {{successMessage}}
+          </div>
+        </div>
+        <div class="col-sm-8 notificationTextDiv" id="errorMessage" [hidden]="errorMessage === ''">
+          <div class="alert alert-danger alert-dismissible notificationText">
+            <a class="close" data-dismiss="" aria-label="close" (click)="closeErrorMessage('errorMessage')">&times;</a>
+            {{errorMessage}}
+          </div>
+        </div>
+        <div class="col-sm-2"></div>
+      </div>
+
+      <!------------------------------- Report  Section ---------------------------------->
+      <form #reportForm="ngForm">
+        <!-- <hr class="hrClass"> -->
+        <div class="reportRow">
+          <div class="row">
+            <div class="col-sm-4 reportNameDiv">
+              <h5>
+                <strong>Report Name: </strong>{{reportsResponse.rptName}}</h5>
+            </div>
+            <div class="col-sm-1"></div>
+            <div *ngIf="comments" style="margin-left: 49px;">
+              <label style="color:red">
+                <strong>Note: </strong>
+                <span>{{comments}}</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label>
+                <strong> Display Filter Summary: </strong>
+              </label>
+
+              <input type="checkbox" name='displayFilterSummary' [value]="reportsResponse.displayFilterSummary" [(ngModel)]="reportsResponse.displayFilterSummary"
+                checked>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <label>
+                <strong>Display Report Name:</strong>
+              </label>
+
+              <input type="text" class="form-control select-v4 form-control-sm " (change)="onTitleNameChange()" (keypress)="omit_special_char($event)" maxlength="100" name="dynamicReportName" [(ngModel)]="reportsResponse.dynamicReportName">
+            </div>
+          </div>
+
+          <div class="grideClass mt-3">
+            <div name="columnList">
+              <span class="ColumnTemplatecss">Select Required Fields </span>
+              <select name="availableCols" id="multiselect" class="form-control ColumnFieldHeight select-no-arrow" multiple [(ngModel)]="availableCols">
+                <option *ngFor="let column of availableColumss" [value]="column">{{column.columnDisplayName}}</option>
+              </select>
+            </div>
+
+            <div class="operationButton">
+              <button type="button" id="js_right_All_1" (click)="addToExcludedALL()" class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-all"
+                data-toggle="tooltip" title="Import All Column"></button>
+              <br>
+              <button type="button" id="js_right_Selected_1" (click)="addToExcludedRepeat()" class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-right"
+                data-toggle="tooltip" title="Import Selected Column">
+              </button>
+              <br>
+              <button type="button" id="js_left_Selected_1" (click)="removeFromExcludedRepeat()" class="btn waves-effect light-blue darken-4 waves-light operationBtnGap btn-import-left"
+                data-toggle="tooltip" title="Export Selected Column">
+              </button>
+              <br>
+              <button type="button" id="js_left_All_1" (click)="removeFromExcludedALL()" class="btn waves-effect light-blue darken-4 waves-light btn-export-all"
+                data-toggle="tooltip" title="Export All Column"></button>
+            </div>
+            <div name="columnList">
+              <span class="ColumnTemplatecss">Selected Fields</span>
+              <select name="selectedCols" id="multiselect2" [(ngModel)]="selectedCols" class="form-control ColumnFieldHeight select-no-arrow" multiple>
+                <option value="" disabled selected>Selected Fields</option>
+                <option *ngFor="let column of selectedColumns" [value]="column" title="{{column.columnDisplayName}}" [ngClass]="{'selected':column.selectedOption}">{{column.columnDisplayName}}</option>
+              </select>
+            </div>
+            <div class="moveButtons">
+              <div>
+                <button type="button" class="btn btn-default btn-lg columnMovingButton btn-move-up" (click)="moveUp(selectedCols)" title="Move Up Column">
+
+                </button>
+              </div>
+              <br>
+              <!--   <div>
+                    <button type="button" class="btn btn-default btn-lg deleteCustomColumnButton" (click)="deleteCustomColumn()"
+                    title="Remove Custom Columns">
+                      <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                  </div>
+                  <br> -->
+              <div>
+                <button type="button" class="btn btn-default btn-lg columnMovingButton btn-move-down" (click)="moveDown(selectedCols)" title="Move Down Column">
+
+                </button>
+              </div>
+            </div>
+          </div>
+          <br>
+        </div>
+        <!------------------------------- Function Section ---------------------------------- -->
+
+        <div class="filterRow">
+          <div class="col-md-12">
+            <table class="table table-no-border w-100">
+              <thead>
+                <tr class="row">
+                  <td class="col-sm-4">Aggregation On</td>
+                  <td class="col-sm-6">Aggregation Function</td>
+                  <td class="col-sm-2">Add/Remove</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row" *ngFor="let groupss of groupByLists; let j= index;trackBy : trackByFun; let last1 = last" class="row">
+                  <td class="col-sm-4 filterField px-2">
+                    <select class="form-control filterSelectBoxes1" #grpBy='ngModel' (change)="getFunctions(groupss.columnName, j);pushToselectionForFn($event.target.value,j)"
+                      name="groupByList1_{{j}}" [(ngModel)]="groupss.columnName">
+                      <option value="" selected>Select Aggregation On</option>
+                      <option *ngFor="let column of selectedColumns;trackBy : trackByFun" [value]="column.columnName" [disabled]="column.state">{{column.columnDisplayName}}</option>
+                    </select>
+                  </td>
+  
+                  <td class="col-sm-6 filterField px-2">
+                    <select class="form-control filterSelectBoxes" id="filterColumn1_{{j}}" name="filterColumn1_{{j}}" [(ngModel)]="groupss.operation"
+                      required>
+                      <option value="" selected>Select Function</option>
+                      <option *ngFor="let operation of operationList[j];" [ngValue]="operation.value">{{operation.name}}</option>
+  
+                    </select>
+                  </td>
+                  <td class="col-sm-2 filterField">
+                    <div *ngIf="last1" class="mr-2 d-inline-block">
+                      <button type="button" class="btn btn-add" [disabled]="selectedColumns.length<2 || grpBy.value ==='' ||disableGroupByPlus"
+                        data-toggle="tooltip" title="Add More" (click)='addGroupByList(j)'>
+  
+                      </button>
+                    </div>
+                    <div class="mr-2 d-inline-block">
+                      <button type="button" class="btn btn-remove" data-toggle="tooltip" title="Remove" (click)='removeGroupByList(j,grpBy.value)'>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              
+            </table>
+
+          </div>
+        </div>
+        <!------------------------------- Filter Section ---------------------------------- -->
+
+        <div class="row filterRow px-2">
+          <div class="col-md-12">
+            <span>
+              <b>Filters</b>
+            </span>
+            <table class="table table-no-border w-100">
+              <thead>
+                <tr class="row">
+                  <td class="col-sm-4">Field Name</td>
+                  <td class="col-sm-6">Field Values/Date Range</td>
+                  <!-- <td class="col-sm-2"></td> -->
+                  <td class="col-sm-2">Add/Remove</td>
+                </tr>
+              </thead>
+              <tbody>
+              <tr class="row" *ngFor="let filters of filterConditionss;let k = index; let last2 = last">
+                <td class="col-sm-4 px-2">
+                  <select class="form-control filterSelectBoxes1" name="filterColumnName1_{{k}}" id="filterColumnName1_{{k}}" (change)="getOperations(filters, k)"
+                    [(ngModel)]="filters.filter">
+                    <option value="" selected>Select Field Name</option>
+                    <option *ngFor="let column of filterColumns;" [ngValue]="column">{{column.columnDisplayName}}</option>
+                  </select>
+                </td>
+                <td class="col-sm-6 px-2"  *ngIf="!showDateFields[k] && !filters.isFilterFieldYearMonth">
+                  <!-- <select class="form-control filterSelectBoxes multiselect" [(ngModel)]="filters.selectedFilterValues" multiple="multiple"
+                    name="filterColumnValue_{{k}}" id="filterColumnValue_{{k}}" required>
+                    <option value="" disabled>Select Field Values</option>
+                    <option *ngFor="let filterValue of filterValuesList[k];" [ngValue]="filterValue.listName">{{filterValue.listValue}}</option>
+                  </select> -->
+                  <!--   <input  *ngIf="{{filters.operation=='EQUALS' &&  filters.operation=='NOT EQUALS'}}" type="text" class="form-control"  [(ngModel)]="filters.selectedFilterValues" name="filterColumnValue_{{i}}" required> -->
+                  <ng-multiselect-dropdown
+                    name="filterColumnValue_{{k}}"
+                    id="filterColumnValue_{{k}}"
+                    style="font-size: 14px;"
+                    [placeholder]="'Select Field Values'" 
+                    [data]="dropdownList" 
+                    [(ngModel)]="filters.selectedFilterValues" 
+                    [settings]="dropdownSettings" 
+                    required 
+                    (onSelect)="onItemSelect($event)"
+                    (onDeSelectAll)="onItemDeSelect($event)"
+                    (onSelectAll)="onSelectAll($event)">
+                  </ng-multiselect-dropdown>
+                </td>
+                <td class="col-sm-3 px-2 filterField" *ngIf="showDateFields[k] && !filters.isFilterFieldYearMonth">
+                  <input type="date" id="fromDate_{{k}}" name="fromDate_{{k}}" class="form-control" [(ngModel)]="filters.filter.fromDate" [value]="filters.filter.fromDate"
+                    required>
+                </td>
+                <td class="col-sm-3 px-2 filterField" *ngIf="showDateFields[k] && !filters.isFilterFieldYearMonth">
+                  <input type="date" id="toDate_{{k}}" name="toDate_{{k}}" class="form-control" [(ngModel)]="filters.filter.toDate" min="{{filters.filter.fromDate}}"
+                    [value]="filters.filter.toDate" required>
+                </td>
+                <!-- For selecting start month and end month -->
+                <td class="col-sm-3 px-2 input-group filterField date-input" *ngIf="filters.isFilterFieldYearMonth">
+                  <input
+                      [name]="'fromMonth' + k"
+                      class="form-control"
+                      [(ngModel)]="filters.fromYearMonth"
+                      osiMonthPicker
+                      #fromMonthPicker="osiMonthPicker"
+                      (click)="fromMonthPicker.toggle()"
+                      (monthSelect)="yearMonthRangeModified(filters, k)"
+                      [minMonth]="filters.minFromMonth"
+                      [maxMonth]="filters.maxFromMonth"
+                      placeholder="Select From Month"
+                      readonly>
+                  <div class="input-group-append">
+                    <button
+                        class="btn btn-outline-secondary"
+                        (click)="fromMonthPicker.toggle()">
+                    <span class="input-group-addon" style="cursor: pointer;">
+                      <i class="fa fa-lg fa-calendar"></i>
+                    </span>
+                    </button>
+                  </div>
+                </td>
+                <td class="col-sm-3 px-2 input-group filterField date-input" *ngIf="filters.isFilterFieldYearMonth">
+                  <input
+                      [name]="'toMonth' + k"
+                      class="form-control"
+                      [(ngModel)]="filters.toYearMonth"
+                      osiMonthPicker
+                      #toMonthPicker="osiMonthPicker"
+                      (click)="toMonthPicker.toggle()"
+                      (monthSelect)="yearMonthRangeModified(filters, k)"
+                      [minMonth]="filters.minToMonth"
+                      [maxMonth]="filters.maxToMonth"
+                      placeholder="Select To Month"
+                      readonly>
+                  <div class="input-group-append">
+                    <button
+                        class="btn btn-outline-secondary"
+                        (click)="toMonthPicker.toggle()">
+                      <span class="input-group-addon" style="cursor: pointer;">
+                        <i class="fa fa-lg fa-calendar"></i>
+                      </span>
+                    </button>
+                  </div>
+                </td>
+                <td class="col-sm-2 filterField date-input">
+
+                  <div *ngIf="last2" class="mr-2">
+                    <button type="button" class="btn btn-add" data-toggle="tooltip" title="Add Column" (click)='addColumnList()'>
+                    </button>
+                  </div>
+                  <div>
+                    <button type="button" class="btn btn-remove" data-toggle="tooltip" title="Remove Column" (click)='removeColumnList(k)'>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- ------------------------Order_by-------------------------- -->
+
+        <div class="row filterRow px-2">
+          <div class="col-md-12">
+            <table class="table table-no-border w-100">
+              <thead>
+                <tr class="row">
+                  <td class="col-sm-4 px-2">Sort By</td>
+                  <td class="col-sm-2 px-2">Add/Remove</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="row" *ngFor="let order of orderByLists; let k=index;trackBy : trackByFun;  let last3 = last" class="row">
+                  <td class="col-sm-4 px-2">
+                    <select style="width: 100%;" class="form-control filterSelectBoxes" #sortBy='ngModel' (change)='pushToSelection($event.target.value,k)'
+                      id="orderBy{{k}}" name="orderByList1_{{k}}" [(ngModel)]="order.orderByList">
+                      <option value="" selected>Select Sort By</option>
+                      <option *ngFor="let column of selectedColumns;trackBy : trackByFun" [disabled]="column.status" [value]="column.columnName">{{column.columnDisplayName}}</option>
+                    </select>
+                  </td>
+  
+                  <td class="col-sm-2 px-2 filterField">
+  
+                    <div *ngIf="last3" class="mr-2 d-inline-block">
+                      <button type="button" class="btn btn-add" data-toggle="tooltip" title="Add More" (click)='addOrderByList(k)'
+                        [disabled]='selectedColumns.length<2 || sortBy.value==="" || disableOrderByPlus '>
+  
+                      </button>
+                    </div>
+                    <div class="d-inline-block">
+                      <button type="button" class="btn btn-remove" data-toggle="tooltip" title="Remove" (click)='removeOrderByList(k,sortBy.value)'>
+  
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!--
+  <div class="row orderNGroupbyRow">
+    <div class="col-sm-6">
+      <span class="orderGroupTag"> Sort By</span>
+      <span class="col-sm-2">Add/Remove</span>
+      <div class="row"  id="orderByList">
+        <p *ngFor="let order of orderByLists; let i=index;  let last = last" class="row" style="width:110%">
+          <select class="form-control col-sm-5" id="orderByList1_{{i}}" name="orderByList1_{{i}}"	[(ngModel)]="order.orderByList">
+            <option value="">Select Sort By</option>  
+            <option *ngFor="let column of selectedColumns" [disabled]="column.disable"
+                [ngValue]="column">{{column.columnDisplayName}}</option>
+          </select> 
+          <span class="col-sm-1 orderfieldsPadding">
+            <button type="button" class="btn btn-primary" data-toggle="tooltip" title="Remove" (click)='removeOrderByList(i)'>
+              <i class="small material-icons">remove</i>
+            </button>
+          </span> 
+
+          <span class="col-sm-1 orderfieldsPadding" *ngIf="last">
+            <button type="button" class="btn btn-primary" data-toggle="tooltip"	title="Add More" (click)='addOrderByList()'>
+              <i class="small material-icons">add</i>
+            </button>
+          </span>
+          <span class="col-sm-1"></span>
+        </p>
+      </div>
+    </div>
+  </div> -->
+        <div class="row">
+          <div class="col-md-12">
+            <!--  <span>
+        <button class="btn btn-primary" name="saveNRun"
+        (click)="runReport('saveAndRun')" data-toggle="tooltip"
+          title=" Save and Run" >Save & Run</button>
+      </span> -->
+      <span class="pull-left">
+        <button class="btn btn-secondary" type="button" (click)="backToPreviousPage()">Back</button>
+      </span>
+            <span class="pull-right">
+              
+
+              
+
+              <!-- <button class="btn btn-outline-primary" name="save" data-toggle="tooltip" title="Run" (click)="runReport('run')">Run</button> -->
+              <button class="btn btn-outline-primary" name="save" data-toggle="tooltip" title="Run" (click)="runReport('run','pdf')">PDF</button>
+              <button class="btn btn-outline-primary" name="save" data-toggle="tooltip" title="Run" (click)="runReport('run','xlsx')">Excel</button>
+              <!-- <button class="btn btn-outline-primary" name="save" data-toggle="tooltip" title="Run" (click)="runReport('run','csv')">Csv</button> -->
+              <button class="btn btn-primary" name="save" data-toggle="modal" (click)="validateFields()" title="Save">Save & Run</button>
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </section>
+</div>
+
+<div class="modal fade" id="modelReject" role="dialog">
+
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="container" style="height: 180px;width: 502px;">
+        <div class="col-sm-8 notificationTextDiv" id="errorMsg" style="margin-top:3%" [hidden]="errorMsg === '' || !errorMsg">
+          <div class="alert alert-danger alert-dismissible notificationText">
+            <a class="close" data-dismiss="" aria-label="close" (click)="closeErrorMessage(errorMsg);">&times;</a>
+            {{errorMsg}}
+          </div>
+        </div>
+        <div class="row col-sm-12" style="margin-top: 7%;">
+          <div class="col-sm-4 d-flex align-items-center">
+            <label class="mb-0">
+              <span>Report Name</span>
+            </label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" size="35" (change)="onReportNameChange()" (keypress)="omit_special_char($event)" [(ngModel)]="customReportName" [ngModelOptions]="{standalone: true}" placeholder="Enter Report Name" class="form-control">
+          </div>
+        </div>
+        <div class="row col-sm-10" style="float: right;margin-top: 7%;">
+          <span>
+            <button type="button" class="btn btn-outline-secondary btn-cancel" data-dismiss="modal">Close</button>
+          </span>
+          <span class="col-sm-3">
+            <button type="button" class="btn btn-primary" [disabled]="!customReportName" data-dismiss="modal" (click)="runReport('save','pdf')">PDF</button>
+          </span>
+          <span class="col-sm-3">
+            <button type="button" class="btn btn-primary" [disabled]="!customReportName" data-dismiss="modal" (click)="runReport('save','xlsx')">Excel</button>
+          </span>
+          <span class="col-sm-3">
+            <!-- <button type="button" class="btn btn-primary" [disabled]="!customReportName" data-dismiss="modal" (click)="runReport('save','csv')">Csv</button> -->
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+  <div class="modal-dialog"  style="top: 40%;">
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .orderGroupTag {
+    margin-left: -7% !important;
+  }
+
+  select.multiselect.form-control {
+    height: 80px !important
+  }
+</style>

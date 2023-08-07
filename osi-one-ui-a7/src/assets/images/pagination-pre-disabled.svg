@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="7px" height="11px" viewBox="0 0 7 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>down-arrow</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="table/pagination/style2" transform="translate(-154.000000, -9.000000)" fill="#D9DEDF">
+            <g id="down-arrow" transform="translate(157.500000, 14.500000) rotate(90.000000) translate(-157.500000, -14.500000) translate(152.000000, 11.000000)">
+                <polygon id="Path" points="1.29722656 0 5.5 4.32814969 9.70277344 0 11 1.33592515 5.5 7 0 1.33592515"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

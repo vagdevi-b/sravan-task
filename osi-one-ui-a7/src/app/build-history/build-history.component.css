@@ -1,0 +1,18 @@
+.table tr.active td {
+  background-color:#90b2d4a2 !important;
+  color: rgb(66, 66, 66);
+}
+.table tr:hover td  {
+  background-color: #e0eaf7;
+}
+/* .build-history-list-wrapper {
+  max-width: 800px;
+} */
+.build-history-table th {
+  cursor: pointer;
+}
+.build-history-table th,
+.build-history-table td
+{
+  text-align: center;
+}

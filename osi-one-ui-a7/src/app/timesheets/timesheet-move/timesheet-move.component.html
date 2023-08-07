@@ -1,0 +1,217 @@
+<div class="v-height">
+  <div class="snackbar" #AlertSuccess>{{successMessage}}</div>
+  <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+  <form [formGroup]="timeSheetForm" (ngSubmit)="onSubmit()">
+    <div class="sub-header clearfix">
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <h3>Select Timesheets to move from</h3>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col">
+              <label><b>Project</b></label>
+              <div class="lds-ring" *ngIf="fromProjectLoader"><div></div><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <div class="project-select" (document:click)="hideSearching=true">
+                  <input placeholder="Project Name" type="text" class="form-control form-field-border"
+                    #projectSearchInput formControlName="fromProjectName">
+                  <div class="project-select-content" [hidden]="hideSearching">
+                    <ul>
+                      <li class="text-danger" *ngIf="projectList.length==0">No Projects Found</li>
+                      <li (click)="projectSelected(project, 'from')" *ngFor="let project of projectList">
+                        {{project.projectName}}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label><b>Task Name</b></label>
+            <div class="lds-ring" *ngIf="fromTaskLoader"><div></div><div></div><div></div><div></div></div>
+            <select id="fromTaskId" formControlName="fromTaskId" multiple="true"
+              class="form-control form-field-border multiselect-box" (change)="getEmployeeList()">
+              <option value="" disabled>Select Task</option>
+              <option *ngFor="let task of fromTaskList" value="{{task.taskId}}">{{task.taskName}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label><b>Employees</b></label>
+            <div class="lds-ring" *ngIf="fromEmpLoader"><div></div><div></div><div></div><div></div></div>
+            <select id="employee" formControlName="employeeId" multiple="true"
+              class="form-control form-field-border multiselect-box">
+              <option value="" disabled>Select Employees</option>
+              <option *ngFor="let employee of employeeList" value="{{employee.employeeId}}">{{employee.fullName}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label>
+                  <b>From Date</b>
+                </label>
+                <div class="input-group" #DatePickContainer1>
+                  <input id="timesheetFromdate" name="timesheetFromdate"
+                    class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd" ngbDatepicker
+                    #d1="ngbDatepicker" formControlName="tsFromDate" [markDisabled]="fromDateDateDisable"
+                    (document:click)="closeFix1($event, d1)">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d1.toggle()"
+                      type="button">
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                        <i class="fa fa-lg fa-calendar date-pick"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <label *ngIf="timeSheetForm.hasError('tsFromDate')" class="text-danger"><b>From Date Must be Less Than To
+                  Date</b></label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label>
+                  <b>To Date</b>
+                </label>
+                <div class="input-group" #DatePickContainer2>
+                  <input id="timesheetTodate" name="timesheetTodate"
+                    class="form-control form-control-sm form-field-border" placeholder="yyyy-mm-dd" ngbDatepicker
+                    #d2="ngbDatepicker" formControlName="tsToDate" [markDisabled]="toDateDateDisable">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary date-pick" name="NGB-DATEPICKER" (click)="d2.toggle()"
+                      type="button" (document:click)="closeFix2($event, d2)">
+                      <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                        <i class="fa fa-lg fa-calendar date-pick"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label><b>Bill Type</b></label>
+                <select id="fromBillType" formControlName="fromBillType" class="form-control form-field-border">
+                  <option value="">Select Bill Type</option>
+                  <option value="0">All</option>
+                  <option *ngFor="let billType of billTypeList" value="{{billType.id}}">{{billType.typeName}}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" [hidden]="hideRecordCount">
+        <div class="col">
+          <b>Number Of records being moved : </b><label class="text-danger"><b>{{recordMoveCount}}</b></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="sub-header clearfix">
+            <div class="row mt-3">
+              <div class="col-md-12 pl-0">
+                <h3>Select Data to move to</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col">
+              <label><b>Project</b></label>
+              <div class="lds-ring" *ngIf="toProjectLoader"><div></div><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <div class="project-select" (document:click)="hideToSearching=true">
+                  <input placeholder="Project Name" type="text" class="form-control form-field-border"
+                    #projectToSearchInput formControlName="toProjectName">
+                  <div class="project-select-content" [hidden]="hideToSearching">
+                    <ul>
+                      <li class="text-danger" *ngIf="projectList.length==0">No Projects Found</li>
+                      <li (click)="projectSelected(project, 'to')" *ngFor="let project of projectList">
+                        {{project.projectName}}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label><b>Task Name</b></label>
+            <div class="lds-ring" *ngIf="isLoadingToTask"><div></div><div></div><div></div><div></div></div>
+            <select id="toTaskId" formControlName="toTaskId" class="form-control form-field-border"
+              (change)="getBillTypes($event,'to')">
+              <option value="">Select Task</option>
+              <option *ngFor="let task of toTaskList" value="{{task.taskId}}">{{task.taskName}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label><b>Bill Type</b></label>
+            <select id="toBillType" formControlName="toBillType" class="form-control form-field-border">
+              <option value="">Select Bill Type</option>
+              <option *ngFor="let billType of filteredBillTypeList" value="{{billType.id}}">{{billType.typeName}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2 mt-4">
+          <div class="row">
+            <div class="col-sm-3 col-md-6">
+              <button class="btn btn-outline-primary">Move</button>
+            </div>
+            <div class="col-sm-3 col-md-6">
+              <button type="button" class="btn btn-outline-danger" (click)="clearForm()">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+
+  </div>
+</div>

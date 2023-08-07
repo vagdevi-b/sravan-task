@@ -1,0 +1,89 @@
+/* app-chart {
+    display: flex;
+    justify-content: center;
+  } */
+  
+  /* .app-chart-container {
+    margin: 10px 0;
+  } */
+  
+  /* .app-chart-container.second-one {
+    border-top: 2px solid #ccc;
+    padding-top: 10px;
+  } */
+
+  .chartContainer{
+    height: 75vh !important;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.card-header{
+  background: #d6d6d6 !important;
+  color: black;
+}
+
+.card-body{
+  padding: 20px;
+}
+
+.card {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ::ng-deep .cuppa-dropdown{
+  border: 1px solid black;
+} */
+
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+ 
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.overlay {
+  background: #ffffff;
+  color: #666666;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  float: left;
+  text-align: center;
+  padding-top: 25%;
+  opacity: .80;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+.error-msg{
+  display: inline-block;
+    width: 100%;
+    text-align: center;
+    color: red;
+}
+.topspace{
+  margin-top:15px;
+}
+  

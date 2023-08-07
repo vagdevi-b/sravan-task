@@ -1,0 +1,68 @@
+.list-group-item {
+  padding: 5px 10px
+}
+
+#goals-accordion .card-header {
+  border: 1px solid rgba(0, 0, 0, .125) !important;
+  background-color: #fff !important;
+}
+
+#goals-accordion .card-body {
+  border: 1px solid rgba(0, 0, 0, .125) !important;
+  padding: 1.20rem !important;
+}
+
+#goals-accordion h5 {
+  display: inline-block;
+  color: #000;
+}
+
+#goals-accordion .accordion {
+  font-size: 13px;
+  color: #777;
+  float: right;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+#goals-accordion .accordion:after {
+  content: "\2796";
+  /* Unicode character for "minus" sign (-) */
+}
+
+#goals-accordion .active:after {
+  content: '\02795';
+  /* Unicode character for "plus" sign (+) */
+}
+
+#goals-accordion .projects-setting-header select {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.align-right {
+  text-align: right;
+}
+
+/* :disabled{
+    pointer-events: none;
+  } */
+[disabled],
+:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* .accordion-custom .card .card-header .btn{ font-size:17px !important; color: #333 !important; } */
+.accordion-custom .card .card-header .btn:hover {
+  text-decoration: none !important;
+}
+
+.error-class {
+  border: 1px solid red;
+}
+
+.accordion>.card {
+  overflow: inherit;
+}

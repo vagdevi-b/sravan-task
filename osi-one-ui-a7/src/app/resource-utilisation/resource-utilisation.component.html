@@ -1,0 +1,44 @@
+<div class="v-height"  id="htmle2imagedata">
+
+	<div class="leave-wrapper-section">
+		<div class="leave-status-section">
+			<ul class="nav nav-pills">
+				<li class="nav-item" *ngIf="isLevel3User">
+					<a class="nav-link active" data-toggle="pill" href="#myresources" (click)="onNavClick('myresources')">My Resources</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" [ngClass]="{'active' : !isLevel3User}" data-toggle="pill" href="#resourceUtilization" (click)="onNavClick('resourceUtilization')">Utilization</a>
+				</li>
+				<li class="nav-item" *ngIf="isLevel3User">
+					<a class="nav-link" data-toggle="pill" href="#resourcepandl" (click)="onNavClick('resourcepandl')">P & L</a>
+				</li>
+			</ul>
+
+		</div>
+		<div *ngIf="navBar == 'myresources'">
+			<app-my-resources-dashboard></app-my-resources-dashboard>
+		</div>
+
+		<div *ngIf="navBar == 'resourceUtilization'">
+			<app-rm-dashboard></app-rm-dashboard>
+		</div>
+
+		<div *ngIf="navBar == 'resourcepandl'">
+			<app-rm-dashboard-pnl></app-rm-dashboard-pnl>
+		</div>
+
+	</div>
+</div>
+
+
+<!-- Modal for showing loading text -->
+<div id="loadingInvoiceDetailsModal"  class="modal"  role="dialog"  data-backdrop="static"  data-keyboard="false">
+	<div class="modal-dialog"  style="top: 40%; width: 10%;">
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+	</div>
+</div>

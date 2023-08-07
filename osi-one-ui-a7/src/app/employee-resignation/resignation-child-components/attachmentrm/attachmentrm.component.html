@@ -1,0 +1,53 @@
+<div class="modal-content">
+  <!-- Modal Header -->
+  <!-- Modal Body -->
+  <div class="modal-body">
+    <h4>Attach Document</h4>
+    <div class="body-message attachment-modal-body" [formGroup]="attachmentForm">
+
+      <div class="upload-wrapper">
+
+        <div class="row">
+
+          <div class="col-md-3 col-lg-3">
+
+            <label class="custom-browse-input">
+
+              <input type="file" id="customFile" accept=".pdf,.doc,.txt,.docx" placeholder="Enter The Title"
+                (change)="onUpdateDocument($event)">
+
+            </label>
+
+            <span class="text-upload-info">.pdf,.doc,.txt,.docx,.eml</span>
+
+            <button *ngIf="updateResume" class="btn btn-outline-secondary">Upload</button>
+
+          </div>
+
+          <div class="col-lg-9 col-md-9">
+
+            <input class="form-control" type="text" formControlName="title" placeholder="Enter the Title">
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+    </div>
+    <div *ngFor="let item of selectedfiles">
+
+      {{item.name}}
+
+    </div>
+  </div>
+  <!-- Modal Footer -->
+  <div class="modal-footer custom-modal-footer">
+    <button type="button" class="btn btn-outline-secondary btn-style-1" (click)="close()">Cancel</button>
+    <button type="button" (click)="save()" class="btn btn-primary btn-style-1">Attach</button>
+
+
+  </div>
+</div>

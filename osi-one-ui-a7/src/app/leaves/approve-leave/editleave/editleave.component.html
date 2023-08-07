@@ -1,0 +1,128 @@
+<div class="v-height">
+        <!-- <div class="breadcrumb-holder">
+                <ul class="breadcrumb">
+                    <h1 class="h3 display" style="margin-left: -81px;">View Leave Request</h1>
+                </ul>
+            </div> -->
+
+        <!-- <div class="pagetitle">View Leave Request</div>    -->
+        <div class="inner-wrapper">
+
+                <div class="sub-header bb-color">
+                        <h1>View Leave Request</h1>
+                </div>
+                <div class="container-fluid">
+
+                     
+                                <div class="row">
+                                        <div class="col-sm-4 leavelabels">
+                                                Leave Id: {{leaves.leaveId}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels">
+                                                Date Applied: {{leaves.submittedDate}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels">
+                                                From Date: {{leaves.fromDate}}
+                                        </div>
+                                </div>
+                                <div class="row">
+                                        <div class="col-sm-4 leavelabels camel">
+                                                Name: {{employeeName}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels">
+                                                Also notified: {{leaves.emailName}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels">
+                                                To Date: {{leaves.toDate}}
+                                        </div>
+                                </div>
+                                <div class="row" style="padding-bottom: 20px;
+      padding-top: 20px;
+      padding-left: 3px;">
+                                        <div class="col-md-2 leavelabels">
+                                                Attachments:
+                                        </div>
+                                        <div class="col-md-2 leavelabels">
+                                                <!-- <div class="col md-12"> -->
+                                                <div class="row">
+                                                        <div class="col md-12" style="padding-left: 0px;margin-left: -75px;">
+                                                                <span *ngFor="let file of leaveAttachments;let i=index">
+                                                                        <a style="cursor: pointer;color: #2199e8;" (click)="downloadFile(file.originalFileName,file.duplicateFileName, file.fileType, leaves.leaveId)">{{file.originalFileName}}
+                                                                                <span *ngIf="i<leaveAttachments.length-1">,</span>
+                                                                        </a>
+
+                                                                </span>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                        <!-- </div> -->
+                                        <div class="col-md-4 leavelabels ">
+                                                Leave Type:{{leaves.leaveTypeName | titlecase}}
+                                        </div>
+                                        <div class="col-md-4 leavelabels">
+                                                No of Hours: {{leaves.noOfHours}}
+                                        </div>
+                                </div>
+                                <div class="row">
+                                        <div class="col-sm-4 leavelabels">
+                                                Purpose: {{leaves.leaveReason}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels">
+                                                Status: {{leaves.statusCode}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels" *ngIf="leaves.statusCode=='Rejected'">
+                                                Reason for Rejection: {{leaves.rejectReason}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels" *ngIf="leaves.statusCode=='Submitted for Cancel'">
+                                                Reason for Cancellation: {{leaves.rejectReason}}
+                                        </div>
+                                        <div class="col-sm-4 leavelabels"  *ngIf="leaves.statusCode=='Cancelled'">  Reason for Cancellation: {{leaves.rejectReason}}
+                                        </div>
+                                </div>
+
+                                <div class="row">
+                                        <div class="col-sm-6 leavelabels">
+
+                                        </div>
+                                        <div class="col-sm-3">
+
+                                        </div>
+                                        <div class="col-sm-3">
+                                        </div>
+                                </div>
+                        
+                        <div class="row pt-2 pb-3">
+                                <div class="col-md-12"> 
+                                <div class="pull-right">
+                                        <button type="button" class="btn btn-primary btn-cancel" (click)="onCancel()">Close</button>
+                                        <!-- <button type="button" class="btn btn-primary" (click)="onLeaveCancel()">Cancel Leave</button>-->
+                                        <!-- <button type="button" class="btn btn-primary"data-toggle="modal" data-target="#modelCancelLeave" id="cancel-leave">Cancel Leave</button> -->
+
+                                        <!-- <button type="button" class="btn btn-primary" (click)="onEditLeave(leaves.leaveId)">Edit Leave</button> -->
+
+                                </div></div>
+                        </div>
+
+                </div>
+
+        </div>
+</div>
+
+
+<div class="modal fade" id="modelCancelLeave" role="dialog">
+
+        <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                        <div class="container">
+                                <h4>Do you really want to Cancel Leave Request ? </h4>
+                                <form action="/action_page.php">
+
+                                        <button type="button" class="btn btn-default" (click)="onCancelLeave(leaves.leaveId)">Yes</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                </form>
+                        </div>
+                </div>
+        </div>
+</div>

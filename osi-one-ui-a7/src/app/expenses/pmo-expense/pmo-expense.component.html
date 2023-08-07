@@ -1,0 +1,196 @@
+<div class="v-height">
+  <div class="inner-wrapper">
+    <div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+    <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+
+    <div class="sub-header border-bottom">
+      <div class="row">
+        <div class="col-md-9">
+          <h1>PMO Expense Management</h1>
+        </div>
+        <div class="col-md-2 text-right">
+            <div class="pull-left">
+              <div file-name="FilterColumns" class="dropdown">
+                <span class="glyphicon glyphicon-filter" style="font-size:20px !important;"></span>
+                <div class="dropdown-content" 
+                  style="background-color: #f9f9f9; min-width: 170px; right: 0px; text-align: left;
+                  padding: 5px;">
+                    <input [(ngModel)]="reprtId" type="checkbox" (change)="onSelectColumn(reprtId,'reportid')" checked> Report Id<br />
+                    <input type="checkbox" [(ngModel)]="crdate" (change)="onSelectColumn(crdate, 'submitedDate')"/> Created Date<br />
+                    <input type="checkbox" [(ngModel)]="expnsDateRange" (change)="onSelectColumn(expnsDateRange, 'expenseWeekDate')"/> Expense Date Range<br />
+                    <input type="checkbox" [(ngModel)]="total" (change)="onSelectColumn(total, 'totalAmount')"/> Total<br />
+                    <input type="checkbox" [(ngModel)]="locatn" (change)="onSelectColumn(locatn, 'location')"/> Location<br />
+                    <input type="checkbox" [(ngModel)]="stats" (change)="onSelectColumn(stats, 'status')"/> Status<br /> 
+                    <input type="checkbox" [(ngModel)]="chkbx" (change)="onSelectColumn(chkbx, 'chkbx')"/> Add checkbox<br /> 
+                </div>
+              </div>
+            </div>
+          <div class="pull-right text-right">
+            <button type="button" class="btn btn-outline-primary pull-right" aria-label="Approve Expenses" (click)="getSelectedApprovalRows();">
+              Approve
+            </button>
+          </div>
+        </div>
+        <div class="col-md-1 mt-1">          
+          <div class="dropdown pull-left">
+            <span class="glyphicon glyphicon-cog" style="font-size:20px !important;"></span>
+            <div class="dropdown-content">
+              <ul>
+                <li>Items To Search</li>
+                <li [class.active]="currentPageItemCount==itemCount" (click)="chengePageSize(itemCount)" *ngFor="let itemCount of itemsPerPageList">{{itemCount}}</li>
+                <li [class.active]="currentPageItemCount==0" (click)="chengePageSize(0)">All</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row pt-2">
+        <div class="col-md-2">
+          <div id="dateselectiondiv">
+            <select class="form-control" (change)="onSelect($event.target.value)" [(ngModel)]="selectedDates.id">
+              <option *ngFor="let dates of listdates" value={{dates.id}}>
+                {{dates.name}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <input type="text" class="form-control" name="fullName" (blur)="getEmployeeList($event)" [(ngModel)]="fullName" placeholder="User Name">
+        </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-2">
+              <input type="text" class="form-control" name="searchReportId" (blur)="getExpensesByReportId($event)" [(ngModel)]="searchReportId"
+                placeholder="Report ID">
+            </div>
+            <div class="col-md-8">
+              <span *ngIf="employeeLength">No Match found with the given Employee Name</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+          <div class="form-group">
+            <label for="name">Start Date</label>
+            <div class="input-group" #DatePickContainer1>
+              <input id="startdate" #startDate [maxDate]="endDateSelectedDate" name="startdate" class="form-control form-control-sm form-field-border"
+                placeholder="dd-mon-yyyy" [(ngModel)]="startDateSelectedDate" ngbDatepicker #d1="ngbDatepicker" (dateSelect)="checkStartDate();startDateChangeFormat($event)"
+                (change)="checkStartDate()" (focusout)="checkStartDate()">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d1.toggle()" type="button" (document:click)="closeFix1($event, d1)">
+                  <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                    <i class="fa fa-lg fa-calendar"></i>
+                  </span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-3" *ngIf="selectedDates.id == 'dateRange'">
+          <div class="form-group">
+            <label for="name">End Date</label>
+            <div class="input-group" #DatePickContainer2>
+              <input id="enddate" #endDate [minDate]="endDateMinVal" name="enddate" class="form-control form-control-sm form-field-border"
+                placeholder="dd-mon-yyyy" [(ngModel)]="endDateSelectedDate" ngbDatepicker #d2="ngbDatepicker" (dateSelect)="endDateSelected();endDateChangeFormat($event)"
+                (change)="endDateSelected()" (focusout)="endDateSelected()">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" (click)="d2.toggle()" type="button" (document:click)="closeFix2($event, d2)">
+                  <span class="input-group-addon" style="cursor: pointer; border-radius: 0px;">
+                    <i class="fa fa-lg fa-calendar"></i>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-12 col-sm-12">
+            <div class="p-2 pt-3">
+              <button (click)="statusBasedExpenses($event,'N')" id="btn-open" class="btn btn-outline-primary mr-2" [ngClass]="{'active':selectedStatusExpense=='N'}">Open</button>
+              <button (click)="statusBasedExpenses($event,'S')" id="btn-sub" class="btn btn-outline-primary mr-2" [ngClass]="{'active':selectedStatusExpense=='S'}">Submitted</button>
+              <button (click)="statusBasedExpenses($event,'O')" id="btn-apprv" class="btn btn-outline-primary mr-2" [ngClass]="{'active':selectedStatusExpense=='O'}">Approved</button>
+              <button (click)="statusBasedExpenses($event,'R')" id="btn-rej" class="btn btn-outline-warning mr-2" [ngClass]="{'active':selectedStatusExpense=='R'}">Rejected</button>
+              <button (click)="statusBasedExpenses($event,'P')" id="btn-reimb" class="btn btn-outline-primary mr-2" [ngClass]="{'active':selectedStatusExpense=='P'}">Reimbursed</button>
+              <button (click)="statusBasedExpenses($event,'A')" id="btn-all" class="btn btn-outline-primary mr-2" [ngClass]="{'active':selectedStatusExpense=='A'}">All</button>
+            </div>
+          </div>
+        </div>
+        <ag-grid-angular #agGrid style="width: 100%; height: 340px;" id="myGrid" class="ag-theme-balham" [columnDefs]="columnDefs"
+          [rowData]="rowData" [rowSelection]="rowSelection" (rowDoubleClicked)="onRowSelected($event)" (selectionChanged)="onSelectionChanged($event)"
+          enableColResize enableSorting enableFilter groupHeaders [paginationPageSize]="paginationPageSize" suppressMovableColumns="true"
+          pagination="true" (gridReady)="onGridReady($event)"></ag-grid-angular>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Employee List Modal -->
+<div class="modal fade" id="employeeList" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+        <h5 class="modal-title">Employee List</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <div class="col-lg-4 text-align-right">
+            <label for="Employee Name" class="control-label">Employee Name</label>
+          </div>
+          <div class="col-lg-5">
+            <input class="form-control mail" id="Employee Name" [(ngModel)]="searchedText" placeholder="Enter Employee Name" maxlength="50"
+              type="text">
+          </div>
+          <div class="col-lg-3">
+            <button class="btn btn-outline-secondary" style="float: right;" (click)="filteredEmployeeSearch(searchedText)">Search</button>
+          </div>
+        </div>
+        <div class="container">
+          <ul class="list-group" *ngFor="let users of employeeList ;let i=index" (click)="selectedEmployee(users.fullName,users.employeeId)">
+            <li class="list-group-item " [value]="users.fullName" *ngIf="i<10">{{users.fullName}}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade custom-modal-padding" id="approve_expense_conf" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+				<h5 class="modal-title">Do you want to Approve the Expense Reports?</h5>
+				<p class="modal-message">Alternatively you can double-click on a row to view the line items associated with the expense report and then approve them.</p>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-outline-primary" (click)="approveRows()"
+                        data-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loaderDisplayModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog" style="top: 40%;">
+
+		<!-- Modal content-->
+		<div class="modal-content bg-dark text-light">
+			<div class="modal-body">
+				<h3>Loading..</h3>
+			</div>
+		</div>
+
+	</div>
+</div>

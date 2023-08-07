@@ -1,0 +1,85 @@
+<div class="v-height">
+	<div class="snackbar" #AlertSuccess>{{flash.message}}</div>
+	<div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+	<form name="form" (ngSubmit)="f.form.valid" #f="ngForm" novalidate>
+	
+		<div class="view-expense-section">
+			<!-- start -->
+			<div class="row">
+				<div class="col-md-6 sub-header clearfix">
+					<h1 class="pull-left">Missing Exchange Rates</h1>
+				</div>
+				<div class="col-md-6" id="paddingbuttons">
+					<div class="pull-right">
+						<button type="button" class="btn btn-outline-primary mr-2 mt-2" [disabled]="disableSync"
+							data-toggle="modal" data-target="#run_exchange">Sync</button>
+					</div>
+				</div>
+				
+			</div>
+			<!-- End -->
+
+			
+			<div class="row">
+				<div class="col-md-12">
+					<div>
+						<h3 class="panel-title">&nbsp;</h3>
+					</div>
+					<div class="box1">
+						<!-- <div class="col-md-12"> -->
+						<div class="box-body table-responsive">
+							<table class="table table-hover table-bordered">
+								<thead>
+									<tr>
+										<td>
+											<input type="checkbox" class="onoffswitch-checkbox" [checked]="isAllChecked()" (change)="checkAll($event)">
+										</td>
+										<td class="project-size">
+											<b>Missing Rates Date</b>
+										</td>
+										
+									</tr>
+								</thead>
+								<tbody>
+								<tr *ngFor="let field of fieldArray | paginate: { itemsPerPage: 10, currentPage: crntPage, id:'id1' }; let i = index">
+									<td>
+										<input type="checkbox" value="{{field.id}}" class="onoffswitch-checkbox" name="{{field.id}}" class="onoffswitch-checkbox"
+											[(ngModel)]="field.state" (change)="onEditChecked($event)">
+									</td>
+									<td> {{field.createdDate}} </td>
+									
+								</tr>
+							</tbody>
+							</table>
+							<div *ngIf = "fieldArray.length == 0">
+									<h6 class="text-center text-danger">No Missing Exchange Rates available</h6>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<pagination-controls (pageChange)="crntPage = $event" id="id1" maxSize="5" previousLabel="" nextLabel="" autoHide="true"></pagination-controls>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade custom-modal-padding" id="run_exchange" role="dialog" data-backdrop="static" data-keyboard="false">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-body text-center">
+						<h5>Do you want to Run the Selected Current Exchanges?</h5>
+						<br>
+						<!-- <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button> -->
+						<button type="button" class="btn btn-outline-primary" data-toggle="modal"  (click)="runMissingExchangeRates()"
+							data-dismiss="modal">Yes</button>
+						<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

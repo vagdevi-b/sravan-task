@@ -1,0 +1,297 @@
+<div class="wrapper row-offcanvas row-offcanvas-left">
+  <div class="breadcrumb-holder">
+    <div class="container-fluid">
+      <ul class="breadcrumb">
+        <h1 class="h3 display">Department Mapping</h1>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <header> </header>
+    <section class="forms">
+      <!-- input box  -->
+      <div class="col-sm-12 no-padding adjust-search-box">
+        <div class="card">
+          <div class="card-body">
+            <form #f='ngForm'>
+              <div class="row" role="form">
+                <div class="col-lg-3">
+                  <input class="form-control" type="text" id="orgName" name="segment1" [(ngModel)]="searchData.orgName"
+                  (ngModelChange)="searchData.orgName=searchData.orgName==''?null:searchData.orgName"
+                    placeholder="Organization Name" only-Alphabets no-special-char>
+                </div>
+                <div class="col-lg-3">
+                  <input class="form-control" type="text" id="bu" name="segment3" [(ngModel)]="searchData.bu" (ngModelChange)="searchData.bu=searchData.bu==''?null:searchData.bu" placeholder="Business Unit"
+                    only-Alphabets no-special-char>
+                </div>
+
+                <div class="col-lg-3">
+                  <input class="form-control" type="text" id="dept" name="segment6" placeholder="Department" [(ngModel)]="searchData.dept" (ngModelChange)="searchData.dept=searchData.dept==''?null:searchData.dept"
+                    only-Alphabets no-special-char>
+                </div>
+
+              </div>
+              <div class="row">
+
+                <div class="col-lg-3">
+                  <input class="form-control" type="text" id="practice" name='segment4' (ngModelChange)="searchData.practice=searchData.practice==''?null:searchData.practice" [(ngModel)]="searchData.practice"
+                    placeholder="Practice" only-Alphabets no-special-char>
+                </div>
+                <div class="col-lg-3">
+                  <input class="form-control" type="text" id="subpractice" name="segment5" placeholder="Sub Practice" [(ngModel)]="searchData.subPractice" (ngModelChange)="searchData.subPractice=searchData.subPractice==''?null:searchData.subPractice"
+                    only-Alphabets no-special-char>
+                </div>
+                <div class="col-lg-3">
+                  <input class="form-control" type="text" id="region" name="segment2" placeholder="Region" [(ngModel)]="searchData.region" (ngModelChange)="searchData.region=searchData.region==''?null:searchData.region" 
+                    only-Alphabets no-special-char>
+                </div>
+
+                <div class="col-lg-3">
+                  <button type="submit" (click)="searchDataFn(f.value)" class="btn btn-outline-secondary">Search</button>
+                  <button type="button" (click)="f.reset();clearRecord()" class="btn btn-outline-primary">Clear</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end of input box -->
+
+    <section class="content">
+      <div class='card'>
+        <div class="box-body table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th ng-click="sort('segmetn1')">Organization Name
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgName'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('segmetn2')">Region
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgEmail'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('segmetn3')">Business Unit
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgWebsite'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('segmetn4')">Practice
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgPhoneNumber'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('segmetn5')">Sub Practice
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgLocation'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('segmetn6')">Department
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgCountry'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('segmetn7')">Cost Center
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgCountry'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+                <th ng-click="sort('active')">Active
+                  <span class="glyphicon sort-icon" ng-show="sortKey == 'orgCountry'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!--  (dblclick)="editSelectedRowDetails()"   [class.active]="item.orgId == selectedRow" -->
+              <tr *ngFor='let item of listOfMap | paginate: { itemsPerPage: 5,currentPage: crntpage,totalItems: totalData }' (click)="setClickedRow(item)"
+                [class.active]="item.rollupId === selectedRow?.rollupId">
+                <td>{{item.segment1}}</td>
+                <td>{{item.segment2}}</td>
+                <td>{{item.segment3}}</td>
+                <td>{{item.segment4}}</td>
+                <td>{{item.segment5}}</td>
+                <td>{{item.segment6}}</td>
+                <td>{{item.segment7}}</td>
+                <td>{{item.active==1 ?"Yes":"No"}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- page control -->
+          <div>
+            <h6 [hidden]=" totalData!=0 " style="text-align: center; color: red;">No Records Found</h6>
+          </div>
+          <div class="col-sm-12 row">
+            <!-- pagination -->
+            <div class="col-sm-10">
+              <div class="paginate" [hidden]=' (totalData<=5)'>
+                <!-- hide when result is less than 5 -->
+                <pagination-controls (pageChange)="crntpage = $event"></pagination-controls>
+              </div>
+            </div>
+            <!-- END OF PAGE CONTROL -->
+            <span class="col-sm-2 adjust-crud-op">
+              <i style="cursor: pointer;" class="glyphicon glyphicon-plus" (click)='showModal("create")'></i>&nbsp;&nbsp;
+              <i style="cursor: pointer;" class="glyphicon glyphicon-pencil" (click)='showModal("edit")'></i>&nbsp;&nbsp;
+              <i style="cursor: pointer;" class="glyphicon glyphicon-eye-open" (click)='showModal("view")'></i>&nbsp;&nbsp;
+              <i style="cursor: pointer;" class="glyphicon glyphicon-trash" (click)='showModal("delete")'></i>
+            </span>
+          </div>
+          <p></p>
+          <!-- End of page control -->
+
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ************************************* Modal  ************************************* -->
+
+<div class="modal fade" id="deptMappingModal" tabindex="-1" style="overflow: auto;" role="dialog" aria-labelledby="organizationModal"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document" style="width: 850px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{headerName}}</h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal" ng-click="clearSelectedRow();">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!--   <div class="alert alert-success" ng-show="locshowSuccessAlert" style="padding: 2px; text-align: center;">
+          <strong></strong> {{successTextAlert}}
+        </div>
+        <div class="alert alert-danger" ng-show="orgshowErrorAlert" style="padding: 0px; text-align: center;">
+          <strong></strong> {{ErrorTextAlert}}
+        </div> -->
+        <form name="menuForm" #mapForm="ngForm" autocomplete="off">
+          <div class="row">
+            <div class="col-md-2 text-align-right">
+              <label for="orgId">Organization Name </label>
+            </div>
+            <div class="col-md-4">
+              <select name="orgId" [(ngModel)]="deptMapping.orgId" (change)="getOrgShrtName($event.target.value)" [disabled]="!isEditable"
+                id="orgId" uppercase placeholder="" class="form-control form-field-border" required>
+                <option [ngValue]="null">SELECT</option>
+                <option [value]="org.orgId" *ngFor='let org of listOfOrg'>{{org.orgName}} </option>
+              </select>
+              <br />
+            </div>
+            <div class="col-md-2 text-align-right">
+              <label for="shortName">Short Name </label>
+            </div>
+            <div class="col-md-4">
+              <input uppercase [disabled]="true" type="text" id="orgShrtName" name="segment1" [(ngModel)]="deptMapping.segment1" class="form-control form-field-border"
+                required>
+              <br />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2 text-align-right">
+              <label for="region">Region</label>
+            </div>
+            <div class="col-md-4">
+              <select name="segment2" [(ngModel)]="deptMapping.segment2" [disabled]="!isEditable" id="region" uppercase class="form-control form-field-border"
+                required>
+                <option [ngValue]="null">SELECT</option>
+                <option [value]="region.regionShortName" *ngFor='let region of listOfRegion'>{{region.regionName}} </option>
+              </select>
+              <br/>
+            </div>
+            <div class="col-md-2 text-align-right">
+              <label for="bu">Business Unit</label>
+            </div>
+            <div class="col-md-4">
+              <select name="segment3" [(ngModel)]="deptMapping.segment3" [disabled]="!isEditable" id="bu" uppercase class="form-control form-field-border"
+                required>
+                <option [ngValue]="null">SELECT</option>
+                <option [value]="bu.buShortName" *ngFor='let bu of listOfBU'>{{bu.buLongName}} </option>
+              </select>
+              <br />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2 text-align-right">
+              <label for="practice">Practice</label>
+            </div>
+            <div class="col-md-4">
+              <select name="segment4" [(ngModel)]="deptMapping.segment4" [disabled]="!isEditable" uppercase id="practice" class="form-control form-field-border"
+                required>
+                <option [ngValue]="null">SELECT</option>
+                <option [value]="prac.ccShortName" *ngFor='let prac of listOfPractice'>{{prac.ccLongName}} </option>
+              </select>
+              <br />
+            </div>
+            <div class="col-md-2 text-align-right">
+              <label for="subPractice">Sub Practice</label>
+            </div>
+            <div class="col-md-4">
+              <select name="segment5" [(ngModel)]="deptMapping.segment5" [disabled]="!isEditable" uppercase id="subPractice" class="form-control form-field-border"
+                required>
+                <option [ngValue]="null">SELECT</option>
+                <option [value]="subPrac.subPracticeShortName" *ngFor='let subPrac of listOfSubPractice'>{{subPrac.subPractceLongName}}
+                </option>
+              </select>
+              <br />
+            </div>
+          </div>
+
+          <div class="row" style="height: 59px">
+            <div class="col-md-2 text-align-right">
+              <label for="dept">Department</label>
+            </div>
+            <div class="col-md-4">
+              <select name="segment6" [(ngModel)]="deptMapping.segment6" [disabled]="!isEditable" uppercase id="department" class="form-control form-field-border"
+                required>
+                <option [ngValue]="null">SELECT</option>
+                <option [value]="dept.deptShortName" *ngFor='let dept of listOfDept'>{{dept.deptLongName}} </option>
+              </select>
+            </div>
+            <div class="col-md-2 text-align-right">
+              <label for="cc">Cost Center</label>
+            </div>
+            <div class="col-md-4">
+              <input type="text" uppercase id="cc" name="segment7" [(ngModel)]="deptMapping.segment7" [disabled]="!isEditable" placeholder="Cost center"
+                class="form-control form-field-border" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-2 text-align-right">
+            </div>
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-2 text-align-right">
+              <label for="is_active">Active</label>
+            </div>
+            <div class="col-md-4">
+              <input type="checkbox" uppercase id="active" name="active" [(ngModel)]="deptMapping.active" [disabled]="!isEditable" class="form-control noborder form-field-border">
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- end of modal body -->
+
+      <div class="modal-footer" align="right">
+        <div *ngIf="isUpdatable">
+          <button type="button" class="btn btn-outline-primary" (click)="editSelectedRowDetails(mapForm.value)" [disabled]="mapForm.touched && !mapForm.valid">Update</button>
+        </div>
+        <div *ngIf="!isUpdatable && !isView">
+          <button type="button" [disabled]="mapForm.touched && !mapForm.valid" (click)="addDepartment(mapForm.value)" class="btn btn-outline-primary">Save</button>
+        </div>
+        <button type="button" (click)="removeSelection()" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteMapping" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Remove Mapping
+        </h5>
+        <button type="button" class="close modelCloseButton" data-dismiss="modal">&times;</button>
+
+      </div>
+      <div class="modal-body">
+        Do you want to Delete this Department Mapping ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal" (click)="SelectedRowDelete()">Yes</button>
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>

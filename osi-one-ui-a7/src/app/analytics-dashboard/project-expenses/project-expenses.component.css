@@ -1,0 +1,299 @@
+#pro {
+    justify-content: space-between;
+}
+
+#filter{
+    border: 2px;
+    padding: 7px;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+.chartContainer{
+    height: 300px;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.card-header{
+    background: #d6d6d6 !important;
+    color: black;
+}
+
+.card-body{
+    height: 300px;
+    padding: 0;
+}
+
+.highlight{
+    background: #e2e6cf
+}
+
+.chartWrapper {
+    position: relative;
+  }
+  
+  .chartWrapper > canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+  }
+  
+  .chartAreaWrapper {
+    /* height: auto; */
+    overflow-y: auto;
+  }
+
+  #invoicedRevenueByCustomer {
+      height: 500px;
+      overflow-y: auto;
+  }
+  
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+   
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .overlay {
+    background: #ffffff;
+    color: #666666;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    z-index: 5000;
+    top: 0;
+    left: 0;
+    float: left;
+    text-align: center;
+    padding-top: 25%;
+    opacity: .80;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+  }
+  .error-msg{
+    display: inline-block;
+      width: 100%;
+      text-align: center;
+      color: red;
+  }
+  .topspace{
+    margin-top:15px;
+  }
+    
+  
+.btn .btn-default {
+  /* height: 80%; */
+  background-color: #ffffff !important;
+  color: black !important;
+}
+
+.card {
+  font-family: 'Poppins', sans-serif;
+}
+
+#headingOne {
+  background: #ffffff !important;
+  font-size: 18pt !important;
+  color: black;
+}
+
+.btn-toggle {
+  margin: 0 4rem;
+  padding: 0;
+  position: relative;
+  border: none;
+  height: 1.5rem;
+  width: 3rem;
+  border-radius: 1.5rem;
+  color: #6b7381;
+  background: #bdc1c8;
+}
+.btn-toggle:focus, .btn-toggle:focus.active, .btn-toggle.focus, .btn-toggle.focus.active {
+  outline: none;
+}
+.btn-toggle:before, .btn-toggle:after {
+  line-height: 1.5rem;
+  width: 4rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: absolute;
+  bottom: 0;
+  transition: opacity .25s;
+}
+.btn-toggle:before {
+  left: -6rem;
+}
+
+.btn-toggle:after {
+  content: 'Compare';
+  right: -4rem;
+  opacity: .5;
+  padding-bottom: 4px;
+}
+
+.btn-toggle > .handle {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.1875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 1.125rem;
+  background: #fff;
+  transition: left .25s;
+}
+.btn-toggle.active {
+  transition: background-color .25s;
+}
+.btn-toggle.active {
+  background-color: #29b5a8;
+}
+.btn-toggle.active > .handle {
+  left: 1.6875rem;
+  transition: left .25s;
+}
+.btn-toggle.active:before {
+  opacity: .5;
+}
+.btn-toggle.active:after {
+  opacity: 1;
+}
+
+
+
+
+.btn-toggle_ {
+margin: 0 4rem;
+padding: 0;
+position: relative;
+border: none;
+height: 1.5rem;
+width: 3rem;
+border-radius: 1.5rem;
+color: #6b7381;
+background: #bdc1c8;
+}
+.btn-toggle_:focus, .btn-toggle_:focus.active, .btn-toggle_.focus, .btn-toggle_.focus.active {
+outline: none;
+}
+.btn-toggle_:before, .btn-toggle_:after {
+line-height: 0.9rem;
+width: 4rem;
+text-align: center;
+font-weight: 600;
+font-size: .75rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+position: absolute;
+bottom: 0;
+transition: opacity .25s;
+}
+.btn-toggle_:before {
+content: url(../../../assets/images/chart.png);
+left: -4rem;
+}
+.btn-toggle_:after {
+content: url(../../../assets/images/grid.png);
+right: -4rem;
+opacity: .5;
+}
+
+.btn-toggle_ > .handle {
+position: absolute;
+top: 0.4rem;
+left: 0.1875rem;
+width: 1.125rem;
+height: 1.125rem;
+border-radius: 1.125rem;
+background: #fff;
+transition: left .25s;
+}
+.btn-toggle_.active {
+transition: background-color .25s;
+}
+.btn-toggle_.active {
+background-color: #29b5a8;
+}
+.btn-toggle_.active > .handle {
+left: 1.6875rem;
+transition: left .25s;
+}
+.btn-toggle_.active:before {
+opacity: .5;
+}
+.btn-toggle_.active:after {
+opacity: 1;
+}
+
+.wrapper{
+    width:100%;
+    display:block;
+    overflow:hidden;
+    margin:0 auto;
+    padding: 60px 50px;
+    background:#fff;
+    border-radius:4px;
+  }
+  
+  canvas{
+    background:#fff;
+    height:300px;
+  }
+  
+
+  .dd {
+      border-radius : 5px;  
+  }
+
+
+.form-filter{ width:100%; float: left; }
+.col-form-filter{ float: left; padding-right: 6px; }
+.col-form-filter:first-child{ width:12% }
+.col-form-filter:nth-child(2){ width:12% }
+.col-form-filter:nth-child(3){ width:15% }
+.col-form-filter:nth-child(4){ width:15% } 
+.col-form-filter:nth-child(5){ width:18% } 
+.col-form-filter:last-child{ width:28%; padding-right: 0; }
+@media(max-width:768px){
+  .col-form-filter{ padding-right: 0; margin-bottom: 10px; }
+  .col-form-filter:first-child{ width:100% }
+  .col-form-filter:nth-child(2){ width:100% }
+  .col-form-filter:nth-child(3){ width:100% }
+  .col-form-filter:nth-child(4){ width:100% }
+  .col-form-filter:nth-child(5){ width:100% } 
+  .col-form-filter:last-child{ width:100%; padding-right: 0; }
+}
+
+#filter .card-header{ background: #126086 !important; color: #fff; }
+#filter .card-header h6{ font-size: 18px; padding-top: 3px !important; margin-bottom: 0px; }
+#filter .card-header label{ line-height: 25px !important; }
+#filter .card-header  .form-control{ height: 25px !important; line-height: 25px !important; }
+#filter .card-header .btn-toggle, #filter .card-header .btn-toggle_{height: 25px !important;  }
+#filter .card-header .btn-toggle .handle, #filter .card-header .btn-toggle_ .handle{ top: 3px !important; }
+#filter .card-header .btn-toggle:after{ letter-spacing: 1px; right: -4.2rem; line-height: 25px !important; padding: 0; color: #fff; opacity: 0.8 !important; }
+.btn-toggle_:before { content: url(../../../assets/images/chart-white.png); }
+.btn-toggle_:after { bottom:-2px; content: url(../../../assets/images/grid-white.png); opacity: .5;}
+.h-25{ height: 25px !important; }

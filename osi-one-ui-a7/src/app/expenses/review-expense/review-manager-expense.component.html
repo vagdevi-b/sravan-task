@@ -1,0 +1,217 @@
+<div class="v-height">
+  <app-expense-attachment></app-expense-attachment>
+  <div class="snackbar" #AlertSuccess>{{flashMessage}}</div>
+  <div class="snackbar danger" #AlertError>{{errorMessage}}</div>
+  <div class="inner-wrapper">
+    <div class="sub-header bb-color">
+      <div class="row">
+        <div class="col-md-10">
+          <h3 class="pagetitle">Review Manager Expense Report</h3>
+        </div>
+        <div class="col-md-2 text-right mt-2">
+          <button type="button" class="btn btn-outline-primary" (click)="previewCalled()">Preview Receipts</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="container-fluid pt-3 pb-1">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>
+                <b>Expense Start Date</b>
+              </label>
+              <div class="input-group">
+                {{expenseStartDate}}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-1"></div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>
+                <b>Employee Name</b>
+              </label>
+              <div class="input-group"> {{employeeFullName}} </div>
+            </div>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <label>
+                <b>Tracking ID</b>
+              </label>
+              <div class="input-group"> {{reportid}} </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>
+                <b>Description</b>
+              </label>
+              <textarea id="description" name="description" maxlength="255"
+                class="form-control form-control-sm border-radius-zero" rows="2" [(ngModel)]="user.description"
+                placeholder='Description' disabled></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row mt-2 pt-4">
+              <div class="col">
+                <button type="button" (click)="downloadAllAttachments()" class="btn btn-outline-primary">Download
+                  Attachments</button>
+              </div>
+              <div class="col pl-0">
+                <button type="button" (click)="getPdfData()" [disabled]="fieldArray.length==0"
+                  class="btn btn-outline-secondary">Export To PDF</button>
+              </div>
+              <div class="col pl-0">
+                <select title="PDF Layout" class="form-control" name="exportLayoutType" [(ngModel)]="exportLayoutType">
+                  <option value="l">Landscape</option>
+                  <option value="p">Portrait</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <div class="box1">
+            <div class="box-body table-responsive">
+              <table class="table table-hover table-bordered">
+               <thead>
+                <tr>
+                  <th>
+                  </th>
+
+                  <th>
+                    <b>Status</b>
+                  </th>
+                  <th>
+                    <b>Project</b>
+                  </th>
+                  <th class="task-size">
+                    <b>Task</b>
+                  </th>
+                  <th>
+                    <b>Business Unit</b>
+                  </th>
+                  <th class="date-size">
+                    <b>Expense Date</b>
+                  </th>
+                  <th>
+                    <b>Expense Type</b>
+                  </th>
+                  <th>
+                    <b>Quantity</b>
+                  </th>
+                  <th>
+                    <b>Receipt Currency</b>
+                  </th>
+                  <th>
+                    <b>Receipt Price</b>
+                  </th>
+                  <th class="base-amt">
+                    <b>Employee Base Currency Amount</b>
+                  </th>
+                  <th>
+                    <b>Billable</b>
+                  </th>
+                  <th>
+                    <b>Reimbursable</b>
+                  </th>
+                  <th>
+                    <b>Missing Receipts</b>
+                  </th>
+                  <th>
+                    <b>Exchange Rate</b>
+                  </th>
+                  <th style="min-width: 250px;">
+                    <b>Notes</b>
+                  </th>
+                </tr>
+               </thead>
+               <tbody>
+                <tr *ngFor="let field of fieldArray | paginate: { itemsPerPage: 10, currentPage: p }; let i = index">
+                  <td>
+                    <input type="radio" value="{{field.id}}" name="reviewRadioButton" class="onoffswitch-checkbox"
+                      (change)="onRowChecked($event)">
+                  </td>
+                  <td *ngIf="field.status == 'O'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Approved </td>
+                  <td *ngIf="field.status == 'R'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Rejected </td>
+                  <td *ngIf="field.status == 'S'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Submitted </td>
+                  <td *ngIf="field.status == 'N'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Open </td>
+                  <td *ngIf="field.status == 'G'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Charged </td>
+                  <td *ngIf="field.status == 'I'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Invoiced </td>
+                  <td *ngIf="field.status == 'U'" [ngClass]="{'text-link':field.status}"
+                    (click)="showHistory(field.id)"> Reversed </td>
+                  <td> {{field.projectName}}</td>
+                  <td> {{field.projectTaskName}}</td>
+                  <td> {{field.deptName}} </td>
+                  <td> {{field.expenseDate}}</td>
+                  <td> {{field.expenseTypeName}}</td>
+                  <td> {{field.quantity}}</td>
+                  <td> {{field.currencyCode}}</td>
+                  <td> {{field.receiptPrice| expenseDecimalFormat }}</td>
+                  <td> {{getCurr(field.baseExchangeAmt)}} {{getVal(field.baseExchangeAmt)| number: '1.2-2'}}</td>
+                  <td *ngIf="field.billable == true">Yes</td>
+                  <td *ngIf="field.billable == false">No</td>
+                  <td *ngIf="field.reimbursible == true">Yes</td>
+                  <td *ngIf="field.reimbursible == false">No</td>
+                  <td *ngIf="field.missingReceipts == true">Yes</td>
+                  <td *ngIf="field.missingReceipts == false">No</td>
+                  <td> {{getExRateCurr(field.exchangeRateWithDesc) | expenseDecimalFormat}}
+                    {{getExRateVal(field.exchangeRateWithDesc)}}</td>
+                  <td> {{field.notes}}</td>
+                </tr>
+               </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row pt-2 pb-3">
+      <div class="col-md-8">
+        <pagination-controls (pageChange)="p = $event" maxSize="5" previousLabel="" nextLabel="" autoHide="true">
+        </pagination-controls>
+      </div>
+
+      <div class="col-md-4" id="paddingbuttons">
+        <div class="pull-right">
+          <button type="button" (click)="cancel()" class="btn btn-outline-secondary">Back</button>&nbsp;
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for showing loading text -->
+<div id="loadingEditSubmitModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" style="top: 40%;">
+
+    <!-- Modal content-->
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-body">
+        <h3>Loading..</h3>
+      </div>
+    </div>
+
+  </div>
+</div>

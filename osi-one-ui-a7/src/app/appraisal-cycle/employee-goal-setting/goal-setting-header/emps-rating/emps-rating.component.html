@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h5 class="modal-title">{{osiEmpsRating?.sectionHeader}}</h5>
+</div>
+
+<div class="modal-body">
+
+  <div class="form-row mb-2 table-row">
+    <div class="col-10"><b>Category</b></div>
+    <div class="col-2"><b>Rating</b></div>
+  </div>
+  <div class="form-row mb-2 table-row">
+    <div class="col-10"><b>Delivery ({{osiEmpsRating?.delWeightage}}%)</b></div>
+    <div class="col-2"></div>
+  </div>
+  <div class="form-row mb-2 table-row-sm" *ngFor="let item of osiEmpsRating?.deliveryprojects">
+    <div class="col-10">{{item?.projectName}} - ({{item?.projectWeightage}} %)</div>
+    <div class="col-2 text-center">{{item?.rating | number : '1.2-2'}}</div>
+  </div>
+  <div class="form-row mb-2 table-row border-top">
+    <div class="col-10"><b>Career ({{osiEmpsRating?.careerWeightage}}%)</b></div>
+    <div class="col-2 text-center">{{osiEmpsRating?.careerRating}}</div>
+  </div>
+  <div class="form-row mb-2 table-row">
+    <div class="col-10"><b>Organization ({{osiEmpsRating?.orgWeightage}}%)</b></div>
+    <div class="col-2 text-center">{{osiEmpsRating?.orgRating}}</div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-primary" (click)="close()">OK</button>
+</div>
