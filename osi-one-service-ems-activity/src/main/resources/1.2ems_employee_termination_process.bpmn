@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="EmployeeTerminationProcess_Two" name="Employee Termination Process Two" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="exclusivegateway1" targetRef="getConfigDetails">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendRemainder == true}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <serviceTask id="getConfigDetails" name="Get Email Config List" activiti:expression="${configDelegate.onExecute(execution)}" activiti:resultVariableName="configDetails">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow20" sourceRef="getConfigDetails" targetRef="parallelgateway1"></sequenceFlow>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <serviceTask id="MailToIT" name="Mail to IT to remove all Accounts and Access" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.fullName} is separated from ${employee.orgName}. Please disable the accounts and forward their emails to the respective managers till 3 months and give the acknowledgement.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+</tr>
+</table>
+<br/><br/>
+<a href="${configDetails.serviceURL}/completetermination/it"><button>Acknowledgement</button></a><br/>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.itMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Separation]]></activiti:string>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Employee Separation - IT&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow23" sourceRef="parallelgateway1" targetRef="MailToIT"></sequenceFlow>
+    <userTask id="AckFormIT" name="Receive Ack From IT" activiti:assignee="itteam">
+      <extensionElements>
+        <activiti:formProperty id="terminationItStatus" name="terminationItStatus" type="string" variable="terminationItStatus" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution, &quot;Employee Termination - IT&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow24" sourceRef="MailToIT" targetRef="AckFormIT"></sequenceFlow>
+    <serviceTask id="mailToExpense" name="Mail To Expense" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.fullName} is separated from ${employee.orgName}. Please settle the accounts and give the acknowledgement.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+</tr>
+</table>
+<br/><br/>
+<a href="${configDetails.serviceURL}/completetermination/finance"><button>Acknowledgement</button></a><br/>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Separation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.financeMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Employee Termination - Finance&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow29" sourceRef="parallelgateway1" targetRef="mailToExpense"></sequenceFlow>
+    <userTask id="usertask4" name="Receive Ack From Expense System" activiti:assignee="finance">
+      <extensionElements>
+        <activiti:formProperty id="terminationFinStatus" name="terminationFinStatus" type="string" variable="terminationFinStatus" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution, &quot;Employee Termination - Finance&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow30" sourceRef="mailToExpense" targetRef="usertask4"></sequenceFlow>
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow32" sourceRef="AckFormIT" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow35" sourceRef="usertask4" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow36" sourceRef="parallelgateway2" targetRef="mailtask3"></sequenceFlow>
+    <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="getConfigDetails">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow39" sourceRef="boundaryerror1" targetRef="mailtask2"></sequenceFlow>
+    <serviceTask id="CheckForTerminationDate" name="Check For Termination Date" activiti:expression="${checkTerminationRemainderStartDate.onExecute(execution)}" activiti:resultVariableName="sendRemainder">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow40" sourceRef="startevent1" targetRef="timerintermediatecatchevent1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow41" sourceRef="CheckForTerminationDate" targetRef="exclusivegateway1"></sequenceFlow>
+    <endEvent id="endevent3" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" expression="${wfActivitiesService.rollBackWfRecordFlag(execution)}"></activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="flow42" sourceRef="exclusivegateway1" targetRef="endevent3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendRemainder == false}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="mailtask2" name="Error Mail To Admin" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:string><![CDATA[rdonepudi @osius.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Error Notification - Employee Termination Process]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Admin,<br/>
+
+Exception is occured while executing the : 
+<br>Process Definition: ${processDefId}, 
+<br>Activity Name: ${processInsId},
+<br>Error : ${error}
+<br/><br/>
+Thanks,<br/>EMS System]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <boundaryEvent id="boundaryerror2" name="Error" attachedToRef="CheckForTerminationDate">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow43" sourceRef="boundaryerror2" targetRef="mailtask2"></sequenceFlow>
+    <sequenceFlow id="flow44" sourceRef="mailtask2" targetRef="endevent2"></sequenceFlow>
+    <serviceTask id="mailtask3" name="Mail To HR" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Separation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.fullName} is separated from ${employee.orgName}. Please verify and give the acknowledgement.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+</tr>
+</table>
+<br/><br/>
+<a href="${configDetails.serviceURL}/completetermination/hr"><button>Acknowledgement</button></a><br/>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Employee Termination - HR&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow45" sourceRef="parallelgateway1" targetRef="adminMailtask"></sequenceFlow>
+    <userTask id="usertask5" name="Receive Ack From HR Team" activiti:assignee="hrteam">
+      <extensionElements>
+        <activiti:formProperty id="terminationHrStatus" name="terminationHrStatus" type="string" variable="terminationHrStatus" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution, &quot;Employee Termination - HR&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow46" sourceRef="mailtask3" targetRef="usertask5"></sequenceFlow>
+    <sequenceFlow id="flow47" sourceRef="ackFromAdminUserTask" targetRef="parallelgateway2"></sequenceFlow>
+    <serviceTask id="adminMailtask" name="Mail To Admin" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.adminMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Separation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.fullName} is separated from ${employee.orgName}. Please settle the dues related to facilities and give the acknowledgement.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+</tr>
+</table>
+<br/><br/>
+<a href="${configDetails.serviceURL}/completetermination/admin"><button>Acknowledgement</button></a><br/>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Employee Termination - Admin&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="ackFromAdminUserTask" name="Receive Ack From Admin Team" activiti:assignee="adminteam">
+      <extensionElements>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution, &quot;Employee Termination - Admin&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow48" sourceRef="adminMailtask" targetRef="ackFromAdminUserTask"></sequenceFlow>
+    <sequenceFlow id="flow49" sourceRef="usertask5" targetRef="notificationToEmployee"></sequenceFlow>
+    <serviceTask id="notificationToEmployee" name="Notification To Employee" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Separation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.fullName},<br/><br/>
+<div style="padding-left:30px">You are separating from ${employee.orgName}. Please share the below information.</div><br/>
+<br/>
+1. Submission of Hard copies of  Tax Declaration supporting documents  to Finance team, before exit.<br/>
+2. Personal email ID in No due form, to share the Form-16.<br/>
+3. Back up of all payslips & previous years Form-16's.<br/>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.officeEmail}]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow50" sourceRef="notificationToEmployee" targetRef="endevent1"></sequenceFlow>
+    <intermediateCatchEvent id="timerintermediatecatchevent1" name="TimerCatchEvent">
+      <timerEventDefinition>
+        <timeDuration>PT0S</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow51" sourceRef="timerintermediatecatchevent1" targetRef="CheckForTerminationDate"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmployeeTerminationProcess_Two">
+    <bpmndi:BPMNPlane bpmnElement="EmployeeTerminationProcess_Two" id="BPMNPlane_EmployeeTerminationProcess_Two">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1.0" y="178.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1196.0" y="176.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getConfigDetails" id="BPMNShape_getConfigDetails">
+        <omgdc:Bounds height="55.0" width="105.0" x="300.0" y="166.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
+        <omgdc:Bounds height="30.0" width="30.0" x="338.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="449.0" y="173.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToIT" id="BPMNShape_MailToIT">
+        <omgdc:Bounds height="63.0" width="136.0" x="534.0" y="114.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="AckFormIT" id="BPMNShape_AckFormIT">
+        <omgdc:Bounds height="55.0" width="105.0" x="711.0" y="118.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailToExpense" id="BPMNShape_mailToExpense">
+        <omgdc:Bounds height="55.0" width="105.0" x="542.0" y="227.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+        <omgdc:Bounds height="64.0" width="105.0" x="711.0" y="223.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="879.0" y="173.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="232.0" y="334.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CheckForTerminationDate" id="BPMNShape_CheckForTerminationDate">
+        <omgdc:Bounds height="59.0" width="117.0" x="70.0" y="166.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror2" id="BPMNShape_boundaryerror2">
+        <omgdc:Bounds height="30.0" width="30.0" x="110.0" y="206.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="229.0" y="175.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="232.0" y="96.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask2" id="BPMNShape_mailtask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="197.0" y="261.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask3" id="BPMNShape_mailtask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="940.0" y="166.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask5" id="BPMNShape_usertask5">
+        <omgdc:Bounds height="61.0" width="107.0" x="1070.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="adminMailtask" id="BPMNShape_adminMailtask">
+        <omgdc:Bounds height="61.0" width="107.0" x="541.0" y="321.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ackFromAdminUserTask" id="BPMNShape_ackFromAdminUserTask">
+        <omgdc:Bounds height="61.0" width="108.0" x="710.0" y="321.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="notificationToEmployee" id="BPMNShape_notificationToEmployee">
+        <omgdc:Bounds height="64.0" width="107.0" x="1070.0" y="258.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="timerintermediatecatchevent1" id="BPMNShape_timerintermediatecatchevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="60.0" y="96.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="269.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="193.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="405.0" y="193.0"></omgdi:waypoint>
+        <omgdi:waypoint x="449.0" y="193.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+        <omgdi:waypoint x="469.0" y="173.0"></omgdi:waypoint>
+        <omgdi:waypoint x="468.0" y="144.0"></omgdi:waypoint>
+        <omgdi:waypoint x="534.0" y="145.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="670.0" y="145.0"></omgdi:waypoint>
+        <omgdi:waypoint x="711.0" y="145.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="469.0" y="213.0"></omgdi:waypoint>
+        <omgdi:waypoint x="469.0" y="254.0"></omgdi:waypoint>
+        <omgdi:waypoint x="542.0" y="254.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="647.0" y="254.0"></omgdi:waypoint>
+        <omgdi:waypoint x="711.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="816.0" y="145.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.0" y="145.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.0" y="173.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35">
+        <omgdi:waypoint x="816.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.0" y="255.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.0" y="213.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36">
+        <omgdi:waypoint x="919.0" y="193.0"></omgdi:waypoint>
+        <omgdi:waypoint x="940.0" y="193.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="353.0" y="240.0"></omgdi:waypoint>
+        <omgdi:waypoint x="352.0" y="287.0"></omgdi:waypoint>
+        <omgdi:waypoint x="302.0" y="288.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40">
+        <omgdi:waypoint x="18.0" y="178.0"></omgdi:waypoint>
+        <omgdi:waypoint x="18.0" y="113.0"></omgdi:waypoint>
+        <omgdi:waypoint x="60.0" y="113.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow41" id="BPMNEdge_flow41">
+        <omgdi:waypoint x="187.0" y="195.0"></omgdi:waypoint>
+        <omgdi:waypoint x="229.0" y="195.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42">
+        <omgdi:waypoint x="249.0" y="175.0"></omgdi:waypoint>
+        <omgdi:waypoint x="249.0" y="131.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
+        <omgdi:waypoint x="125.0" y="236.0"></omgdi:waypoint>
+        <omgdi:waypoint x="124.0" y="288.0"></omgdi:waypoint>
+        <omgdi:waypoint x="197.0" y="288.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
+        <omgdi:waypoint x="249.0" y="316.0"></omgdi:waypoint>
+        <omgdi:waypoint x="249.0" y="334.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow45" id="BPMNEdge_flow45">
+        <omgdi:waypoint x="469.0" y="213.0"></omgdi:waypoint>
+        <omgdi:waypoint x="469.0" y="351.0"></omgdi:waypoint>
+        <omgdi:waypoint x="541.0" y="351.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow46" id="BPMNEdge_flow46">
+        <omgdi:waypoint x="1045.0" y="193.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="193.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow47" id="BPMNEdge_flow47">
+        <omgdi:waypoint x="818.0" y="351.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.0" y="351.0"></omgdi:waypoint>
+        <omgdi:waypoint x="899.0" y="213.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow48" id="BPMNEdge_flow48">
+        <omgdi:waypoint x="648.0" y="351.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="351.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow49" id="BPMNEdge_flow49">
+        <omgdi:waypoint x="1123.0" y="224.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1123.0" y="258.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
+        <omgdi:waypoint x="1177.0" y="290.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1213.0" y="289.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1213.0" y="211.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+        <omgdi:waypoint x="95.0" y="113.0"></omgdi:waypoint>
+        <omgdi:waypoint x="128.0" y="113.0"></omgdi:waypoint>
+        <omgdi:waypoint x="128.0" y="166.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

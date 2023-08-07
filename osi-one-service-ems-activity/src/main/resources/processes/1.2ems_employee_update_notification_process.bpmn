@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="EmployeeUpdateNotificationProcess" name="EmployeeUpdateNotificationProcess" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="getConfigDetails"></sequenceFlow>
+    <serviceTask id="getConfigDetails" name="Get Email Config List" activiti:expression="${configDelegate.onExecute(execution)}" activiti:resultVariableName="configDetails">
+      <extensionElements>
+      		<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="servicetask1" name="Check For Modified Fields" activiti:expression="${chkForModifications.onExecute(execution)}" activiti:resultVariableName="modifiedFields">
+      <extensionElements>
+      		<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow21" sourceRef="getConfigDetails" targetRef="servicetask1"></sequenceFlow>
+    <serviceTask id="servicetask2" name="Prepare Mail Content" activiti:expression="${prepareMail.onExecute(execution)}" activiti:resultVariableName="mailContent">
+      <extensionElements>
+      		<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow22" sourceRef="servicetask1" targetRef="servicetask2"></sequenceFlow>
+    <sequenceFlow id="flow23" sourceRef="servicetask2" targetRef="parallelgateway1"></sequenceFlow>
+    <endEvent id="endevent3" name="End"></endEvent>
+    <sequenceFlow id="flow24" sourceRef="mailtask10" targetRef="endevent3"></sequenceFlow>
+    <serviceTask id="mailtask2" name="Error Mail To Admin" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:string><![CDATA[smanchala@osius.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Error Notification]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Admin<br/>
+
+Exception occured while executing:
+Exception is occured while executing the : 
+<br>Process Definition: ${processDefId}, 
+<br>Activity Name: ${processInsId},
+<br>Error : ${error}
+
+<br/><br/>
+Thanks,<br/>EMS System]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="endevent4" name="End"></endEvent>
+    <sequenceFlow id="flow25" sourceRef="mailtask2" targetRef="endevent4"></sequenceFlow>
+    <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="getConfigDetails">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow26" sourceRef="boundaryerror1" targetRef="mailtask2"></sequenceFlow>
+    <boundaryEvent id="boundaryerror2" name="Error" attachedToRef="servicetask1">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow27" sourceRef="boundaryerror2" targetRef="mailtask2"></sequenceFlow>
+    <boundaryEvent id="boundaryerror3" name="Error" attachedToRef="servicetask2">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow28" sourceRef="boundaryerror3" targetRef="mailtask2"></sequenceFlow>
+    <sequenceFlow id="flow29" sourceRef="parallelgateway1" targetRef="mailtask9"></sequenceFlow>
+    <sequenceFlow id="flow30" sourceRef="parallelgateway1" targetRef="mailtask11"></sequenceFlow>
+    <sequenceFlow id="flow31" sourceRef="parallelgateway1" targetRef="mailtask12"></sequenceFlow>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow32" sourceRef="parallelgateway1" targetRef="mailtask10"></sequenceFlow>
+    <sequenceFlow id="flow33" sourceRef="parallelgateway1" targetRef="mailtask8"></sequenceFlow>
+    <sequenceFlow id="flow34" sourceRef="mailtask8" targetRef="endevent3"></sequenceFlow>
+    <sequenceFlow id="flow35" sourceRef="mailtask9" targetRef="endevent3"></sequenceFlow>
+    <sequenceFlow id="flow36" sourceRef="mailtask11" targetRef="endevent3"></sequenceFlow>
+    <sequenceFlow id="flow37" sourceRef="mailtask12" targetRef="endevent3"></sequenceFlow>
+    <sequenceFlow id="flow38" sourceRef="parallelgateway1" targetRef="mailtask13"></sequenceFlow>
+    <sequenceFlow id="flow39" sourceRef="mailtask13" targetRef="endevent3"></sequenceFlow>
+    <serviceTask id="mailtask8" name="HR Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Employee Update - ${employee.firstName} ${employee.lastName}(${employee.employeeNumber})]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Employee details have been updated for the below employee. 
+Please make note on it.</div><br/><br/>
+${mailContent.contentBody}
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="mailtask9" name="PMO Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.pmoMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Employee Update - ${employee.firstName} ${employee.lastName}(${employee.employeeNumber})]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Employee details have been updated for the below employee. 
+Please make note on it.</div><br/><br/>
+${mailContent.contentBody}
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="mailtask10" name="IT Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.itMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Employee Update - ${employee.firstName} ${employee.lastName}(${employee.employeeNumber})]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Employee details have been updated for the below employee. Please update the same in Active Directory.</div><br/><br/>
+${mailContent.contentBody}
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="mailtask11" name="Admin Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.adminMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Employee Update - ${employee.firstName} ${employee.lastName}(${employee.employeeNumber})]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Employee details have been updated for the below employee. 
+Please make note on it.</div><br/><br/>
+${mailContent.contentBody}
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="mailtask12" name="Supervisor Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.supervisorMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Employee Update - ${employee.firstName} ${employee.lastName}(${employee.employeeNumber})]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Employee details have been updated for the below employee. 
+Please make note on it.</div><br/><br/>
+${mailContent.contentBody}
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="mailtask13" name="Finance Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.financeMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[Employee Update - ${employee.firstName} ${employee.lastName}(${employee.employeeNumber})]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Employee details have been updated for the below employee. 
+Please make note on it.</div><br/><br/>
+${mailContent.contentBody}
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmployeeUpdateNotificationProcess">
+    <bpmndi:BPMNPlane bpmnElement="EmployeeUpdateNotificationProcess" id="BPMNPlane_EmployeeUpdateNotificationProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="3.0" y="151.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getConfigDetails" id="BPMNShape_getConfigDetails">
+        <omgdc:Bounds height="55.0" width="105.0" x="63.0" y="141.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
+        <omgdc:Bounds height="30.0" width="30.0" x="103.0" y="181.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="65.0" width="110.0" x="222.0" y="136.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror2" id="BPMNShape_boundaryerror2">
+        <omgdc:Bounds height="30.0" width="30.0" x="262.0" y="186.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="377.0" y="141.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror3" id="BPMNShape_boundaryerror3">
+        <omgdc:Bounds height="30.0" width="30.0" x="427.0" y="181.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="750.0" y="154.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask2" id="BPMNShape_mailtask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="224.0" y="271.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent4" id="BPMNShape_endevent4">
+        <omgdc:Bounds height="35.0" width="35.0" x="259.0" y="351.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="500.0" y="151.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask8" id="BPMNShape_mailtask8">
+        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="0.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask9" id="BPMNShape_mailtask9">
+        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask10" id="BPMNShape_mailtask10">
+        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="144.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask11" id="BPMNShape_mailtask11">
+        <omgdc:Bounds height="55.0" width="105.0" x="602.0" y="210.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask12" id="BPMNShape_mailtask12">
+        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask13" id="BPMNShape_mailtask13">
+        <omgdc:Bounds height="55.0" width="105.0" x="600.0" y="351.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="38.0" y="168.0"></omgdi:waypoint>
+        <omgdi:waypoint x="63.0" y="168.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="168.0" y="168.0"></omgdi:waypoint>
+        <omgdi:waypoint x="222.0" y="168.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+        <omgdi:waypoint x="332.0" y="168.0"></omgdi:waypoint>
+        <omgdi:waypoint x="377.0" y="168.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+        <omgdi:waypoint x="482.0" y="168.0"></omgdi:waypoint>
+        <omgdi:waypoint x="500.0" y="171.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="705.0" y="171.0"></omgdi:waypoint>
+        <omgdi:waypoint x="750.0" y="171.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="276.0" y="326.0"></omgdi:waypoint>
+        <omgdi:waypoint x="276.0" y="351.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="118.0" y="211.0"></omgdi:waypoint>
+        <omgdi:waypoint x="117.0" y="298.0"></omgdi:waypoint>
+        <omgdi:waypoint x="224.0" y="298.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="277.0" y="216.0"></omgdi:waypoint>
+        <omgdi:waypoint x="276.0" y="271.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="442.0" y="211.0"></omgdi:waypoint>
+        <omgdi:waypoint x="441.0" y="298.0"></omgdi:waypoint>
+        <omgdi:waypoint x="329.0" y="298.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="520.0" y="151.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="520.0" y="191.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="602.0" y="237.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="520.0" y="191.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="307.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="307.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="540.0" y="171.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="171.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
+        <omgdi:waypoint x="520.0" y="151.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="27.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="27.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
+        <omgdi:waypoint x="705.0" y="27.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="27.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="154.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35">
+        <omgdi:waypoint x="705.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="154.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36">
+        <omgdi:waypoint x="707.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="237.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="189.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow37" id="BPMNEdge_flow37">
+        <omgdi:waypoint x="705.0" y="307.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="307.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="189.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
+        <omgdi:waypoint x="520.0" y="191.0"></omgdi:waypoint>
+        <omgdi:waypoint x="520.0" y="378.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="378.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="705.0" y="378.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="378.0"></omgdi:waypoint>
+        <omgdi:waypoint x="767.0" y="189.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

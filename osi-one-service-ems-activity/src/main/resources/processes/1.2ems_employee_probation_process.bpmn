@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="EmployeeProbationProcess_Two" name="Employee Probation Process Two" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="getConfigDetails"></sequenceFlow>
+    <sequenceFlow id="approve" name="Approve" sourceRef="exclusivegateway1" targetRef="clearAndUpdateDB">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probationActionHr == 'approve'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="extends" name="Extends" sourceRef="exclusivegateway1" targetRef="calculateProbDate">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probationActionHr == 'extend'}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <serviceTask id="getConfigDetails" name="Get Email Config List For Probation" activiti:expression="${configDelegate.onExecute(execution)}" activiti:resultVariableName="configDetails">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow19" sourceRef="usertask1" targetRef="GetBuHeadInfo"></sequenceFlow>
+    <sequenceFlow id="flow20" sourceRef="getConfigDetails" targetRef="checkProbEndDate"></sequenceFlow>
+    <serviceTask id="notifyRM" name="Notify RM For Probation" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.supervisorMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.supervisorName},<br/><br/>
+<div style="padding-left:30px">Probation period has been completed for the below employee. Please take appropriate action and update the same.</div><br/><br/>
+Employee Name: ${employee.fullName}<br/>
+Employee Number:${employee.employeeNumber}<br/><br/>
+<form name="probationForm" action="${configDetails.serviceURL}/completeprobationtask">
+<input type="radio" name="probationAction" value="approve">Approve</br/>
+<input type="radio" name="probationAction" value="terminate">Terminate</br/>
+<input type="radio" name="probationAction" value="extend">Extend    
+(Extended Months)<input type="" name="extendedValue" ><br/>
+Reason: <textarea rows="3" cols="10" name="probationReason"></textarea>
+<br/>
+<input type="submit" value="submit" />
+</form><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Notify RM For Probation End&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="usertask1" name="Capture the RM response" activiti:assignee="rm">
+      <extensionElements>
+        <activiti:formProperty id="probationAction" name="probationAction" type="enum" variable="probationAction" required="true">
+          <activiti:value id="approve" name="Approve"></activiti:value>
+          <activiti:value id="extend" name="Extend"></activiti:value>
+          <activiti:value id="terminate" name="Terminate"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="extendedValue" name="extendedValue" type="long" variable="extendedValue" default="0" required="true"></activiti:formProperty>
+        <activiti:formProperty id="probationReason" name="probationReason" type="string" variable="probationReason" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.closeNotifications(execution,&quot;Notify RM For Probation End&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow21" sourceRef="notifyRM" targetRef="usertask1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Parallel Gateway"></exclusiveGateway>
+    <serviceTask id="clearAndUpdateDB" name="Clear the Prob.Date &amp; Update" activiti:expression="${updateProbDate.onExecute(execution)}">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="calculateProbDate" name="Calculate Probation Date and Update" activiti:expression="${updateProbDate.onExecute(execution)}">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow22" sourceRef="calculateProbDate" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="notifyHr" name="Notify HR" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation - Approved]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.fullName}, Probation is Completed.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Emp</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile No</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'></th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.serialNumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow24" sourceRef="clearAndUpdateDB" targetRef="parallelgateway1"></sequenceFlow>
+    <sequenceFlow id="flow25" sourceRef="notifyHr" targetRef="endevent1"></sequenceFlow>
+    <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="getConfigDetails">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow26" sourceRef="boundaryerror1" targetRef="mailtask3"></sequenceFlow>
+    <boundaryEvent id="boundaryerror2" name="Error" attachedToRef="clearAndUpdateDB">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow27" sourceRef="boundaryerror2" targetRef="mailtask3"></sequenceFlow>
+    <serviceTask id="mailtask3" name="Error Mail To Admin" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Admin<br/>
+
+Exception occured while executing:
+Exception is occured while executing the : 
+<br>Process Definition: ${processDefId}, 
+<br>Activity Name: ${processInsId},
+<br>Error : ${error}
+
+<br/><br/>
+Thanks,<br/>EMS System]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:string><![CDATA[smanchala@osius.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Error Notification]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <boundaryEvent id="boundaryerror3" name="Error" attachedToRef="calculateProbDate">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow29" sourceRef="boundaryerror3" targetRef="mailtask3"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow30" sourceRef="mailtask3" targetRef="endevent2"></sequenceFlow>
+    <serviceTask id="servicetask1" name="Prepare Mail Content" activiti:expression="${prepareMailProbation.onExecute(execution)}" activiti:resultVariableName="mailContent">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow31" sourceRef="servicetask1" targetRef="notifyRM"></sequenceFlow>
+    <boundaryEvent id="boundaryerror4" name="Error" attachedToRef="servicetask1">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow32" sourceRef="boundaryerror4" targetRef="mailtask3"></sequenceFlow>
+    <serviceTask id="GetBuHeadInfo" name="Get BU Head Info" activiti:expression="${fetchBuHeadInfo.onExecute(execution)}" activiti:resultVariableName="buInfo"></serviceTask>
+    <serviceTask id="NotifyBuHead" name="Notify BU Head" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${buInfo.fullName},<br/><br/>
+<div style="padding-left:30px">Probation period has been completed for the below employee. Please take appropriate action and update the same.</div><br/><br/>
+Employee Name: ${employee.fullName}<br/>
+Employee Number:${employee.employeeNumber}<br/><br/>
+<b>Supervisor Action Info</b> <br/>
+<TABLE>
+<TR style="text-align: left;"><TH>Status</TH><TD>${probationAction}</TD></TR>
+<TR style="text-align: left;"><TH>Reason</TH><TD>${probationReason}</TD></TR>
+<TR style="text-align: left;"><TH>Extended</TH><TD>${extendedValue}</TD></TR>
+</TABLE><BR/>
+<form name="probationForm" action="${configDetails.serviceURL}/completeprobationtask">
+<input type="radio" name="probationActionBu" value="approve">Approve<br/>
+<input type="radio" name="probationActionBu" value="terminate">Terminate<br/>
+<input type="radio" name="probationActionBu" value="extend">Extend    
+(Extended Months)<input type="" name="extendedValueBu" ><br/>
+Reason: <textarea rows="3" cols="10" name="probationReasonBu"></textarea>
+<br/>
+<input type="submit" value="submit" />
+</form><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${buInfo.officeEmail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="start" expression="${emsService.saveNotifications(execution, employee, &quot;Notify BU head For Probation End&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow33" sourceRef="GetBuHeadInfo" targetRef="NotifyBuHead"></sequenceFlow>
+    <userTask id="CaptureBuHeadResponse" name="Capture BU Head Response" activiti:assignee="buhead">
+      <extensionElements>
+        <activiti:formProperty id="probationActionBu" name="probationActionBu" type="enum" variable="probationActionBu" required="true">
+          <activiti:value id="approve" name="approve"></activiti:value>
+          <activiti:value id="extend" name="extend"></activiti:value>
+          <activiti:value id="terminate" name="terminate"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="extendedValueBu" name="extendedValueBu" type="long" variable="extendedValueBu" default="0" required="true"></activiti:formProperty>
+        <activiti:formProperty id="probationReasonBu" name="probationReasonBu" type="string" variable="probationReasonBu" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.closeNotifications(execution,&quot;Notify BU head For Probation End&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow34" sourceRef="NotifyBuHead" targetRef="CaptureBuHeadResponse"></sequenceFlow>
+    <sequenceFlow id="flow35" sourceRef="CaptureBuHeadResponse" targetRef="NotifyHR"></sequenceFlow>
+    <serviceTask id="NotifyHR" name="Notify HR" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Probation period has been completed for the below employee. Please take appropriate action and update the same.</div><br/><br/>
+Employee Name: ${employee.fullName}<br/>
+Employee Number:${employee.employeeNumber}<br/><br/>
+<b>Supervisor Action Info</b> <br/>
+<TABLE>
+<TR style="text-align: left;"><TH>Status</TH><TD>${probationAction}</TD></TR>
+<TR style="text-align: left;"><TH>Reason</TH><TD>${probationReason}</TD></TR>
+<TR style="text-align: left;"><TH>Extended</TH><TD>${extendedValue}</TD></TR>
+</TABLE><BR/>
+
+<B>BU Head Action Info</B> <br/>
+<TABLE>
+<TR style="text-align: left;"><TH>Status</TH><TD>${probationActionBu}</TD></TR>
+<TR style="text-align: left;"><TH>Reason</TH><TD>${probationReasonBu}</TD></TR>
+<TR style="text-align: left;"><TH>Extended</TH><TD>${extendedValueBu}</TD></TR>
+</TABLE><BR/>
+<form name="probationForm" action="${configDetails.serviceURL}/completeprobationtask">
+<input type="radio" name="probationActionHr" value="approve">Approve<br/>
+<input type="radio" name="probationActionHr" value="terminate">Terminate<br/>
+<input type="radio" name="probationActionHr" value="extend">Extend    
+(Extended Months)<input type="" name="extendedValueHr" ><br/>
+Reason: <textarea rows="3" cols="10" name="probationReasonHr"></textarea><br/>
+<input type="submit" value="submit" />
+</form><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="start" expression="${emsService.saveNotifications(execution, employee, &quot;Notify HR For Probation End&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <userTask id="CaptureHRResponse" name="Capture HR Response" activiti:assignee="hr">
+      <extensionElements>
+        <activiti:formProperty id="probationActionHr" name="probationActionHr" type="enum" variable="probationActionHr" required="true">
+          <activiti:value id="approve" name="approve"></activiti:value>
+          <activiti:value id="extend" name="extend"></activiti:value>
+          <activiti:value id="terminate" name="terminate"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="extendedValueHr" name="extendedValueHr" type="long" variable="extendedValueHr" default="0" required="true"></activiti:formProperty>
+        <activiti:formProperty id="probationReasonHr" name="probationReasonHr" type="string" variable="probationReasonHr" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.closeNotifications(execution,&quot;Notify HR For Probation End&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow36" sourceRef="NotifyHR" targetRef="CaptureHRResponse"></sequenceFlow>
+    <sequenceFlow id="flow37" sourceRef="CaptureHRResponse" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow38" name="Terminate" sourceRef="exclusivegateway1" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probationActionHr == 'terminate'}]]></conditionExpression>
+    </sequenceFlow>
+    <boundaryEvent id="boundaryerror5" name="Error" attachedToRef="GetBuHeadInfo">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow39" sourceRef="boundaryerror5" targetRef="mailtask3"></sequenceFlow>
+    <serviceTask id="checkProbEndDate" name="Check Probation EndDate" activiti:expression="${chkProbDate.onExecute(execution)}" activiti:resultVariableName="probCheckResult"></serviceTask>
+    <boundaryEvent id="boundaryerror6" name="Error" attachedToRef="checkProbEndDate">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow47" sourceRef="checkProbEndDate" targetRef="exclusivegateway4"></sequenceFlow>
+    <sequenceFlow id="flow48" name="Prob End Date Reached" sourceRef="exclusivegateway4" targetRef="servicetask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probCheckResult == 'REACHED'}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent5" name="End"></endEvent>
+    <sequenceFlow id="flow50" name="Prob End Date is not Reached" sourceRef="exclusivegateway4" targetRef="endevent5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probCheckResult == 'NOTREACHED'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow51" sourceRef="boundaryerror6" targetRef="mailtask3"></sequenceFlow>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow52" sourceRef="parallelgateway1" targetRef="notifyHr"></sequenceFlow>
+    <serviceTask id="MailToPMO" name="Mail To PMO" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.pmoMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation - Approved]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.fullName}, Probation is Completed.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Emp</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile No</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'></th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.serialNumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow53" sourceRef="parallelgateway1" targetRef="MailToPMO"></sequenceFlow>
+    <sequenceFlow id="flow54" sourceRef="MailToPMO" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="notifyEmployee" name="Notify Employee" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation - Completed]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.fullName},<br/><br/>
+<div style="padding-left:30px">Your Probation period is successfully Completed.</div>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.officeEmail}]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow55" sourceRef="parallelgateway1" targetRef="notifySupervisor"></sequenceFlow>
+    <serviceTask id="notifySupervisor" name="Notify Superviosr" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation - Approved]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.supervisorName},<br/><br/>
+<div style="padding-left:30px">${employee.fullName}, Probation is Completed.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Emp</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile No</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'></th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.serialNumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.supervisorMail}]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow58" sourceRef="notifySupervisor" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow60" sourceRef="parallelgateway1" targetRef="notifyEmployee"></sequenceFlow>
+    <sequenceFlow id="flow61" sourceRef="notifyEmployee" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="gotoSecondLevel" name="skipRM" sourceRef="exclusivegateway4" targetRef="mailtask5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probCheckResult == 'SECONDLEVEL'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="gotoThirdLevel" name="skipBU" sourceRef="exclusivegateway4" targetRef="mailtask4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${probCheckResult == 'THIRDLEVEL'}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="mailtask4" name="Notify HR (Skip ALL)" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">Probation period has been completed for the below employee. Please take appropriate action and update the same.</div><br/><br/>
+Employee Name: ${employee.fullName}<br/>
+Employee Number:${employee.employeeNumber}<br/><br/>
+<b>Supervisor Action Info</b> <br/>
+<TABLE>
+<TR style="text-align: left;"><TH>Status</TH><TD>${probationAction}</TD></TR>
+<TR style="text-align: left;"><TH>Reason</TH><TD>${probationReason}</TD></TR>
+<TR style="text-align: left;"><TH>Extended</TH><TD>${extendedValue}</TD></TR>
+</TABLE><BR/>
+<B>BU Head Action Info</B> <br/>
+<TABLE>
+<TR style="text-align: left;"><TH>Status</TH><TD>${probationActionBu}</TD></TR>
+<TR style="text-align: left;"><TH>Reason</TH><TD>${probationReasonBu}</TD></TR>
+<TR style="text-align: left;"><TH>Extended</TH><TD>${extendedValueBu}</TD></TR>
+</TABLE><BR/>
+<form name="probationForm" action="${configDetails.serviceURL}/completeprobationtask">
+<input type="radio" name="probationActionHr" value="approve">Approve<br/>
+<input type="radio" name="probationActionHr" value="terminate">Terminate<br/>
+<input type="radio" name="probationActionHr" value="extend">Extend    
+(Extended Months)<input type="" name="extendedValueHr" ><br/>
+Reason: <textarea rows="3" cols="10" name="probationReasonHr"></textarea><br/>
+<input type="submit" value="submit" />
+</form><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="cc">
+          <activiti:expression><![CDATA[${buInfo.officeEmail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="start" expression="${emsService.saveNotifications(execution, employee, &quot;Notify HR For Probation End&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow62" sourceRef="mailtask4" targetRef="CaptureHRResponse"></sequenceFlow>
+    <serviceTask id="mailtask5" name="Notify BU Head (Skip RM)" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${buInfo.officeEmail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Employee Probation]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="cc">
+          <activiti:expression><![CDATA[${employee.supervisorMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${buInfo.fullName},<br/><br/>
+<div style="padding-left:30px">Probation period has been completed for the below employee. Please take appropriate action and update the same.</div><br/><br/>
+Employee Name: ${employee.fullName}<br/>
+Employee Number:${employee.employeeNumber}<br/><br/>
+<b>Supervisor Action Info</b> <br/>
+<TABLE>
+<TR style="text-align: left;"><TH>Status</TH><TD>${probationAction}</TD></TR>
+<TR style="text-align: left;"><TH>Reason</TH><TD>${probationReason}</TD></TR>
+<TR style="text-align: left;"><TH>Extended</TH><TD>${extendedValue}</TD></TR>
+</TABLE><BR/>
+<form name="probationForm" action="${configDetails.serviceURL}/completeprobationtask">
+<input type="radio" name="probationActionBu" value="approve">Approve<br/>
+<input type="radio" name="probationActionBu" value="terminate">Terminate<br/>
+<input type="radio" name="probationActionBu" value="extend">Extend    
+(Extended Months)<input type="" name="extendedValueBu" ><br/>
+Reason: <textarea rows="3" cols="10" name="probationReasonBu"></textarea>
+<br/>
+<input type="submit" value="submit" />
+</form><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="start" expression="${emsService.saveNotifications(execution, employee, &quot;Notify BU head For Probation End&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow63" sourceRef="mailtask5" targetRef="CaptureBuHeadResponse"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmployeeProbationProcess_Two">
+    <bpmndi:BPMNPlane bpmnElement="EmployeeProbationProcess_Two" id="BPMNPlane_EmployeeProbationProcess_Two">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1.0" y="229.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1234.0" y="226.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getConfigDetails" id="BPMNShape_getConfigDetails">
+        <omgdc:Bounds height="65.0" width="107.0" x="44.0" y="211.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
+        <omgdc:Bounds height="30.0" width="30.0" x="83.0" y="256.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="notifyRM" id="BPMNShape_notifyRM">
+        <omgdc:Bounds height="62.0" width="107.0" x="407.0" y="216.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="62.0" width="105.0" x="538.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="972.0" y="223.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="clearAndUpdateDB" id="BPMNShape_clearAndUpdateDB">
+        <omgdc:Bounds height="65.0" width="105.0" x="940.0" y="111.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror2" id="BPMNShape_boundaryerror2">
+        <omgdc:Bounds height="30.0" width="30.0" x="960.0" y="154.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="calculateProbDate" id="BPMNShape_calculateProbDate">
+        <omgdc:Bounds height="67.0" width="105.0" x="940.0" y="305.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror3" id="BPMNShape_boundaryerror3">
+        <omgdc:Bounds height="30.0" width="30.0" x="932.0" y="325.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="notifyHr" id="BPMNShape_notifyHr">
+        <omgdc:Bounds height="60.0" width="105.0" x="1199.0" y="112.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask3" id="BPMNShape_mailtask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="642.0" y="312.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="677.0" y="391.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="336.0" y="103.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror4" id="BPMNShape_boundaryerror4">
+        <omgdc:Bounds height="30.0" width="30.0" x="369.0" y="141.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GetBuHeadInfo" id="BPMNShape_GetBuHeadInfo">
+        <omgdc:Bounds height="55.0" width="121.0" x="530.0" y="115.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror5" id="BPMNShape_boundaryerror5">
+        <omgdc:Bounds height="30.0" width="30.0" x="514.0" y="129.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="NotifyBuHead" id="BPMNShape_NotifyBuHead">
+        <omgdc:Bounds height="55.0" width="105.0" x="677.0" y="115.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CaptureBuHeadResponse" id="BPMNShape_CaptureBuHeadResponse">
+        <omgdc:Bounds height="61.0" width="107.0" x="676.0" y="213.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="NotifyHR" id="BPMNShape_NotifyHR">
+        <omgdc:Bounds height="55.0" width="105.0" x="802.0" y="216.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CaptureHRResponse" id="BPMNShape_CaptureHRResponse">
+        <omgdc:Bounds height="58.0" width="105.0" x="802.0" y="114.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="checkProbEndDate" id="BPMNShape_checkProbEndDate">
+        <omgdc:Bounds height="59.0" width="111.0" x="42.0" y="113.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror6" id="BPMNShape_boundaryerror6">
+        <omgdc:Bounds height="30.0" width="30.0" x="124.0" y="151.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
+        <omgdc:Bounds height="40.0" width="40.0" x="237.0" y="223.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent5" id="BPMNShape_endevent5">
+        <omgdc:Bounds height="35.0" width="35.0" x="240.0" y="339.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="1070.0" y="122.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToPMO" id="BPMNShape_MailToPMO">
+        <omgdc:Bounds height="55.0" width="105.0" x="1038.0" y="185.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="notifyEmployee" id="BPMNShape_notifyEmployee">
+        <omgdc:Bounds height="55.0" width="105.0" x="1199.0" y="28.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="notifySupervisor" id="BPMNShape_notifySupervisor">
+        <omgdc:Bounds height="55.0" width="105.0" x="1038.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask4" id="BPMNShape_mailtask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="677.0" y="1.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask5" id="BPMNShape_mailtask5">
+        <omgdc:Bounds height="63.0" width="107.0" x="442.0" y="50.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="36.0" y="246.0"></omgdi:waypoint>
+        <omgdi:waypoint x="44.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="approve" id="BPMNEdge_approve">
+        <omgdi:waypoint x="992.0" y="223.0"></omgdi:waypoint>
+        <omgdi:waypoint x="992.0" y="176.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="42.0" x="993.0" y="196.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="extends" id="BPMNEdge_extends">
+        <omgdi:waypoint x="992.0" y="263.0"></omgdi:waypoint>
+        <omgdi:waypoint x="992.0" y="305.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="39.0" x="992.0" y="263.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="590.0" y="213.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="170.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="97.0" y="211.0"></omgdi:waypoint>
+        <omgdi:waypoint x="97.0" y="172.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="514.0" y="247.0"></omgdi:waypoint>
+        <omgdi:waypoint x="538.0" y="244.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+        <omgdi:waypoint x="1045.0" y="338.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1251.0" y="338.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1251.0" y="261.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="1045.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="142.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="1251.0" y="172.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1251.0" y="226.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="98.0" y="286.0"></omgdi:waypoint>
+        <omgdi:waypoint x="97.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="642.0" y="339.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="975.0" y="184.0"></omgdi:waypoint>
+        <omgdi:waypoint x="877.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="747.0" y="339.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="932.0" y="340.0"></omgdi:waypoint>
+        <omgdi:waypoint x="747.0" y="339.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="694.0" y="367.0"></omgdi:waypoint>
+        <omgdi:waypoint x="694.0" y="391.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="441.0" y="130.0"></omgdi:waypoint>
+        <omgdi:waypoint x="461.0" y="130.0"></omgdi:waypoint>
+        <omgdi:waypoint x="460.0" y="216.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="384.0" y="171.0"></omgdi:waypoint>
+        <omgdi:waypoint x="383.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="642.0" y="339.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
+        <omgdi:waypoint x="651.0" y="142.0"></omgdi:waypoint>
+        <omgdi:waypoint x="677.0" y="142.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
+        <omgdi:waypoint x="729.0" y="170.0"></omgdi:waypoint>
+        <omgdi:waypoint x="729.0" y="213.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35">
+        <omgdi:waypoint x="783.0" y="243.0"></omgdi:waypoint>
+        <omgdi:waypoint x="802.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36">
+        <omgdi:waypoint x="854.0" y="216.0"></omgdi:waypoint>
+        <omgdi:waypoint x="854.0" y="172.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow37" id="BPMNEdge_flow37">
+        <omgdi:waypoint x="907.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="919.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="919.0" y="242.0"></omgdi:waypoint>
+        <omgdi:waypoint x="972.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
+        <omgdi:waypoint x="1012.0" y="243.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1234.0" y="243.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="47.0" x="1012.0" y="243.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="529.0" y="159.0"></omgdi:waypoint>
+        <omgdi:waypoint x="528.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="642.0" y="339.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow47" id="BPMNEdge_flow47">
+        <omgdi:waypoint x="153.0" y="142.0"></omgdi:waypoint>
+        <omgdi:waypoint x="186.0" y="141.0"></omgdi:waypoint>
+        <omgdi:waypoint x="186.0" y="242.0"></omgdi:waypoint>
+        <omgdi:waypoint x="237.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow48" id="BPMNEdge_flow48">
+        <omgdi:waypoint x="277.0" y="243.0"></omgdi:waypoint>
+        <omgdi:waypoint x="299.0" y="242.0"></omgdi:waypoint>
+        <omgdi:waypoint x="299.0" y="131.0"></omgdi:waypoint>
+        <omgdi:waypoint x="336.0" y="130.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="277.0" y="243.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow50" id="BPMNEdge_flow50">
+        <omgdi:waypoint x="257.0" y="263.0"></omgdi:waypoint>
+        <omgdi:waypoint x="257.0" y="339.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="42.0" width="100.0" x="260.0" y="295.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow51" id="BPMNEdge_flow51">
+        <omgdi:waypoint x="139.0" y="181.0"></omgdi:waypoint>
+        <omgdi:waypoint x="214.0" y="339.0"></omgdi:waypoint>
+        <omgdi:waypoint x="642.0" y="339.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow52" id="BPMNEdge_flow52">
+        <omgdi:waypoint x="1110.0" y="142.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1199.0" y="142.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow53" id="BPMNEdge_flow53">
+        <omgdi:waypoint x="1090.0" y="162.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1090.0" y="185.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow54" id="BPMNEdge_flow54">
+        <omgdi:waypoint x="1143.0" y="212.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1216.0" y="212.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1251.0" y="226.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow55" id="BPMNEdge_flow55">
+        <omgdi:waypoint x="1090.0" y="122.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1090.0" y="105.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow58" id="BPMNEdge_flow58">
+        <omgdi:waypoint x="1143.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1316.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1316.0" y="243.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1269.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow60" id="BPMNEdge_flow60">
+        <omgdi:waypoint x="1110.0" y="142.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1163.0" y="141.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1163.0" y="56.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1199.0" y="55.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow61" id="BPMNEdge_flow61">
+        <omgdi:waypoint x="1304.0" y="55.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1332.0" y="56.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1332.0" y="243.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1269.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gotoSecondLevel" id="BPMNEdge_gotoSecondLevel">
+        <omgdi:waypoint x="257.0" y="223.0"></omgdi:waypoint>
+        <omgdi:waypoint x="257.0" y="81.0"></omgdi:waypoint>
+        <omgdi:waypoint x="442.0" y="81.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="34.0" x="220.0" y="105.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="gotoThirdLevel" id="BPMNEdge_gotoThirdLevel">
+        <omgdi:waypoint x="257.0" y="223.0"></omgdi:waypoint>
+        <omgdi:waypoint x="257.0" y="28.0"></omgdi:waypoint>
+        <omgdi:waypoint x="677.0" y="28.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="33.0" x="220.0" y="65.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow62" id="BPMNEdge_flow62">
+        <omgdi:waypoint x="782.0" y="28.0"></omgdi:waypoint>
+        <omgdi:waypoint x="854.0" y="28.0"></omgdi:waypoint>
+        <omgdi:waypoint x="854.0" y="114.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow63" id="BPMNEdge_flow63">
+        <omgdi:waypoint x="549.0" y="81.0"></omgdi:waypoint>
+        <omgdi:waypoint x="655.0" y="81.0"></omgdi:waypoint>
+        <omgdi:waypoint x="655.0" y="249.0"></omgdi:waypoint>
+        <omgdi:waypoint x="676.0" y="243.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

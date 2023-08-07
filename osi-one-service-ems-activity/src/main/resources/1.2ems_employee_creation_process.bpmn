@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="EmployeeCreationProcess" name="Employee Creation Process" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <serviceTask id="mailToHRDL" name="Mail To HR for DL list" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[${empCreationSubject}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location.</div>
+<br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+</table>
+<br/><br/>
+Please provide the Distribution List for this employee.<br/><br/>
+<form name="dlForm" action="${configDetails.serviceURL}/completeusertask/">
+Distribution List: ${dloptions}
+<br/>
+<input type="submit" value="SUBMIT">
+</form>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Get DL List From HR&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="timerintermediatecatchevent1"></sequenceFlow>
+    <userTask id="GetDLListFromHR" name="Get DL List From HR" activiti:assignee="hrteam">
+      <extensionElements>
+        <activiti:formProperty id="dllist" name="dllist" type="string" variable="dllist" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution, &quot;Get DL List From HR&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="mailToHRDL" targetRef="GetDLListFromHR"></sequenceFlow>
+    <userTask id="GetInfoFromIT" name="Get Emp Info from IT Team" activiti:assignee="itTeam">
+      <extensionElements>
+        <activiti:formProperty id="emailId" name="emailId" type="string" variable="emailId" required="true"></activiti:formProperty>
+        <activiti:formProperty id="username" name="username" type="string" variable="username" required="true"></activiti:formProperty>
+        <activiti:formProperty id="serialnumber" name="serialnumber" type="string" variable="serialnumber" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution,&quot;AD Creation for IT&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <serviceTask id="UpdateEmpInfoToDB" name="Update Emp Info To DB" activiti:async="true" activiti:exclusive="false" activiti:expression="${saveEmpInfo.onExecute(execution)}">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow5" sourceRef="GetInfoFromIT" targetRef="mailToAdminForSeatInfo"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="UpdateEmpInfoToDB" targetRef="MailToPMO"></sequenceFlow>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <serviceTask id="MailToEmployee" name="Mail To Employee, CC: Admin, IT" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.officeEmail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="cc">
+          <activiti:expression><![CDATA[${configDetails.adminMail},${configDetails.itMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[New Employee]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.title} ${employee.fullName},<br/><br/>
+<div style="padding-left:30px">Welcome to ${employee.orgName}. You have joined as ${employee.jobName}.</div>
+<br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${emailId}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${username}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${serialnumber}</td>
+</tr>
+</table><br/><br/>
+Please share the below information as early as possible to the finance team (osiindia_payrol@osius.com):<br/>
+1. Previous employer Tax calculation sheet. <br/>
+2. Please submit the Tax declaration in Tax portal on or before 25th of the month. <br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow9" sourceRef="parallelgateway1" targetRef="MailToEmployee"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="parallelgateway1" targetRef="MailToHR"></sequenceFlow>
+    <serviceTask id="MailToRM" name="Mail To Supervisor" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.supervisorMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[New Employee]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.supervisorName},<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location and you are assigned as supervisor for this employee. Below are the employee details.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${emailId}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${username}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${serialnumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow11" sourceRef="parallelgateway1" targetRef="MailToRM"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="parallelgateway1" targetRef="MailToFinance"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow14" sourceRef="MailToHR" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="MailToEmployee" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="MailToRM" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow18" sourceRef="MailToFinance" targetRef="endevent1"></sequenceFlow>
+    <serviceTask id="getConfigDetails" name="Get Email Config List" activiti:async="true" activiti:expression="${configDelegate.onExecute(execution)}" activiti:resultVariableName="configDetails">
+      <extensionElements>
+      	<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow19" sourceRef="getConfigDetails" targetRef="prepareMailContentServicetask"></sequenceFlow>
+    <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="getConfigDetails">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow20" sourceRef="boundaryerror1" targetRef="mailtask1"></sequenceFlow>
+    <boundaryEvent id="boundaryerror2" name="Error" attachedToRef="UpdateEmpInfoToDB">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow21" sourceRef="boundaryerror2" targetRef="mailtask1"></sequenceFlow>
+    <sequenceFlow id="flow22" sourceRef="MailToPMO" targetRef="parallelgateway1"></sequenceFlow>
+    <serviceTask id="mailtask1" name="Error Mail To Admin" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:string><![CDATA[rdonepudi@osius.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Error Notification]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Admin<br/>
+
+Exception occured while executing:
+Exception is occured while executing the : 
+<br>Process Definition: ${processDefId}, 
+<br>Activity Name: ${processInsId},
+<br>Error : ${error}]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow23" sourceRef="mailtask1" targetRef="endevent2"></sequenceFlow>
+    <serviceTask id="prepareMailContentServicetask" name="Prepare Mail Content Service Task" activiti:expression="${prepareMailContentForEmpCreation.onExecute(execution)}" activiti:resultVariableName="mailContent"></serviceTask>
+    <sequenceFlow id="flow24" sourceRef="prepareMailContentServicetask" targetRef="mailToHRDL"></sequenceFlow>
+    <boundaryEvent id="boundaryerror3" name="Error" attachedToRef="prepareMailContentServicetask">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow25" sourceRef="boundaryerror3" targetRef="mailtask1"></sequenceFlow>
+    <serviceTask id="MailToPMO" name="Mail To PMO For Project Creation" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.pmoMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[${empCreationSubject}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location.
+<br/>
+Please add the default projects and other relevent information to this employee. Below are the employee details.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${emailId}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${username}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${serialnumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="MailToHR" name="Mail To HR" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[${empCreationSubject}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location and employee details have been updated from IT, PMO teams. Below are the employee details.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${emailId}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${username}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${serialnumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI  ONE</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="MailToFinance" name="Mail To Finance" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.financeMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[${empCreationSubject}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location. Please do the needful for finance related activities. Below are the employee details.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${emailId}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${username}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${serialnumber}</td>
+</tr>
+</table>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="MailToITForADCreation" name="Mail To IT For AD Creation" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.itMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[${empCreationSubject}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location.</div>
+<br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Job Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.jobName}</td>
+</table>
+<br/><br/>
+Please do the needful for system arrangement, account creation and update the below information.<br/><br/>
+<form name="dlForm" action="${configDetails.serviceURL}/completeuserstask/">
+<TABLE>
+<TR style="text-align: left;"><TH>Email Id</TH><TD><input type="text" name="emailId"/></TD></TR>
+<TR style="text-align: left;"><TH>User Name</TH><TD><input type="text" name="username"/></TD></TR>
+<TR style="text-align: left;"><TH>Asset Id</TH><TD><input type="text" name="serialnumber"/></TD></TR>
+<TR COLSPAN="2" style="text-align: left;"><TD><input type="submit" value="SUBMIT"/></TD></TR>
+</TABLE>
+</form>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;AD Creation for IT&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow27" sourceRef="GetDLListFromHR" targetRef="MailToITForADCreation"></sequenceFlow>
+    <sequenceFlow id="flow28" sourceRef="MailToITForADCreation" targetRef="GetInfoFromIT"></sequenceFlow>
+    <userTask id="getSeatInfoFromAdmin" name="Get Seat Info From Admin" activiti:assignee="adminTeam">
+      <extensionElements>
+        <activiti:taskListener event="complete" expression="${emsService.updateNotifications(execution,&quot;Mail Stop from Admin&quot;)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <serviceTask id="mailToAdminForSeatInfo" name="Mail To Admin For Seat Info" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.adminMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression><![CDATA[${empCreationSubject}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Team,<br/><br/>
+<div style="padding-left:30px">${employee.title} ${employee.fullName} has joined on ${employee.startDate} at ${employee.locationName} location.
+<br/>
+Please allocate the Workstation/Locker ID for this employee. Below are the employee details.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Middle Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.middleName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Workstation/Locker ID</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.mailStop}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Desktop/Laptop</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.systemType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Yammer</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'><a href='http://www.yammer.com'>www.yammer.com</a></td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${emailId}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Distribution List</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${dlList}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${username}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Asset Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${serialnumber}</td>
+</tr>
+</table><br/>
+Please update the below information.
+<br/><br/>
+<form name="dlForm" action="${configDetails.serviceURL}/completeAdminTask/">
+<TABLE>
+<TR style="text-align: left;"><TH>Workstation/Locker ID</TH><TD><input type="text" name="mailStop"/></TD></TR>
+<TR COLSPAN="2" style="text-align: left;"><TD><input type="submit" value="SUBMIT"/></TD></TR>
+</TABLE>
+</form>
+<br/><br/>
+Note:This email is compatible with Google Chrome browser<br/><br/>
+Thanks,<br/><B>OSI ONE</B>]]></activiti:expression>
+        </activiti:field>
+        <activiti:executionListener event="end" expression="${emsService.saveNotifications(execution, employee, &quot;Mail Stop from Admin&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow29" sourceRef="mailToAdminForSeatInfo" targetRef="getSeatInfoFromAdmin"></sequenceFlow>
+    <sequenceFlow id="flow30" sourceRef="getSeatInfoFromAdmin" targetRef="UpdateEmpInfoToDB"></sequenceFlow>
+    <intermediateCatchEvent id="timerintermediatecatchevent1" name="TimerCatchEvent">
+      <timerEventDefinition>
+        <timeDuration>PT0S</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow31" sourceRef="timerintermediatecatchevent1" targetRef="getConfigDetails"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmployeeCreationProcess">
+    <bpmndi:BPMNPlane bpmnElement="EmployeeCreationProcess" id="BPMNPlane_EmployeeCreationProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1.0" y="114.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailToHRDL" id="BPMNShape_mailToHRDL">
+        <omgdc:Bounds height="57.0" width="131.0" x="188.0" y="99.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GetDLListFromHR" id="BPMNShape_GetDLListFromHR">
+        <omgdc:Bounds height="55.0" width="105.0" x="351.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="GetInfoFromIT" id="BPMNShape_GetInfoFromIT">
+        <omgdc:Bounds height="58.0" width="125.0" x="650.0" y="99.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UpdateEmpInfoToDB" id="BPMNShape_UpdateEmpInfoToDB">
+        <omgdc:Bounds height="61.0" width="151.0" x="272.0" y="242.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror2" id="BPMNShape_boundaryerror2">
+        <omgdc:Bounds height="30.0" width="30.0" x="262.0" y="262.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="760.0" y="252.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToEmployee" id="BPMNShape_MailToEmployee">
+        <omgdc:Bounds height="64.0" width="108.0" x="878.0" y="241.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToRM" id="BPMNShape_MailToRM">
+        <omgdc:Bounds height="55.0" width="105.0" x="881.0" y="176.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1041.0" y="255.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getConfigDetails" id="BPMNShape_getConfigDetails">
+        <omgdc:Bounds height="55.0" width="105.0" x="61.0" y="104.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
+        <omgdc:Bounds height="30.0" width="30.0" x="99.0" y="142.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="3.0" y="259.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask1" id="BPMNShape_mailtask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="61.0" y="249.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="prepareMailContentServicetask" id="BPMNShape_prepareMailContentServicetask">
+        <omgdc:Bounds height="62.0" width="106.0" x="135.0" y="11.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror3" id="BPMNShape_boundaryerror3">
+        <omgdc:Bounds height="30.0" width="30.0" x="166.0" y="59.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToPMO" id="BPMNShape_MailToPMO">
+        <omgdc:Bounds height="67.0" width="135.0" x="582.0" y="239.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToHR" id="BPMNShape_MailToHR">
+        <omgdc:Bounds height="55.0" width="105.0" x="881.0" y="104.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToFinance" id="BPMNShape_MailToFinance">
+        <omgdc:Bounds height="55.0" width="105.0" x="881.0" y="330.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="MailToITForADCreation" id="BPMNShape_MailToITForADCreation">
+        <omgdc:Bounds height="55.0" width="129.0" x="492.0" y="100.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getSeatInfoFromAdmin" id="BPMNShape_getSeatInfoFromAdmin">
+        <omgdc:Bounds height="61.0" width="111.0" x="292.0" y="161.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailToAdminForSeatInfo" id="BPMNShape_mailToAdminForSeatInfo">
+        <omgdc:Bounds height="58.0" width="111.0" x="455.0" y="163.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="timerintermediatecatchevent1" id="BPMNShape_timerintermediatecatchevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1.0" y="38.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="18.0" y="114.0"></omgdi:waypoint>
+        <omgdi:waypoint x="18.0" y="73.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="319.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="351.0" y="127.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="712.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="712.0" y="192.0"></omgdi:waypoint>
+        <omgdi:waypoint x="566.0" y="192.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="423.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="582.0" y="272.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="800.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="878.0" y="273.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="780.0" y="252.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="131.0"></omgdi:waypoint>
+        <omgdi:waypoint x="881.0" y="131.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="780.0" y="252.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="203.0"></omgdi:waypoint>
+        <omgdi:waypoint x="881.0" y="203.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="780.0" y="292.0"></omgdi:waypoint>
+        <omgdi:waypoint x="780.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="881.0" y="357.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="986.0" y="131.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1058.0" y="131.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1058.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="986.0" y="273.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1041.0" y="272.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="986.0" y="203.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1058.0" y="203.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1058.0" y="255.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="986.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1058.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1058.0" y="290.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="113.0" y="104.0"></omgdi:waypoint>
+        <omgdi:waypoint x="113.0" y="45.0"></omgdi:waypoint>
+        <omgdi:waypoint x="135.0" y="42.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="114.0" y="172.0"></omgdi:waypoint>
+        <omgdi:waypoint x="113.0" y="249.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="262.0" y="277.0"></omgdi:waypoint>
+        <omgdi:waypoint x="166.0" y="276.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow22" id="BPMNEdge_flow22">
+        <omgdi:waypoint x="717.0" y="272.0"></omgdi:waypoint>
+        <omgdi:waypoint x="760.0" y="272.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow23" id="BPMNEdge_flow23">
+        <omgdi:waypoint x="61.0" y="276.0"></omgdi:waypoint>
+        <omgdi:waypoint x="38.0" y="276.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
+        <omgdi:waypoint x="241.0" y="42.0"></omgdi:waypoint>
+        <omgdi:waypoint x="253.0" y="46.0"></omgdi:waypoint>
+        <omgdi:waypoint x="253.0" y="99.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="196.0" y="74.0"></omgdi:waypoint>
+        <omgdi:waypoint x="179.0" y="88.0"></omgdi:waypoint>
+        <omgdi:waypoint x="179.0" y="176.0"></omgdi:waypoint>
+        <omgdi:waypoint x="113.0" y="249.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
+        <omgdi:waypoint x="456.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="492.0" y="127.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
+        <omgdi:waypoint x="621.0" y="127.0"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="128.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
+        <omgdi:waypoint x="455.0" y="192.0"></omgdi:waypoint>
+        <omgdi:waypoint x="403.0" y="191.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
+        <omgdi:waypoint x="347.0" y="222.0"></omgdi:waypoint>
+        <omgdi:waypoint x="347.0" y="242.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
+        <omgdi:waypoint x="18.0" y="73.0"></omgdi:waypoint>
+        <omgdi:waypoint x="113.0" y="104.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

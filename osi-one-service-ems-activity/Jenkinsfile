@@ -1,0 +1,29 @@
+ pipeline {
+        agent {
+                label 'maven'
+               }
+        stages {
+          stage("build & SonarQube analysis") { 
+            steps {
+              git branch: 'development_devops', credentialsId: 'Gitlab_test', url: 'git@osigitlab.osius.com:amohd/osi-one-servie-ems.git'
+              withSonarQubeEnv('sonarserver') {
+                sh 'mvn clean package sonar:sonar'
+              }
+            }
+          }
+          stage("Quality Gate") {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: false
+              }
+            }
+          }
+          stage("Sending Artifact to Nexus ") {
+            steps {
+                script{
+                    sh "mvn clean deploy"
+                     }
+                 } 
+            }
+          }
+    }

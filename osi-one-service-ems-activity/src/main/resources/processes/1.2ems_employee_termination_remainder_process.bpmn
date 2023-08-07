@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="EmployeeTerminationRemainderProcess" name="Employee Termination Remainder Process" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <serviceTask id="getConfigDetails" name="Get Email Config List" activiti:expression="${configDelegate.onExecute(execution)}" activiti:resultVariableName="configDetails">
+      <extensionElements>
+      		<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      	</extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow1" name="send remainder" sourceRef="exclusivegateway1" targetRef="getConfigDetails">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendRemainder == true}]]></conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="mailtask1" name="Notify All (PMO, HR, IT,TMS,LMS,Expenses)" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${configDetails.hrMail},${configDetails.itMail},${configDetails.pmoMail},${configDetails.adminMail},${configDetails.financeMail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Reminder to Separation of Employee]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi<br/><br/>
+This is Reminder mail for Separation of Employee: ${employee.firstName}<br/>
+<br/>
+<div style="padding-left:30px">${employee.fullName} is going to separate from ${employee.orgName} w.e.f. ${empSeparationDate}.</div><br/><br/>
+<table style='width:80%;font-family: arial, sans-serif;border-collapse: collapse;margin-left:50px;'>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Title</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.title}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>First Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.firstName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Last Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.lastName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Date of Joining</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.startDate}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Reporting Manager</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.supervisorName}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Department</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.departmentName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Type of Employee</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.employeeType}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Contact Mobile Number</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.contactNumber}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Level and Grade</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.grade}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Location</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.locationName}</td>
+</tr>
+<tr>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>Email Id</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.officeEmail}</td>
+<th style='border: 1px solid #dddddd;text-align:left;padding:8px;'>User Name</th>
+<td style='border: 1px solid #dddddd;text-align:left;padding:8px;'>${employee.userName}</td>
+</tr>
+</table>
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow3" sourceRef="mailtask1" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="parallelgateway1" targetRef="mailtask1"></sequenceFlow>
+    <serviceTask id="checkRemainderStartDate" name="Check StartDate" activiti:expression="${checkTerminationRemainderStartDate.onExecute(execution)}" activiti:resultVariableName="sendRemainder">
+    	<extensionElements>
+      		<activiti:failedJobRetryTimeCycle>R0</activiti:failedJobRetryTimeCycle>
+      	</extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow5" sourceRef="startevent1" targetRef="checkRemainderStartDate"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow6" sourceRef="checkRemainderStartDate" targetRef="exclusivegateway1"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow7" name="no" sourceRef="exclusivegateway1" targetRef="endevent3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sendRemainder == false}]]></conditionExpression>
+    </sequenceFlow>
+    <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="checkRemainderStartDate">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <boundaryEvent id="boundaryerror2" name="Error" attachedToRef="getConfigDetails">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <serviceTask id="mailtask2" name="Error Mail To Admin" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi Admin,<br/>
+
+Exception is occured while executing the : 
+<br>Process Definition: ${processDefId}, 
+<br>Activity Name: ${processInsId},
+<br>Error : ${error}
+<br/><br/>
+Thanks,<br/>EMS System]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:string><![CDATA[smanchala@osius.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Error Notification]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow8" sourceRef="boundaryerror1" targetRef="mailtask2"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="boundaryerror2" targetRef="mailtask2"></sequenceFlow>
+    <sequenceFlow id="flow10" sourceRef="mailtask2" targetRef="endevent2"></sequenceFlow>
+    <endEvent id="endevent3" name="End">
+      <extensionElements>
+        <activiti:executionListener event="start" expression="${wfActivitiesService.rollBackWfRecordFlag(execution)}"></activiti:executionListener>
+      </extensionElements>
+    </endEvent>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow11" sourceRef="getConfigDetails" targetRef="parallelgateway1"></sequenceFlow>
+    <serviceTask id="empMailTask" name="Employee Mail Notification" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${employee.officeEmail}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Reminder to Separation of Employee]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:expression><![CDATA[Hi ${employee.fullName},<br/><br/>
+<br/>
+<div style="padding-left:30px">You are going to separate from ${employee.orgName} on ${empSeparationDate}.</div><br/>
+Note: Please submit all finance related documents to finance team (osiindia_payrol@osius.com)<br/>
+<br/><br/>
+Thanks,<br/><B>EMS System</B>]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow12" sourceRef="parallelgateway1" targetRef="empMailTask"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="empMailTask" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmployeeTerminationRemainderProcess">
+    <bpmndi:BPMNPlane bpmnElement="EmployeeTerminationRemainderProcess" id="BPMNPlane_EmployeeTerminationRemainderProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getConfigDetails" id="BPMNShape_getConfigDetails">
+        <omgdc:Bounds height="55.0" width="105.0" x="330.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror2" id="BPMNShape_boundaryerror2">
+        <omgdc:Bounds height="30.0" width="30.0" x="368.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask1" id="BPMNShape_mailtask1">
+        <omgdc:Bounds height="71.0" width="131.0" x="550.0" y="62.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="741.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="checkRemainderStartDate" id="BPMNShape_checkRemainderStartDate">
+        <omgdc:Bounds height="55.0" width="105.0" x="81.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundaryerror1" id="BPMNShape_boundaryerror1">
+        <omgdc:Bounds height="30.0" width="30.0" x="121.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="200.0" y="77.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="203.0" y="240.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="mailtask2" id="BPMNShape_mailtask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="168.0" y="156.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="203.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="474.0" y="77.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="empMailTask" id="BPMNShape_empMailTask">
+        <omgdc:Bounds height="63.0" width="132.0" x="550.0" y="148.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="240.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="330.0" y="97.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="75.0" x="240.0" y="97.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="681.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="741.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="514.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="55.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="81.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="186.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="200.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="220.0" y="77.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="55.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="12.0" x="237.0" y="76.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="136.0" y="140.0"></omgdi:waypoint>
+        <omgdi:waypoint x="135.0" y="189.0"></omgdi:waypoint>
+        <omgdi:waypoint x="168.0" y="183.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="383.0" y="140.0"></omgdi:waypoint>
+        <omgdi:waypoint x="382.0" y="183.0"></omgdi:waypoint>
+        <omgdi:waypoint x="273.0" y="183.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="220.0" y="211.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="240.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="435.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="474.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="494.0" y="117.0"></omgdi:waypoint>
+        <omgdi:waypoint x="494.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="179.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
+        <omgdi:waypoint x="682.0" y="179.0"></omgdi:waypoint>
+        <omgdi:waypoint x="758.0" y="179.0"></omgdi:waypoint>
+        <omgdi:waypoint x="758.0" y="115.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
